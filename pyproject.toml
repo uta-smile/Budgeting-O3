@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "o3-boltz2-experiment"
+version = "0.1.0"
+description = "Budgeted O3 Bayesian optimization around a deterministic Boltz-2 adapter"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "botorch>=0.14.0",
+    "gpytorch>=1.13.0",
+    "numpy>=1.26,<2.0",
+    # Required by the paper's inverse-Beta Knothe--Rosenblatt chart. This
+    # Boltz 2.2.1 pins SciPy 1.13.1; it provides the inverse-Beta function
+    # needed by the paper's Knothe--Rosenblatt chart.
+    "scipy==1.13.1",
+    "pyyaml>=6.0.2",
+    # Use the CUDA 11.8 build; the lab driver reports CUDA 11.3.
+    "torch==2.5.1+cu118",
+    # Pillow 12 falls back to a source build on this node; 10.4.0 has a
+    # manylinux_2_17 CPython 3.12 wheel.
+    "pillow==10.4.0",
+    # Pandas 3 requires glibc newer than the lab node; 2.2.3 has a
+    # manylinux_2_17 CPython 3.12 wheel and satisfies Boltz's >=2.2.2 range.
+    "pandas==2.2.3",
+    # The lab node is manylinux_2_23; newer RDKit wheels require glibc 2.28.
+    "rdkit==2024.3.2",
+    "tmtools>=0.1.0",
+    # The optional cuEquivariance wheels require newer glibc than the lab node.
+    # Boltz still uses the GPU through CUDA-enabled PyTorch without these kernels.
+    "boltz>=2.2.1",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[[tool.uv.index]]
+name = "pytorch-cu118"
+url = "https://download.pytorch.org/whl/cu118"
+explicit = true
+
+[tool.uv.sources]
+# Use the vendored Boltz source because the experiment adds an opt-in
+# deterministic latent/PF-ODE entry point to it.
+boltz = { path = "vendor/boltz", editable = true }
+torch = { index = "pytorch-cu118" }
+
+[tool.uv]
+# The experiment is intended for the x86_64 Linux CUDA lab node.
+required-environments = ["sys_platform == 'linux' and platform_machine == 'x86_64'"]

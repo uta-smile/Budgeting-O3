@@ -1,0 +1,64 @@
+target:
+  name: 1cll
+  # Observed 1CLL chain A sequence: 144 residues.
+  sequence: LTEEQIAEFKEAFSLFDKDGDGTITTKELGTVMRSLGQNPTEAELQDMINEVDADGNGTIDFPEFLTMMARKMKDTDSEEEIREAFRVFDKDGNGYISAAELRHVMTNLGEKLTDEEVDEMIREADIDGDGQVNYEEFVQMMTA
+  reference_pdb: data/1CLL.pdb
+  reference_chain: A
+
+# Derive this from the explicitly padded Boltz sampler tensor below. The paper
+# uses 1,184 sampler coordinate slots, giving a 3,552-value latent.
+latent_dim: auto
+
+# The generator uses the vendored Boltz-2 implementation. The explicit empty
+# MSA keeps preprocessing offline and makes the feature tensor reproducible.
+boltz2:
+  input_yaml: data/1cll_boltz_input.yaml
+  processed_dir: data/boltz2_1cll
+  recycling_steps: 3
+  sampling_steps: 200
+  step_scale: 1.5
+  # Paper Section 4: Z = R^(1184*3). Boltz treats the extra slots as masked
+  # padding and removes them before writing/scoring the 1,134 real atoms.
+  atom_slots: 1184
+  # Optional cuEquivariance kernels require glibc newer than the lab node has.
+  # The model still runs on the GPU through regular PyTorch CUDA operations.
+  no_kernels: true
+
+# The six budget settings from the experiment notes. M and d follow the
+# O3 appendix configuration so the runner can execute the whole sweep.
+budgets:
+  - name: n20_k2
+    N: 20
+    K: 2
+    M: 10
+    d: 5
+  - name: n50_k5
+    N: 50
+    K: 5
+    M: 25
+    d: 7
+  - name: n100_k10
+    N: 100
+    K: 10
+    M: 50
+    d: 5
+  - name: n200_k20
+    N: 200
+    K: 20
+    M: 100
+    d: 10
+  - name: n500_k50
+    N: 500
+    K: 50
+    M: 250
+    d: 30
+  - name: n1000_k100
+    N: 1000
+    K: 100
+    M: 400
+    d: 50
+
+# The paper repeats each configuration over five random seeds.
+replicates: 5
+seed: 0
+output_dir: outputs

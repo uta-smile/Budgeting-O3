@@ -1,0 +1,8 @@
+.venv/
+.uv-cache/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+data/1CLL.pdb
+data/boltz2_1cll/
+outputs/*

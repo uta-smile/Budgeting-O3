@@ -22,6 +22,18 @@ def _parse_args() -> argparse.Namespace:
         help="module:function adapter factory",
     )
     parser.add_argument("--replicates", type=int, default=None)
+    parser.add_argument(
+        "--seed-start",
+        type=int,
+        default=None,
+        help="Override the first run seed. Replicates continue from this value.",
+    )
+    parser.add_argument(
+        "--seed-step",
+        type=int,
+        default=None,
+        help="Difference between successive replicate seeds (default: 1).",
+    )
     parser.add_argument("--run-id", default=None, help="Optional run folder name. Defaults to the current timestamp.")
     parser.add_argument("--only", nargs="*", help="run only these budget names")
     parser.add_argument(
@@ -57,6 +69,11 @@ def main() -> None:
     replicates = int(config.get("replicates", 1) if args.replicates is None else args.replicates)
     if replicates < 1:
         raise ValueError("replicates must be at least 1")
+    seed_start = int(config.get("seed", 0) if args.seed_start is None else args.seed_start)
+    seed_step = int(config.get("seed_step", 1) if args.seed_step is None else args.seed_step)
+    if seed_step == 0:
+        raise ValueError("seed_step must not be 0")
+    run_seeds = [seed_start + replicate * seed_step for replicate in range(replicates)]
 
     adapter = load_adapter(args.adapter, config)
     adapter_latent_dim = getattr(adapter, "latent_dim", None)
@@ -90,8 +107,7 @@ def main() -> None:
         budget_name = str(budget.get("name", f"n{budget['N']}_k{budget['K']}"))
         if wanted and budget_name not in wanted:
             continue
-        for replicate in range(replicates):
-            run_seed = int(config.get("seed", 0)) + replicate
+        for run_seed in run_seeds:
             run_dir = method_root / budget_name / "runs" / run_id / f"seed_{run_seed:04d}"
             print(f"[{budget_name} method={args.method} seed={run_seed}] starting", flush=True)
             runner = run_best_k_of_n if args.method == "best-k-of-n" else run_o3
@@ -131,11 +147,9 @@ def main() -> None:
             "run_id": run_id,
             "config_path": str(config_path),
             "replicates": replicates,
-            "seed_start": int(config.get("seed", 0)),
-            "seeds": [
-                int(config.get("seed", 0)) + replicate
-                for replicate in range(replicates)
-            ],
+            "seed_start": seed_start,
+            "seed_step": seed_step,
+            "seeds": run_seeds,
         }
         with (summary_root / "run_metadata.json").open(
             "w", encoding="utf-8"

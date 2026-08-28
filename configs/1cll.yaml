@@ -67,6 +67,10 @@ budgets:
     d: 50
 
 # The paper repeats each configuration over five random seeds.
+# Set seed to any integer to choose the first replicate; later replicates use
+# seed + seed_step. The CLI can override both values with --seed-start and
+# --seed-step.
 replicates: 5
 seed: 0
+seed_step: 1
 output_dir: outputs

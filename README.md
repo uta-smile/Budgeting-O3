@@ -70,6 +70,18 @@ outputs/1cll/<method>/<budget>/runs/<run_id>/
 
 The default run_id is a timestamp; provide --run-id to choose a label.
 
+Seeds are configurable. Set `seed` in `configs/1cll.yaml`, or override it at
+runtime with `--seed-start`. By default, five replicates starting at 12345 use
+12345, 12346, 12347, 12348, and 12349:
+
+```bash
+sh run_experiment.sh --seed-start 12345 --replicates 5
+```
+
+Use `--seed-step` (or `seed_step` in the config) when you want a different
+spacing, for example `--seed-start 100 --seed-step 10` produces 100, 110, 120,
+and so on. The selected seeds are recorded in `run_metadata.json`.
+
 ## Optional adapter override
 
 If the lab has its own compatible generator, select the legacy bridge and set

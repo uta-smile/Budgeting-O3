@@ -12,6 +12,7 @@ Requires-Dist: torch==2.7.0+cu128; sys_platform == "win32"
 Requires-Dist: torch==2.5.1+cu118; sys_platform == "linux"
 Requires-Dist: pillow==10.4.0
 Requires-Dist: pandas==2.2.3
-Requires-Dist: rdkit==2024.3.2
+Requires-Dist: rdkit>=2025.03.1; sys_platform == "win32"
+Requires-Dist: rdkit==2024.3.2; sys_platform == "linux"
 Requires-Dist: tmtools>=0.1.0
 Requires-Dist: boltz>=2.2.1

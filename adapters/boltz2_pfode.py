@@ -249,6 +249,8 @@ class Boltz2PFODEAdapter:
                 f"Expected latent shape {(self.latent_dim,)}, got {latent_array.shape}"
             )
         deterministic = bool(metadata.get("deterministic", self.deterministic))
+        sampling_mode = "deterministic PF-ODE" if deterministic else "stochastic Boltz-2"
+        print(f"[Boltz-2] sampling={sampling_mode} | deterministic={deterministic}", flush=True)
         initial_coords = (
             torch.from_numpy(latent_array.reshape(1, self.atom_slots, 3)).to(self.device)
             if deterministic

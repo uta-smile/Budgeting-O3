@@ -5,12 +5,13 @@ scipy==1.13.1
 pyyaml>=6.0.2
 pillow==10.4.0
 pandas==2.2.3
-rdkit==2024.3.2
 tmtools>=0.1.0
 boltz>=2.2.1
 
 [:sys_platform == "linux"]
 torch==2.5.1+cu118
+rdkit==2024.3.2
 
 [:sys_platform == "win32"]
 torch==2.7.0+cu128
+rdkit>=2025.03.1

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
+from datetime import datetime
 from pathlib import Path
 
 import yaml
@@ -20,6 +22,7 @@ def _parse_args() -> argparse.Namespace:
         help="module:function adapter factory",
     )
     parser.add_argument("--replicates", type=int, default=None)
+    parser.add_argument("--run-id", default=None, help="Optional run folder name. Defaults to the current timestamp.")
     parser.add_argument("--only", nargs="*", help="run only these budget names")
     parser.add_argument(
         "--method",
@@ -79,17 +82,17 @@ def main() -> None:
         config["latent_dim"] = int(configured_latent_dim)
 
     wanted = set(args.only or [])
-    summaries: list[dict] = []
+    run_id = args.run_id or datetime.now().strftime("%Y%m%d_%H%M%S")
+    method_name = "best_k_of_n" if args.method == "best-k-of-n" else "o3"
+    method_root = output_root / target_name / method_name
+    summaries_by_budget: dict[str, list[dict]] = {}
     for budget in config["budgets"]:
         budget_name = str(budget.get("name", f"n{budget['N']}_k{budget['K']}"))
         if wanted and budget_name not in wanted:
             continue
         for replicate in range(replicates):
             run_seed = int(config.get("seed", 0)) + replicate
-            method_root = output_root / target_name
-            if args.method == "best-k-of-n":
-                method_root = method_root / "best_k_of_n"
-            run_dir = method_root / budget_name / f"seed_{run_seed:04d}"
+            run_dir = method_root / budget_name / "runs" / run_id / f"seed_{run_seed:04d}"
             print(f"[{budget_name} method={args.method} seed={run_seed}] starting", flush=True)
             runner = run_best_k_of_n if args.method == "best-k-of-n" else run_o3
             summary = runner(
@@ -99,7 +102,7 @@ def main() -> None:
                 run_seed=run_seed,
                 output_dir=run_dir,
             )
-            summaries.append(summary)
+            summaries_by_budget.setdefault(budget_name, []).append(summary)
             print(
                 f"[{budget_name} method={args.method} seed={run_seed}] "
                 f"max-of-K={summary['max_of_K']:.4f} "
@@ -107,17 +110,38 @@ def main() -> None:
                 flush=True,
             )
 
-    summary_root = output_root / target_name
-    if args.method == "best-k-of-n":
-        summary_root = summary_root / "best_k_of_n"
-    summary_path = summary_root / "sweep_summary.csv"
-    summary_path.parent.mkdir(parents=True, exist_ok=True)
-    if summaries:
+    if not summaries_by_budget:
+        print("Finished. No matching budget names were found.", flush=True)
+        return
+
+    for budget_name, summaries in summaries_by_budget.items():
+        summary_root = method_root / budget_name / "runs" / run_id
+        summary_root.mkdir(parents=True, exist_ok=True)
+        summary_path = summary_root / "sweep_summary.csv"
         with summary_path.open("w", newline="", encoding="utf-8") as handle:
             writer = csv.DictWriter(handle, fieldnames=summaries[0].keys())
             writer.writeheader()
             writer.writerows(summaries)
-    print(f"Finished. Summary: {summary_path}")
+
+        metadata = {
+            "method": args.method,
+            "method_directory": method_name,
+            "target": target_name,
+            "budget": budget_name,
+            "run_id": run_id,
+            "config_path": str(config_path),
+            "replicates": replicates,
+            "seed_start": int(config.get("seed", 0)),
+            "seeds": [
+                int(config.get("seed", 0)) + replicate
+                for replicate in range(replicates)
+            ],
+        }
+        with (summary_root / "run_metadata.json").open(
+            "w", encoding="utf-8"
+        ) as handle:
+            json.dump(metadata, handle, indent=2)
+        print(f"Finished. Summary: {summary_path}", flush=True)
 
 
 if __name__ == "__main__":

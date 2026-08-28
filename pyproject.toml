@@ -24,8 +24,10 @@ dependencies = [
     "pillow==10.4.0",
     # Satisfies Boltz's >=2.2.2 requirement.
     "pandas==2.2.3",
-    # Keep the RDKit version used by the experiment.
-    "rdkit==2024.3.2",
+    # Boltz's current molecule cache uses RDKit pickle format 16.2.
+    # Windows can use a newer wheel; keep the older Linux pin for the lab node.
+    "rdkit>=2025.03.1; sys_platform == 'win32'",
+    "rdkit==2024.3.2; sys_platform == 'linux'",
     "tmtools>=0.1.0",
     # The optional cuEquivariance wheels require newer glibc than the lab node.
     # Boltz still uses the GPU through CUDA-enabled PyTorch without these kernels.

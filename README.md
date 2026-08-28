@@ -58,10 +58,17 @@ if the experiment protocol requires offline, reproducible features.
 
 For a paper-faithful comparison, O3 uses deterministic Boltz-2 PF-ODE sampling, while Best K-of-N uses the ordinary stochastic Boltz-2 sampler. Each run summary records this as generator_sampling. Using deterministic sampling for both methods is an ablation, not the paper baseline.
 
-The default reference structure is downloaded to `data/1CLL.pdb` on the first
-run. Outputs are written below `outputs/1cll/`, including per-run
-`evaluations.csv`, generated PDB files, `returned_candidates.json`, `summary.json`, and the overall
-`sweep_summary.csv`.
+The default reference structure is downloaded to data/1CLL.pdb on the first
+run. New outputs are stored without overwriting prior sweeps:
+
+```text
+outputs/1cll/<method>/<budget>/runs/<run_id>/
+  seed_0000/{evaluations.csv, summary.json, ...}
+  sweep_summary.csv
+  run_metadata.json
+```
+
+The default run_id is a timestamp; provide --run-id to choose a label.
 
 ## Optional adapter override
 
@@ -93,14 +100,14 @@ TM-score oracle. This generates N random latent samples and returns the top K:
 sh run_experiment.sh --method best-k-of-n --only n100_k10 --replicates 5
 ```
 
-Baseline results are written below `outputs/1cll/best_k_of_n/` so they do not
-overwrite O3 results.
+Baseline results use outputs/1cll/best_k_of_n/<budget>/runs/<run_id>/; O3 results use
+outputs/1cll/o3/<budget>/runs/<run_id>/.
 
 The shell script does not SSH, submit jobs, or configure the lab scheduler.
 It places UV’s large package cache under `.uv-cache/` beside the project so
 CUDA dependencies do not consume a small home-directory quota.
 
-The project pins RDKit 2024.3.2, Pillow 10.4.0, and pandas 2.2.3 so UV can
+The project uses RDKit >=2025.03.1 on Windows and RDKit 2024.3.2 on Linux, plus Pillow 10.4.0 and pandas 2.2.3, so UV can
 use compatible binary wheels on the lab node’s glibc 2.23 system. PyTorch is selected by platform: Windows uses the official CUDA 12.8 build
 (PyTorch 2.7.0) for RTX 50-series/Blackwell support, while Linux retains the
 lab node's CUDA 11.8 build (PyTorch 2.5.1). The optional cuEquivariance kernels

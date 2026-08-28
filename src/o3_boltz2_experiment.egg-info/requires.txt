@@ -1,0 +1,16 @@
+botorch>=0.14.0
+gpytorch>=1.13.0
+numpy<2.0,>=1.26
+scipy==1.13.1
+pyyaml>=6.0.2
+pillow==10.4.0
+pandas==2.2.3
+rdkit==2024.3.2
+tmtools>=0.1.0
+boltz>=2.2.1
+
+[:sys_platform == "linux"]
+torch==2.5.1+cu118
+
+[:sys_platform == "win32"]
+torch==2.7.0+cu128

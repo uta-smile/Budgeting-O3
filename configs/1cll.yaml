@@ -9,11 +9,13 @@ target:
 # uses 1,184 sampler coordinate slots, giving a 3,552-value latent.
 latent_dim: auto
 
-# The generator uses the vendored Boltz-2 implementation. The explicit empty
-# MSA keeps preprocessing offline and makes the feature tensor reproducible.
+# The generator uses the vendored Boltz-2 implementation. With msa: empty in
+# the input YAML, Boltz obtains an MSA from the configured server.
 boltz2:
   input_yaml: data/1cll_boltz_input.yaml
   processed_dir: data/boltz2_1cll
+  use_msa_server: true
+  msa_server_url: https://api.colabfold.com
   recycling_steps: 3
   sampling_steps: 200
   step_scale: 1.5
@@ -23,6 +25,12 @@ boltz2:
   # Optional cuEquivariance kernels require glibc newer than the lab node has.
   # The model still runs on the GPU through regular PyTorch CUDA operations.
   no_kernels: true
+  # O3 uses PF-ODE; Best K-of-N overrides this to the stochastic sampler.
+  deterministic: true
+
+# Best K-of-N follows the paper and uses ordinary stochastic Boltz-2 sampling.
+best_k_of_n:
+  deterministic: false
 
 # The six budget settings from the experiment notes. M and d follow the
 # O3 appendix configuration so the runner can execute the whole sweep.
@@ -31,7 +39,7 @@ budgets:
     N: 20
     K: 2
     M: 10
-    d: 5
+    d: 6
   - name: n50_k5
     N: 50
     K: 5

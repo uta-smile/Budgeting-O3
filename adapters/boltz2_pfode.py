@@ -82,6 +82,11 @@ class Boltz2PFODEAdapter:
         self.recycling_steps = int(boltz_config.get("recycling_steps", 3))
         self.sampling_steps = int(boltz_config.get("sampling_steps", 200))
         self.step_scale = float(boltz_config.get("step_scale", 1.5))
+        self.deterministic = bool(boltz_config.get("deterministic", True))
+        self.use_msa_server = bool(boltz_config.get("use_msa_server", False))
+        self.msa_server_url = str(
+            boltz_config.get("msa_server_url", "https://api.colabfold.com")
+        )
         self.no_kernels = bool(boltz_config.get("no_kernels", False))
         configured_atom_slots = boltz_config.get("atom_slots")
         self.configured_atom_slots = (
@@ -133,10 +138,10 @@ class Boltz2PFODEAdapter:
             out_dir=self.processed_dir,
             ccd_path=self.cache_dir / "ccd.pkl",
             mol_dir=self.cache_dir / "mols",
-            msa_server_url="https://api.colabfold.com",
+            msa_server_url=self.msa_server_url,
             msa_pairing_strategy="greedy",
             max_msa_seqs=int(config.get("boltz2", {}).get("max_msa_seqs", 8192)),
-            use_msa_server=False,
+            use_msa_server=self.use_msa_server,
             boltz2=True,
             preprocessing_threads=1,
         )
@@ -234,7 +239,7 @@ class Boltz2PFODEAdapter:
         config: Mapping[str, Any],
         metadata: Mapping[str, Any],
     ) -> Path:
-        del config, metadata
+        del config
         import torch
         from boltz.data.write.pdb import to_pdb
 
@@ -243,9 +248,12 @@ class Boltz2PFODEAdapter:
             raise ValueError(
                 f"Expected latent shape {(self.latent_dim,)}, got {latent_array.shape}"
             )
-        initial_coords = torch.from_numpy(
-            latent_array.reshape(1, self.atom_slots, 3)
-        ).to(self.device)
+        deterministic = bool(metadata.get("deterministic", self.deterministic))
+        initial_coords = (
+            torch.from_numpy(latent_array.reshape(1, self.atom_slots, 3)).to(self.device)
+            if deterministic
+            else None
+        )
 
         with torch.inference_mode():
             result = self.model(
@@ -256,7 +264,7 @@ class Boltz2PFODEAdapter:
                 max_parallel_samples=1,
                 run_confidence_sequentially=True,
                 initial_atom_coords=initial_coords,
-                deterministic=True,
+                deterministic=deterministic,
             )
 
         model_coords = result["sample_atom_coords"][0]

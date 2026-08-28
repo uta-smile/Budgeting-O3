@@ -10,8 +10,7 @@ UV_CACHE_DIR="${UV_CACHE_DIR:-$ROOT_DIR/.uv-cache}"
 export UV_CACHE_DIR
 mkdir -p "$UV_CACHE_DIR"
 
-# The SSH/login step is intentionally outside this file. Run this script from
-# the WinSCP-synchronised project directory on the lab node.
+# Run this script from the project directory in Git Bash on Windows or a shell on Linux.
 # The repository now includes the deterministic adapter. O3_ADAPTER_SPEC can
 # override it for a lab-specific implementation.
 ADAPTER_SPEC="${O3_ADAPTER_SPEC:-adapters.boltz2_pfode:create}"
@@ -21,14 +20,15 @@ if ! command -v uv >/dev/null 2>&1; then
   exit 2
 fi
 if [ ! -f "vendor/boltz/pyproject.toml" ]; then
-  echo "The vendored Boltz source is missing. Verify that WinSCP finished syncing." >&2
+  echo "The customized Boltz-2 source is missing from vendor/boltz." >&2
+  echo "Populate vendor/boltz before running this O3 experiment." >&2
   exit 2
 fi
 if ! grep -q "PDB-output/TM-score fix enabled" "src/o3_boltz/cli.py" \
   || ! grep -q "def _load_structure" "src/o3_boltz/tmscore.py" \
   || ! grep -q "sample_.*pdb" "src/o3_boltz/o3.py"; then
   echo "This project copy is stale and is missing the PDB scoring fix." >&2
-  echo "Run WinSCP synchronization, then start the script again." >&2
+  echo "Refresh the project files, then start the script again." >&2
   exit 2
 fi
 

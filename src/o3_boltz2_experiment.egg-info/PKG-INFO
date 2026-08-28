@@ -1,0 +1,17 @@
+Metadata-Version: 2.4
+Name: o3-boltz2-experiment
+Version: 0.1.0
+Summary: Budgeted O3 Bayesian optimization around a deterministic Boltz-2 adapter
+Requires-Python: <3.13,>=3.10
+Requires-Dist: botorch>=0.14.0
+Requires-Dist: gpytorch>=1.13.0
+Requires-Dist: numpy<2.0,>=1.26
+Requires-Dist: scipy==1.13.1
+Requires-Dist: pyyaml>=6.0.2
+Requires-Dist: torch==2.7.0+cu128; sys_platform == "win32"
+Requires-Dist: torch==2.5.1+cu118; sys_platform == "linux"
+Requires-Dist: pillow==10.4.0
+Requires-Dist: pandas==2.2.3
+Requires-Dist: rdkit==2024.3.2
+Requires-Dist: tmtools>=0.1.0
+Requires-Dist: boltz>=2.2.1

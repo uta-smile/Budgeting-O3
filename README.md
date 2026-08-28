@@ -23,10 +23,10 @@ inverse-Beta stick breaking followed by square roots, producing non-negative
 unit-norm weights on the positive hypersphere. This preserves the unit-Gaussian
 statistics of linear combinations of independently sampled seed latents.
 
-## On the lab GPU node
+## On Windows with Git Bash
 
-Open the WinSCP-synchronised project on the node, activate the lab's normal
-CUDA environment if needed, then execute:
+Open Git Bash in the project directory, make sure `uv` and an NVIDIA CUDA
+driver are available, then execute:
 
 ```bash
 sh run_experiment.sh
@@ -41,10 +41,22 @@ check the setup with:
 sh run_experiment.sh --only n100_k10 --replicates 1
 ```
 
-The default input uses `msa: empty`, so preprocessing does not call an MSA
-server. This makes the feature tensor reproducible, though a supplied MSA may
-improve structural accuracy. Change `data/1cll_boltz_input.yaml` only if the
-experiment protocol requires a particular MSA.
+The default 1CLL configuration has MSA retrieval enabled. Because the input
+uses `msa: empty`, the configured Boltz-2 adapter requests an MSA from
+`https://api.colabfold.com` during preprocessing. Therefore, the command
+above runs with MSA enabled by default:
+
+```bash
+sh run_experiment.sh --only n100_k10 --replicates 5
+```
+
+This can improve structural accuracy, but makes preprocessing dependent on
+network access and server responses. If an old offline preprocessing cache
+already exists, use a fresh `processed_dir` or regenerate that cache so the
+MSA is fetched. Set `boltz2.use_msa_server: false` in `configs/1cll.yaml`
+if the experiment protocol requires offline, reproducible features.
+
+For a paper-faithful comparison, O3 uses deterministic Boltz-2 PF-ODE sampling, while Best K-of-N uses the ordinary stochastic Boltz-2 sampler. Each run summary records this as generator_sampling. Using deterministic sampling for both methods is an ablation, not the paper baseline.
 
 The default reference structure is downloaded to `data/1CLL.pdb` on the first
 run. Outputs are written below `outputs/1cll/`, including per-run
@@ -89,10 +101,9 @@ It places UV’s large package cache under `.uv-cache/` beside the project so
 CUDA dependencies do not consume a small home-directory quota.
 
 The project pins RDKit 2024.3.2, Pillow 10.4.0, and pandas 2.2.3 so UV can
-use compatible binary wheels on the lab node’s glibc 2.23 system. PyTorch is
-pinned to its official CUDA 11.8 build because the lab driver reports CUDA
-11.3. The optional cuEquivariance kernels are disabled because their wheels
-also require newer glibc, but the model still uses the GPU through regular
-PyTorch CUDA.
+use compatible binary wheels on the lab node’s glibc 2.23 system. PyTorch is selected by platform: Windows uses the official CUDA 12.8 build
+(PyTorch 2.7.0) for RTX 50-series/Blackwell support, while Linux retains the
+lab node's CUDA 11.8 build (PyTorch 2.5.1). The optional cuEquivariance kernels
+are disabled, but the model still uses the GPU through regular PyTorch CUDA.
 The vendored package uses PyTorch Lightning 2.5.0.post0, matching the official
 Boltz-2 checkpoint.

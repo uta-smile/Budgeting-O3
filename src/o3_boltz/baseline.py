@@ -40,6 +40,8 @@ def run_best_k_of_n(
         raise ValueError(f"Require 0 < K <= N, got N={n}, K={k}")
     latent_dim = int(config["latent_dim"])
     budget_name = str(budget.get("name", f"n{n}_k{k}"))
+    baseline_settings = config.get("best_k_of_n", {})
+    deterministic = bool(baseline_settings.get("deterministic", False))
     rng = np.random.default_rng(run_seed)
     random.seed(run_seed)
     torch.manual_seed(run_seed)
@@ -72,6 +74,7 @@ def run_best_k_of_n(
                 "seed": run_seed,
                 "stage": "random_baseline",
                 "evaluation_index": index,
+                "deterministic": deterministic,
             },
         )
         final_path = Path(written_path) if written_path is not None else structure_path
@@ -119,6 +122,8 @@ def run_best_k_of_n(
         "generator_atom_slots": getattr(adapter, "atom_slots", None),
         "seed": run_seed,
         "oracle_evaluations": len(evaluations),
+        "generator_sampling": ("deterministic_pf_ode" if deterministic else "stochastic_boltz2"),
+        "score_std": float(np.std([item.score for item in evaluations])),
         "max_of_K": max(item.score for item in returned),
         "mean_of_K": float(np.mean([item.score for item in returned])),
         "best_structure": returned[0].structure,

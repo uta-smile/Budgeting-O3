@@ -6,3 +6,9 @@ __pycache__/
 data/1CLL.pdb
 data/boltz2_1cll/
 outputs/*
+
+# The customized Boltz-2 source is part of this experiment and must remain
+# visible to Git.
+!vendor/
+!vendor/boltz/
+!vendor/boltz/**

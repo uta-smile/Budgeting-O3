@@ -204,6 +204,7 @@ def run_o3(
                 "stage": stage,
                 "evaluation_index": len(evaluations),
                 "u": None if u is None else u.tolist(),
+                "deterministic": True,
             },
         )
         final_path = Path(written_path) if written_path is not None else structure_path
@@ -290,6 +291,8 @@ def run_o3(
     if len(evaluations) != n:
         raise AssertionError(f"Budget accounting error: expected {n}, got {len(evaluations)}")
 
+    new_scores = np.asarray([item.score for item in evaluations[m:]], dtype=np.float64)
+
     ranked = sorted(evaluations, key=lambda item: item.score, reverse=True)
     returned = ranked[:k]
     records = [asdict(item) for item in evaluations]
@@ -314,6 +317,10 @@ def run_o3(
         "generator_atom_slots": getattr(adapter, "atom_slots", None),
         "seed": run_seed,
         "oracle_evaluations": len(evaluations),
+        "generator_sampling": "deterministic_pf_ode",
+        "phase1_max": float(np.max(phase1_scores)),
+        "new_points_max": float(np.max(new_scores)),
+        "new_points_improvement": float(np.max(new_scores) - np.max(phase1_scores)),
         "max_of_K": max(item.score for item in returned),
         "mean_of_K": float(np.mean([item.score for item in returned])),
         "best_structure": returned[0].structure,

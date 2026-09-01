@@ -111,6 +111,8 @@ def collect_run_metadata(
             "checkpoint": checkpoint_info,
         },
         "msa_cache": {
+            "input_msa_path": getattr(adapter, "input_msa_path", None),
+            "input_msa_sha256": getattr(adapter, "input_msa_sha256", None),
             "processed_dir": str(processed_path) if processed_path else None,
             "processing_fingerprint": getattr(adapter, "processing_fingerprint", None),
             "msa_sha256": msa_digest,

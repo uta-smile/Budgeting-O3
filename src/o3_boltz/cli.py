@@ -3,13 +3,13 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 from datetime import datetime
 from pathlib import Path
 
 import yaml
 
 from .adapter import load_adapter
-from .baseline import run_best_k_of_n
 from .run_metadata import collect_run_metadata
 from .o3 import run_o3
 
@@ -39,17 +39,23 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--only", nargs="*", help="run only these budget names")
     parser.add_argument(
         "--method",
-        choices=("o3", "best-k-of-n"),
+        choices=("o3",),
         default="o3",
-        help="Use O3 optimization or the random Best K-of-N baseline.",
-    )
-    parser.add_argument(
-        "--selection-metric",
-        choices=("oracle_tm_score", "model_ptm"),
-        default=None,
-        help="Best-K selection metric; model_ptm is diagnostic-only.",
+        help="The root runner is reserved for the custom O3 Boltz backend. "
+        "Use experiments/1cll/k10_n100/run.py for Best K-of-N.",
     )
     return parser.parse_args()
+
+
+def _find_project_root(config_path: Path) -> Path:
+    for candidate in (config_path.parent, *config_path.parents):
+        if (candidate / "pyproject.toml").is_file() and (
+            candidate / "src" / "o3_boltz"
+        ).is_dir():
+            return candidate
+    raise FileNotFoundError(
+        f"Could not find the repository root above configuration {config_path}"
+    )
 
 
 def main() -> None:
@@ -61,9 +67,8 @@ def main() -> None:
 
     if not isinstance(config, dict):
         raise ValueError(f"Expected a mapping in {config_path}")
-    if args.selection_metric is not None:
-        config.setdefault("best_k_of_n", {})["selection_metric"] = args.selection_metric
-    project_root = config_path.parent.parent
+    project_root = _find_project_root(config_path)
+    os.chdir(project_root)
     config["project_root"] = str(project_root)
     sequence = "".join(str(config["target"]["sequence"]).split()).upper()
     config["target"]["sequence"] = sequence
@@ -85,6 +90,14 @@ def main() -> None:
     run_seeds = [seed_start + replicate * seed_step for replicate in range(replicates)]
 
     adapter = load_adapter(args.adapter, config)
+    if (
+        type(adapter).__name__ != "Boltz2PFODEAdapter"
+        or type(adapter).__module__ != "adapters.boltz2_pfode"
+    ):
+        raise RuntimeError(
+            "The root O3 runner requires adapters.boltz2_pfode:Boltz2PFODEAdapter; "
+            "Best K-of-N must use experiments/1cll/k10_n100/run.py."
+        )
     provenance = collect_run_metadata(config=config, adapter=adapter)
     adapter_latent_dim = getattr(adapter, "latent_dim", None)
     configured_latent_dim = config.get("latent_dim")
@@ -110,8 +123,14 @@ def main() -> None:
 
     wanted = set(args.only or [])
     run_id = args.run_id or datetime.now().strftime("%Y%m%d_%H%M%S")
-    method_name = "best_k_of_n" if args.method == "best-k-of-n" else "o3"
-    method_root = output_root / target_name / method_name
+    method_name = "o3"
+    output_layout = str(config.get("output_layout", "target_method"))
+    if output_layout == "method_only":
+        method_root = output_root / method_name
+    elif output_layout == "target_method":
+        method_root = output_root / target_name / method_name
+    else:
+        raise ValueError("output_layout must be 'target_method' or 'method_only'")
     summaries_by_budget: dict[str, list[dict]] = {}
     for budget in config["budgets"]:
         budget_name = str(budget.get("name", f"n{budget['N']}_k{budget['K']}"))
@@ -120,8 +139,7 @@ def main() -> None:
         for run_seed in run_seeds:
             run_dir = method_root / budget_name / "runs" / run_id / f"seed_{run_seed:04d}"
             print(f"[{budget_name} method={args.method} seed={run_seed}] starting", flush=True)
-            runner = run_best_k_of_n if args.method == "best-k-of-n" else run_o3
-            summary = runner(
+            summary = run_o3(
                 adapter=adapter,
                 config=config,
                 budget=budget,
@@ -148,6 +166,13 @@ def main() -> None:
             writer = csv.DictWriter(handle, fieldnames=summaries[0].keys())
             writer.writeheader()
             writer.writerows(summaries)
+        aggregate_path = summary_root / "aggregate.csv"
+        with aggregate_path.open("w", newline="", encoding="utf-8") as handle:
+            fields = ["seed", "N", "K", "mean_of_K", "max_of_K", "mean_all"]
+            writer = csv.DictWriter(handle, fieldnames=fields)
+            writer.writeheader()
+            for summary in summaries:
+                writer.writerow({field: summary.get(field) for field in fields})
 
         metadata = {
             "method": args.method,

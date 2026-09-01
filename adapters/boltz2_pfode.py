@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 import numpy as np
+import yaml
 
 from o3_boltz.tmscore import TMScoreOracle
 
@@ -106,6 +107,16 @@ class Boltz2PFODEAdapter:
             boltz_config.get("processed_dir", "data/boltz2_1cll"),
             project_root,
         )
+        self.input_msa_path = None
+        self.input_msa_sha256 = None
+        input_data = yaml.safe_load(self.input_yaml.read_text(encoding="utf-8"))
+        input_msa = input_data["sequences"][0]["protein"].get("msa")
+        if input_msa not in (None, "", 0, "empty"):
+            self.input_msa_path = str(_path(str(input_msa), project_root))
+            msa_path = Path(self.input_msa_path)
+            if not msa_path.is_file():
+                raise FileNotFoundError(f"Missing configured MSA: {msa_path}")
+            self.input_msa_sha256 = hashlib.sha256(msa_path.read_bytes()).hexdigest()
         self.recycling_steps = int(boltz_config.get("recycling_steps", 3))
         self.sampling_steps = int(boltz_config.get("sampling_steps", 200))
         self.step_scale = float(boltz_config.get("step_scale", 1.5))

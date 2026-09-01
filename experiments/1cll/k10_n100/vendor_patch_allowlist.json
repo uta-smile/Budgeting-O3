@@ -1,0 +1,11 @@
+{
+  "data/module/inferencev2.py": "Expose max_atoms for the paper's 1184-slot sampler tensor.",
+  "model/models/boltz1.py": "Device-construction compatibility fix.",
+  "model/models/boltz2.py": "Add initial latent and deterministic sampler arguments.",
+  "model/modules/confidence.py": "Device-construction compatibility fix.",
+  "model/modules/confidencev2.py": "Device-construction compatibility fix.",
+  "model/modules/diffusion.py": "Device-construction compatibility fix.",
+  "model/modules/diffusionv2.py": "Implement explicit-latent deterministic PF-ODE mode.",
+  "model/modules/encoders.py": "Device-construction compatibility fix.",
+  "model/modules/utils.py": "Make disabled autocast portable across devices."
+}

@@ -4,6 +4,10 @@ This project contains the budgeted O3 Bayesian-optimization loop described in
 the attached experiment notes for the 1CLL calmodulin benchmark. It runs all
 six `(N, K)` settings and five random replicates by default.
 
+The canonical 1CLL `N=100, K=10` comparison is under
+`experiments/1cll/k10_n100/`; its legacy-output labels are in
+`experiments/1cll/k10_n100/legacy_outputs.md`.
+
 The repository includes a small research fork of the official Boltz-2 source.
 Its built-in adapter derives the latent dimension from the preprocessed atom
 tensor, uses that latent as the initial Gaussian coordinate state, then runs
@@ -131,27 +135,30 @@ Run only one budget, or use one replicate for a smoke test:
 sh run_experiment.sh --only n100_k10 --replicates 1
 ```
 
-Run the fair no-O3 Best K-of-N baseline using the same Boltz-2 generator and
-TM-score oracle. This generates N random latent samples and returns the top K:
+Run the fair no-O3 Best K-of-N baseline through the isolated public Boltz-2
+experiment bundle. This keeps the custom vendored Boltz implementation out of
+the baseline:
 
 ```bash
-sh run_experiment.sh --method best-k-of-n --only n100_k10 --replicates 5
+python experiments/1cll/k10_n100/run.py --method best-k-of-n --replicates 5
 ```
 
-For the diagnostic convention suggested by the local controls, rank the same
-100 generated structures by Boltz's predicted pTM and still report their
-external TM-scores:
+The same runner supports the smaller paper budgets with distinct output
+folders:
 
 ```bash
-sh run_experiment.sh --method best-k-of-n --only n100_k10 --replicates 5 \
-  --selection-metric model_ptm
+python experiments/1cll/k10_n100/run.py --budget n20_k2 --method both --replicates 5
+python experiments/1cll/k10_n100/run.py --budget n50_k5 --method both --replicates 5
 ```
 
-This is not the paper's stated external-oracle selection rule; it is provided
-to test whether the published figure used model-confidence selection.
+The root `run_experiment.sh` entry point is reserved for O3. The diagnostic
+model-pTM ranking remains available only in the legacy baseline module and is
+not part of the canonical K=10, N=100 comparison. The canonical bundle writes
+new results under `outputs/1cll/k10_n100/<method>/runs/<run_id>/`; older output
+paths remain legacy diagnostics and are not reused.
 
-Baseline results use outputs/1cll/best_k_of_n/<budget>/runs/<run_id>/; O3 results use
-outputs/1cll/o3/<budget>/runs/<run_id>/.
+Legacy pre-refactor output locations were `outputs/1cll/best_k_of_n/` and
+`outputs/1cll/o3/`; they are retained only as diagnostics.
 
 The shell script does not SSH, submit jobs, or configure the lab scheduler.
 It places UV’s large package cache under `.uv-cache/` beside the project so

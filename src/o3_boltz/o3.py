@@ -277,4 +277,21 @@ def run_o3(
     summary.update(collect_run_metadata(config=config, adapter=adapter))
     with (output_dir / "summary.json").open("w", encoding="utf-8") as handle:
         json.dump(summary, handle, indent=2)
+    with (output_dir / "provenance.json").open("w", encoding="utf-8") as handle:
+        json.dump(
+            {
+                "backend": "custom_boltz2_o3",
+                "method": "o3",
+                "generator": summary.get("generator"),
+                "msa_cache": summary.get("msa_cache"),
+                "seed": run_seed,
+                "N": n,
+                "K": k,
+                "M": m,
+                "d": d,
+                "selection_metric": "oracle_tm_score",
+            },
+            handle,
+            indent=2,
+        )
     return summary

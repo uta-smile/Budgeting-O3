@@ -1,0 +1,32 @@
+[project]
+name = "onecll-k10-n100-public-boltz"
+version = "0.1.0"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+  "boltz==2.2.1",
+  "pandas==2.2.3",
+  "pillow==10.4.0",
+  "torch==2.7.0+cu128; sys_platform == 'win32'",
+  "torch==2.5.1+cu118; sys_platform == 'linux'",
+  "rdkit>=2025.03.1; sys_platform == 'win32'",
+  "rdkit==2024.3.2; sys_platform == 'linux'",
+]
+
+[tool.uv]
+package = false
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu118"
+url = "https://download.pytorch.org/whl/cu118"
+explicit = true
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cu128", marker = "sys_platform == 'win32'" },
+  { index = "pytorch-cu118", marker = "sys_platform == 'linux'" },
+]

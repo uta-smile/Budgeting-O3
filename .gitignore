@@ -7,6 +7,9 @@ data/1CLL.pdb
 data/boltz2_1cll/
 data/boltz_cache/
 outputs/*
+experiments/1cll/k10_n100/cache/
+experiments/1cll/k10_n100/public_boltz/.venv/
+experiments/1cll/k10_n100/public_boltz/uv.lock
 
 
 .bash_history

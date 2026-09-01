@@ -37,6 +37,12 @@ def run_best_k_of_n(
 ) -> dict[str, Any]:
     """Run random Best K-of-N sampling with the same generator and oracle as O3."""
 
+    if type(adapter).__name__ == "Boltz2PFODEAdapter":
+        raise RuntimeError(
+            "The custom Boltz2PFODEAdapter is reserved for O3. "
+            "Run Best K-of-N through experiments/1cll/k10_n100/run.py."
+        )
+
     n = int(budget["N"])
     k = int(budget["K"])
     if not (0 < k <= n):

@@ -41,6 +41,13 @@ def test_shared_replicate_seed_schedule_is_reproducible() -> None:
     assert shared_replicate_seeds(3, seed_start=17, seed_step=19) == [17, 36, 55]
 
 
+def test_random_replicate_seeds_are_unique_valid_31_bit_values() -> None:
+    seeds = common.random_replicate_seeds(5)
+    assert len(seeds) == 5
+    assert len(set(seeds)) == 5
+    assert all(0 < seed < 2**31 for seed in seeds)
+
+
 def test_public_runner_resumes_without_regenerating(tmp_path: Path) -> None:
     output = tmp_path / "best_k_of_n"
     rows = []
@@ -103,6 +110,8 @@ def test_o3_configs_use_unit_pfode_step_scale() -> None:
 if __name__ == "__main__":
     test_frozen_msa_and_notebook_fixture()
     test_replicates_use_disjoint_notebook_seed_blocks()
+    test_shared_replicate_seed_schedule_is_reproducible()
+    test_random_replicate_seeds_are_unique_valid_31_bit_values()
     with TemporaryDirectory(prefix="k10_n100_test_") as temp:
         test_public_runner_resumes_without_regenerating(Path(temp))
     test_small_budget_configs_are_distinct()

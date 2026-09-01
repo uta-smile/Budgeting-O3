@@ -1,54 +1,57 @@
-# 1CLL K-of-N experiment bundle
+# Canonical 1CLL experiment bundle
 
-This is the canonical experiment bundle for the 1CLL Best K-of-N and O3 comparison.
-It supports `n20_k2`, `n50_k5`, and `n100_k10` budgets.
+This folder contains the only runner needed for the comparison:
 
-Historical outputs are not inputs to this canonical experiment.
+- `best-k-of-n`: official stochastic Boltz-2 baseline
+- `o3`: deterministic PF-ODE with `U`-space Bayesian optimization
+- `random-pfode`: deterministic PF-ODE with random `Z` samples and no BO
 
-The bundle uses the 144-residue 1CLL construct and the frozen MSA in `inputs/1CLL_0.csv`. Both methods consume this same MSA. The public baseline uses an isolated UV project pinned to `boltz==2.2.1`; O3 uses the repository's vendored Boltz fork only because O3 requires explicit latent initialization and deterministic PF-ODE sampling.
+## Run it
 
-Paired runs use one shared reproducible seed schedule for both methods. The
-default five replicate seeds are `20250117, 20251126, 20252135, 20253144,
-20254153`; the launcher prints them and records them in each method's metadata.
-Use `--seed-start` and `--seed-step` to choose a different schedule.
-
-The archived notebook is in `notebook/`. Its 100 scored structures are represented by the compact fixture `inputs/notebook_1CLL_TMscore_results.csv`; the top-10 mean is `0.6788870863920918` and the top score is `0.7958910827539285`.
-
-Run the public baseline, O3, or both methods:
+From the repository root:
 
 ```bash
-python experiments/1cll/k10_n100/run.py --method both --replicates 1 --run-id smoke
-python experiments/1cll/k10_n100/run.py --method both --replicates 5 --run-id paper_n100_k10
-python experiments/1cll/k10_n100/run.py --method best-k-of-n --replicates 1 --run-id notebook_reproduction --resume
+.venv\Scripts\python.exe experiments\1cll\k10_n100\verify.py --gpu
+.venv\Scripts\python.exe experiments\1cll\k10_n100\run.py --budget n20_k2 --method all --replicates 5 --random-seeds --run-id n20_k2_run01
 ```
 
-The paper's smaller budgets are also available. The budget name is included
-in the command's default run ID and in the output folder:
+The first command checks the setup and GPU. The second command runs all three
+methods with the same five freshly generated seeds.
+
+Available budgets:
+
+```text
+n20_k2    N=20,  K=2,  O3: M=10, d=5,  8 BO rounds
+n50_k5    N=50,  K=5,  O3: M=25, d=7, 23 BO rounds
+n100_k10  N=100, K=10, O3: M=50, d=5, 48 BO rounds
+```
+
+Change only `--budget` and `--run-id` for another experiment. Use
+`--method both` for Best K-of-N plus O3, or `--method random-pfode` for only
+the random diagnostic.
+
+## Seeds
+
+`--random-seeds` generates one unique seed per replicate. The launcher prints
+the list and records it in every method's metadata. To reproduce a run, use
+the logged values explicitly:
 
 ```bash
-python experiments/1cll/k10_n100/run.py --budget n20_k2 --method both --replicates 5
-python experiments/1cll/k10_n100/run.py --budget n50_k5 --method both --replicates 5
+.venv\Scripts\python.exe experiments\1cll\k10_n100\run.py --budget n20_k2 --method all --replicates 5 --seed-list SEED1 SEED2 SEED3 SEED4 SEED5 --run-id n20_k2_repeat01
 ```
 
-These write to `outputs/1cll/k2_n20/` and `outputs/1cll/k5_n50/`, respectively.
-Without `--run-id`, a timestamped budget label is generated; use the same
-explicit `--run-id` together with `--resume` to continue an interrupted run.
-Their O3 settings are `M=10, d=5` and `M=25, d=7`; the resulting BO rounds
-are `8` and `23` because the budget accounts for `M + 2 + nrounds = N`.
+The default fixed schedule is also available with `--seed-start` and
+`--seed-step`.
 
-To isolate BO from the decoder, run the same-decoder random PF-ODE diagnostic.
-It uses all `N` calls as independent random samples from `Z` and writes to a
-separate `random_pfode` output directory:
+## Results
 
-```bash
-python experiments/1cll/k10_n100/run.py --budget n20_k2 --method random-pfode --replicates 5 --run-id n20_k2_random_pfode01
+```text
+outputs/1cll/k2_n20/best_k_of_n/
+outputs/1cll/k2_n20/o3/
+outputs/1cll/k2_n20/random_pfode/
 ```
 
-Run verification before a full experiment:
-
-```bash
-python experiments/1cll/k10_n100/verify.py
-python experiments/1cll/k10_n100/verify.py --audit-vendor --gpu
-```
-
-New results are written to `outputs/1cll/k10_n100/<method>/runs/<run_id>/`. Existing historical outputs are not reused.
+The frozen input MSA is `inputs/1CLL_0.csv`; MSA-server retrieval is disabled.
+The public baseline uses its isolated environment in `public_boltz/`. O3 and
+O3-random use the custom adapter in `adapters/boltz2_pfode.py` and the
+vendored Boltz source.

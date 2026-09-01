@@ -20,6 +20,7 @@ def run(
     *,
     seed_start: int = common.DEFAULT_REPLICATE_SEED_START,
     seed_step: int = common.DEFAULT_REPLICATE_SEED_STEP,
+    seeds: list[int] | None = None,
 ) -> dict:
     with config_path.open("r", encoding="utf-8") as handle:
         config = yaml.safe_load(handle)
@@ -37,9 +38,11 @@ def run(
     budget = next(
         item for item in config["budgets"] if str(item.get("name")) == budget_name
     )
-    run_seeds = common.shared_replicate_seeds(
-        replicates, seed_start=seed_start, seed_step=seed_step
+    run_seeds = common.resolve_replicate_seeds(
+        replicates, seeds=seeds, seed_start=seed_start, seed_step=seed_step
     )
+    metadata_seed_start = None if seeds is not None else seed_start
+    metadata_seed_step = None if seeds is not None else seed_step
     print(f"[random-pfode] shared replicate seeds: {run_seeds}", flush=True)
     root = common.output_root("random_pfode", run_id)
     summaries = []
@@ -75,8 +78,9 @@ def run(
                 "budget": budget_name,
                 "run_id": run_id,
                 "replicates": replicates,
-                "seed_start": seed_start,
-                "seed_step": seed_step,
+                "seed_mode": "explicit_list" if seeds is not None else "arithmetic_schedule",
+                "seed_start": metadata_seed_start,
+                "seed_step": metadata_seed_step,
                 "seeds": run_seeds,
                 "latent_sampler": "standard_normal_Z",
                 "generator_sampling": "deterministic_pf_ode",

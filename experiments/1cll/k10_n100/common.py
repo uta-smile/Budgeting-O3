@@ -5,6 +5,7 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
+import random
 import sys
 from pathlib import Path
 from typing import Any, Iterable
@@ -58,6 +59,35 @@ def shared_replicate_seeds(
     if seed_step == 0:
         raise ValueError("seed_step must not be 0")
     return [int(seed_start) + index * int(seed_step) for index in range(replicates)]
+
+
+def random_replicate_seeds(replicates: int) -> list[int]:
+    """Return unique fresh 31-bit seeds from the operating system RNG."""
+    if replicates < 1:
+        raise ValueError("replicates must be at least 1")
+    return random.SystemRandom().sample(range(1, 2**31), replicates)
+
+
+def resolve_replicate_seeds(
+    replicates: int,
+    *,
+    seeds: Iterable[int] | None = None,
+    seed_start: int = DEFAULT_REPLICATE_SEED_START,
+    seed_step: int = DEFAULT_REPLICATE_SEED_STEP,
+) -> list[int]:
+    """Validate an explicit seed list or use the shared arithmetic schedule."""
+    if seeds is not None:
+        resolved = [int(seed) for seed in seeds]
+        if len(resolved) != replicates:
+            raise ValueError(
+                f"Expected {replicates} explicit replicate seeds, got {len(resolved)}"
+            )
+        if len(set(resolved)) != len(resolved):
+            raise ValueError("replicate seeds must be unique")
+        return resolved
+    return shared_replicate_seeds(
+        replicates, seed_start=seed_start, seed_step=seed_step
+    )
 
 
 def sha256_file(path: Path) -> str:

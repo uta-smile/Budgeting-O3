@@ -35,6 +35,13 @@ def _parse_args() -> argparse.Namespace:
         default=None,
         help="Difference between successive replicate seeds (default: 1).",
     )
+    parser.add_argument(
+        "--seed-list",
+        nargs="+",
+        type=int,
+        default=None,
+        help="Explicit replicate seed list; its length must equal --replicates.",
+    )
     parser.add_argument("--run-id", default=None, help="Optional run folder name. Defaults to the current timestamp.")
     parser.add_argument("--only", nargs="*", help="run only these budget names")
     parser.add_argument(
@@ -83,11 +90,25 @@ def main() -> None:
     replicates = int(config.get("replicates", 1) if args.replicates is None else args.replicates)
     if replicates < 1:
         raise ValueError("replicates must be at least 1")
-    seed_start = int(config.get("seed", 0) if args.seed_start is None else args.seed_start)
-    seed_step = int(config.get("seed_step", 1) if args.seed_step is None else args.seed_step)
-    if seed_step == 0:
-        raise ValueError("seed_step must not be 0")
-    run_seeds = [seed_start + replicate * seed_step for replicate in range(replicates)]
+    if args.seed_list is not None:
+        if len(args.seed_list) != replicates:
+            raise ValueError(
+                f"Expected {replicates} values in --seed-list, got {len(args.seed_list)}"
+            )
+        if len(set(args.seed_list)) != len(args.seed_list):
+            raise ValueError("--seed-list values must be unique")
+        run_seeds = [int(seed) for seed in args.seed_list]
+        seed_start = None
+        seed_step = None
+        seed_mode = "explicit_list"
+    else:
+        seed_start = int(config.get("seed", 0) if args.seed_start is None else args.seed_start)
+        seed_step = int(config.get("seed_step", 1) if args.seed_step is None else args.seed_step)
+        if seed_step == 0:
+            raise ValueError("seed_step must not be 0")
+        run_seeds = [seed_start + replicate * seed_step for replicate in range(replicates)]
+        seed_mode = "arithmetic_schedule"
+    print(f"[o3] seed mode: {seed_mode}", flush=True)
     print(f"[o3] shared replicate seeds: {run_seeds}", flush=True)
 
     adapter = load_adapter(args.adapter, config)
@@ -185,6 +206,7 @@ def main() -> None:
             "replicates": replicates,
             "seed_start": seed_start,
             "seed_step": seed_step,
+            "seed_mode": seed_mode,
             "seeds": run_seeds,
             "provenance": provenance,
         }

@@ -175,12 +175,15 @@ def run(
     *,
     seed_start: int = common.DEFAULT_REPLICATE_SEED_START,
     seed_step: int = common.DEFAULT_REPLICATE_SEED_STEP,
+    seeds: list[int] | None = None,
 ) -> dict[str, Any]:
     if replicates not in {1, 5}:
         raise ValueError("replicates must be 1 or 5")
-    run_seeds = common.shared_replicate_seeds(
-        replicates, seed_start=seed_start, seed_step=seed_step
+    run_seeds = common.resolve_replicate_seeds(
+        replicates, seeds=seeds, seed_start=seed_start, seed_step=seed_step
     )
+    metadata_seed_start = None if seeds is not None else seed_start
+    metadata_seed_step = None if seeds is not None else seed_step
     print(f"[best-k-of-n] shared replicate seeds: {run_seeds}", flush=True)
     summaries = [run_replicate(run_id, seed, resume=resume) for seed in run_seeds]
     run_dir = output_root("best_k_of_n", run_id)
@@ -199,8 +202,9 @@ def run(
         "public_boltz",
         budget=common.ACTIVE_BUDGET,
         replicates=replicates,
-        seed_start=seed_start,
-        seed_step=seed_step,
+        seed_mode="explicit_list" if seeds is not None else "arithmetic_schedule",
+        seed_start=metadata_seed_start,
+        seed_step=metadata_seed_step,
         seeds=run_seeds,
         seed_blocks="run_seed*N + sample_index",
     ))

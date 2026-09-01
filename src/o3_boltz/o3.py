@@ -104,6 +104,7 @@ def run_o3(
     n, k, m, d = _validate_budget(budget)
     latent_dim = int(config["latent_dim"])
     budget_name = str(budget.get("name", f"n{n}_k{k}"))
+    bo_rounds = n - m - 2
     rng = np.random.default_rng(run_seed)
     random.seed(run_seed)
     torch.manual_seed(run_seed)
@@ -118,6 +119,18 @@ def run_o3(
     evaluations: list[Evaluation] = []
     phase1_latents = np.empty((m, latent_dim), dtype=np.float64)
     phase1_scores = np.empty(m, dtype=np.float64)
+
+    print(
+        f"[{budget_name} seed={run_seed}] O3 protocol: "
+        f"{m} random Z samples -> select best {d} seeds -> "
+        f"2 random U samples -> {bo_rounds} BO samples",
+        flush=True,
+    )
+    print(
+        f"[{budget_name} seed={run_seed}] Total = {m} + 2 + {bo_rounds} = "
+        f"{n} oracle evaluations",
+        flush=True,
+    )
 
     def print_progress(status: str, score: float | None = None) -> None:
         completed = len(evaluations)
@@ -191,6 +204,16 @@ def run_o3(
     selected = np.argsort(phase1_scores)[-d:][::-1]
     seed_latents = phase1_latents[selected].copy()
     seed_scores = phase1_scores[selected].copy()
+    selected_score_text = ", ".join(
+        f"{int(index)}:{float(score):.4f}"
+        for index, score in zip(selected, seed_scores)
+    )
+    print(
+        f"[{budget_name} seed={run_seed}] phase 1 complete: selected best "
+        f"{d} seeds from {m} random Z samples by oracle TM-score "
+        f"(index:score={selected_score_text})",
+        flush=True,
+    )
     np.savez_compressed(
         output_dir / "phase1_latents.npz",
         latents=phase1_latents,
@@ -203,6 +226,12 @@ def run_o3(
     # The selected phase-1 structures are already scored. Project each seed
     # through the reference chart's inverse map, reuse those scores, and spend
     # two fresh calls on random points. This exactly accounts for N calls.
+    print(
+        f"[{budget_name} seed={run_seed}] phase 2: constructing U from the "
+        f"selected {d} seeds and evaluating 2 random U samples "
+        f"(U dimension={d - 1})",
+        flush=True,
+    )
     chart = SurrogateChart(seed_latents)
     train_u = np.asarray(chart.from_z_to_u(seed_latents), dtype=np.float64)
     train_scores = seed_scores.copy()
@@ -214,8 +243,14 @@ def run_o3(
         train_u = np.vstack([train_u, u])
         train_scores = np.append(train_scores, score)
 
-    for round_index in range(n - m - 2):
-        print_progress(f"fitting BO round {round_index + 1}/{n - m - 2}")
+    print(
+        f"[{budget_name} seed={run_seed}] phase 2 complete: "
+        f"{m} random Z + 2 random U = {m + 2}/{n} evaluations; "
+        f"starting phase 3 BO for {bo_rounds} rounds",
+        flush=True,
+    )
+    for round_index in range(bo_rounds):
+        print_progress(f"fitting BO round {round_index + 1}/{bo_rounds}")
         u = _fit_and_acquire(train_u, train_scores)
         latent = chart.from_u_to_z(u)
         score = evaluate(
@@ -229,6 +264,11 @@ def run_o3(
 
     if len(evaluations) != n:
         raise AssertionError(f"Budget accounting error: expected {n}, got {len(evaluations)}")
+    print(
+        f"[{budget_name} seed={run_seed}] O3 protocol complete: "
+        f"{m} + 2 + {bo_rounds} = {len(evaluations)} oracle evaluations",
+        flush=True,
+    )
 
     new_scores = np.asarray([item.score for item in evaluations[m:]], dtype=np.float64)
 

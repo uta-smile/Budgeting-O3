@@ -5,8 +5,7 @@ the attached experiment notes for the 1CLL calmodulin benchmark. It runs all
 six `(N, K)` settings and five random replicates by default.
 
 The canonical 1CLL `N=100, K=10` comparison is under
-`experiments/1cll/k10_n100/`; its legacy-output labels are in
-`experiments/1cll/k10_n100/legacy_outputs.md`.
+`experiments/1cll/k10_n100/`.
 
 The repository includes a small research fork of the official Boltz-2 source.
 Its built-in adapter derives the latent dimension from the preprocessed atom
@@ -100,9 +99,10 @@ outputs/1cll/<method>/<budget>/runs/<run_id>/
 
 The default run_id is a timestamp; provide --run-id to choose a label.
 
-Seeds are configurable. Set `seed` in `configs/1cll.yaml`, or override it at
-runtime with `--seed-start`. By default, five replicates starting at 0 use
-0, 1, 2, 3, and 4:
+Canonical paired runs use the same reproducible replicate seeds for Best
+K-of-N and O3. The default schedule starts at `20250117` with a step of
+`1009`; the run log prints the complete seed list. Override it with
+`--seed-start` and `--seed-step` when needed:
 
 ```bash
 sh run_experiment.sh --seed-start 12345 --replicates 5

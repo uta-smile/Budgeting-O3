@@ -119,7 +119,7 @@ class Boltz2PFODEAdapter:
             self.input_msa_sha256 = hashlib.sha256(msa_path.read_bytes()).hexdigest()
         self.recycling_steps = int(boltz_config.get("recycling_steps", 3))
         self.sampling_steps = int(boltz_config.get("sampling_steps", 200))
-        self.step_scale = float(boltz_config.get("step_scale", 1.5))
+        self.step_scale = float(boltz_config.get("step_scale", 1.0))
         # Boltz-2's ordinary sampler uses EDM churn gamma_0=0.8. O3 changes
         # this to zero at call time for PF-ODE sampling; keep the two modes
         # separate instead of silently using PF-ODE parameters for the

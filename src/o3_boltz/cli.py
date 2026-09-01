@@ -88,6 +88,7 @@ def main() -> None:
     if seed_step == 0:
         raise ValueError("seed_step must not be 0")
     run_seeds = [seed_start + replicate * seed_step for replicate in range(replicates)]
+    print(f"[o3] shared replicate seeds: {run_seeds}", flush=True)
 
     adapter = load_adapter(args.adapter, config)
     if (

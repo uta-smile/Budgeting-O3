@@ -10,6 +10,8 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
+import yaml
+
 from common import BUNDLE, REPO_ROOT, SEQUENCE, input_yaml_path, msa_path, sha256_file, validate_frozen_msa
 
 ALLOWED_VENDOR_CHANGES = json.loads(
@@ -29,6 +31,10 @@ def check_static() -> None:
     for required in ("initial_atom_coords", "deterministic", "gamma_0", "Boltz2.load_from_checkpoint"):
         if required not in adapter_text:
             raise AssertionError(f"O3 adapter is missing required custom behavior: {required}")
+    for config_name in ("o3.yaml", "o3_n20_k2.yaml", "o3_n50_k5.yaml"):
+        o3_config = yaml.safe_load((BUNDLE / config_name).read_text(encoding="utf-8"))
+        if float(o3_config["boltz2"]["step_scale"]) != 1.0:
+            raise AssertionError(f"{config_name} must use step_scale=1.0 for PF-ODE")
 
 
 def check_fixture() -> dict[str, float]:

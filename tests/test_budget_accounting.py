@@ -1,10 +1,9 @@
-import json
 from pathlib import Path
 
 import numpy as np
 import yaml
 
-from o3_boltz import baseline, o3
+from o3_boltz import o3
 
 
 def test_1cll_main_protocol_uses_explicit_single_sequence_input() -> None:
@@ -30,7 +29,6 @@ class FakeAdapter:
         self.calls: list[dict] = []
         self.latents: list[np.ndarray] = []
         self.scores: dict[Path, float] = {}
-        self.last_model_metrics: dict[str, float] = {}
 
     def generate(self, latent, output_path, config, metadata):
         output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -38,7 +36,6 @@ class FakeAdapter:
         self.calls.append(dict(metadata))
         self.latents.append(np.asarray(latent, dtype=np.float64).copy())
         self.scores[output_path] = float(latent[0])
-        self.last_model_metrics = {"ptm": float(latent[1])}
         return output_path
 
     def score(self, structure_path, config):
@@ -71,81 +68,50 @@ def test_o3_spends_exactly_n_calls_and_uses_reference_initialization(tmp_path, m
     assert summary["k"] == 2
 
 
-def test_best_k_of_n_spends_exactly_n_stochastic_calls(tmp_path) -> None:
+def test_o3_logs_n20_protocol(capsys, tmp_path, monkeypatch) -> None:
     adapter = FakeAdapter()
-    summary = baseline.run_best_k_of_n(
-        adapter=adapter,
-        config={
-            "latent_dim": adapter.latent_dim,
-            "boltz2": {},
-            "best_k_of_n": {"deterministic": False},
-        },
-        budget={"name": "test", "N": 7, "K": 2, "M": 0, "d": 0},
-        run_seed=4,
-        output_dir=tmp_path / "baseline",
-    )
-
-    assert len(adapter.calls) == 7
-    assert summary["oracle_evaluations"] == 7
-    assert all(not call["deterministic"] for call in adapter.calls)
-    assert summary["k"] == 2
-    expected = np.random.default_rng(4).normal(size=(7, adapter.latent_dim))
-    np.testing.assert_allclose(np.asarray(adapter.latents), expected)
-
-
-def test_best_k_of_n_can_explicitly_rank_by_model_ptm(tmp_path) -> None:
-    adapter = FakeAdapter()
-    summary = baseline.run_best_k_of_n(
-        adapter=adapter,
-        config={
-            "latent_dim": adapter.latent_dim,
-            "boltz2": {},
-            "best_k_of_n": {
-                "deterministic": False,
-                "selection_metric": "model_ptm",
-            },
-        },
-        budget={"name": "test", "N": 7, "K": 2, "M": 0, "d": 0},
-        run_seed=4,
-        output_dir=tmp_path / "baseline_ptm",
-    )
-
-    assert summary["selection_metric"] == "model_ptm"
-    returned = (tmp_path / "baseline_ptm" / "returned_candidates.json").read_text(
-        encoding="utf-8"
-    )
-    records = json.loads(returned)
-    expected = np.random.default_rng(4).normal(size=(7, adapter.latent_dim))
-    expected_indices = np.argsort(expected[:, 1])[-2:][::-1]
-    assert [record["index"] for record in records] == expected_indices.tolist()
-
-
-def test_o3_and_baseline_share_seeded_phase1_latents(tmp_path, monkeypatch) -> None:
-    baseline_adapter = FakeAdapter()
-    baseline.run_best_k_of_n(
-        adapter=baseline_adapter,
-        config={"latent_dim": baseline_adapter.latent_dim, "boltz2": {}},
-        budget={"name": "test", "N": 6, "K": 2, "M": 0, "d": 0},
-        run_seed=9,
-        output_dir=tmp_path / "baseline",
-    )
-
-    o3_adapter = FakeAdapter()
     monkeypatch.setattr(
         o3,
         "_fit_and_acquire",
         lambda train_u, train_scores: np.full(train_u.shape[1], 0.5),
     )
+
     o3.run_o3(
-        adapter=o3_adapter,
-        config={"latent_dim": o3_adapter.latent_dim, "boltz2": {}},
-        budget={"name": "test", "N": 6, "K": 2, "M": 4, "d": 2},
-        run_seed=9,
-        output_dir=tmp_path / "o3",
+        adapter=adapter,
+        config={"latent_dim": adapter.latent_dim, "boltz2": {}},
+        budget={"name": "n20_k2", "N": 20, "K": 2, "M": 10, "d": 5},
+        run_seed=0,
+        output_dir=tmp_path / "o3_n20",
     )
 
-    np.testing.assert_allclose(
-        np.asarray(o3_adapter.latents[:4]),
-        np.asarray(baseline_adapter.latents[:4]),
+    log = capsys.readouterr().out
+    assert (
+        "10 random Z samples -> select best 5 seeds -> "
+        "2 random U samples -> 8 BO samples"
+    ) in log
+    assert "Total = 10 + 2 + 8 = 20 oracle evaluations" in log
+    assert "phase 1 complete: selected best 5 seeds from 10 random Z samples" in log
+    assert "phase 2 complete: 10 random Z + 2 random U = 12/20 evaluations" in log
+    assert "O3 protocol complete: 10 + 2 + 8 = 20 oracle evaluations" in log
+
+
+def test_random_pfode_spends_n_deterministic_random_z_calls(tmp_path) -> None:
+    from o3_boltz.random_baseline import run_random_pfode
+
+    adapter = FakeAdapter()
+    summary = run_random_pfode(
+        adapter=adapter,
+        config={"latent_dim": adapter.latent_dim, "boltz2": {}},
+        budget={"name": "n20_k2", "N": 20, "K": 2},
+        run_seed=4,
+        output_dir=tmp_path / "random_pfode",
     )
-    assert all(call["deterministic"] for call in o3_adapter.calls)
+
+    assert len(adapter.calls) == 20
+    assert summary["method"] == "random_pfode"
+    assert summary["oracle_evaluations"] == 20
+    assert summary["generator_sampling"] == "deterministic_pf_ode"
+    assert summary["latent_sampler"] == "standard_normal_Z"
+    assert all(call["deterministic"] for call in adapter.calls)
+    expected = np.random.default_rng(4).normal(size=(20, adapter.latent_dim))
+    np.testing.assert_allclose(np.asarray(adapter.latents), expected)

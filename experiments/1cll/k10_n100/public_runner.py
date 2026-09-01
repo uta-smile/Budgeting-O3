@@ -168,10 +168,21 @@ def run_replicate(run_id: str, run_seed: int, resume: bool = False) -> dict[str,
     return _write_replicate_summary(replicate_dir, rows, run_seed, info)
 
 
-def run(replicates: int, run_id: str, resume: bool = False) -> dict[str, Any]:
+def run(
+    replicates: int,
+    run_id: str,
+    resume: bool = False,
+    *,
+    seed_start: int = common.DEFAULT_REPLICATE_SEED_START,
+    seed_step: int = common.DEFAULT_REPLICATE_SEED_STEP,
+) -> dict[str, Any]:
     if replicates not in {1, 5}:
         raise ValueError("replicates must be 1 or 5")
-    summaries = [run_replicate(run_id, seed, resume=resume) for seed in range(replicates)]
+    run_seeds = common.shared_replicate_seeds(
+        replicates, seed_start=seed_start, seed_step=seed_step
+    )
+    print(f"[best-k-of-n] shared replicate seeds: {run_seeds}", flush=True)
+    summaries = [run_replicate(run_id, seed, resume=resume) for seed in run_seeds]
     run_dir = output_root("best_k_of_n", run_id)
     aggregate_rows = []
     for summary in summaries:
@@ -184,5 +195,13 @@ def run(replicates: int, run_id: str, resume: bool = False) -> dict[str, Any]:
             "mean_all": summary["mean_all"],
         })
     write_csv(run_dir / "aggregate.csv", aggregate_rows)
-    write_json(run_dir / "provenance.json", provenance("public_boltz", budget=common.ACTIVE_BUDGET, replicates=replicates, seed_blocks="run_seed*N + sample_index"))
+    write_json(run_dir / "provenance.json", provenance(
+        "public_boltz",
+        budget=common.ACTIVE_BUDGET,
+        replicates=replicates,
+        seed_start=seed_start,
+        seed_step=seed_step,
+        seeds=run_seeds,
+        seed_blocks="run_seed*N + sample_index",
+    ))
     return {"method": "best_k_of_n", "replicates": summaries, "aggregate": aggregate_rows}

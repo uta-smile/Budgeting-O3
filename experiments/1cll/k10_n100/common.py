@@ -30,6 +30,12 @@ ACTIVE_BUDGET = "n100_k10"
 N = _BUDGETS[ACTIVE_BUDGET]["N"]
 K = _BUDGETS[ACTIVE_BUDGET]["K"]
 
+# Shared by both methods in the canonical comparison. The nontrivial,
+# prime-spaced schedule is reproducible and avoids the first few integer
+# seeds being a special case.
+DEFAULT_REPLICATE_SEED_START = 20250117
+DEFAULT_REPLICATE_SEED_STEP = 1009
+
 
 def configure_budget(name: str) -> None:
     global ACTIVE_BUDGET, N, K
@@ -38,6 +44,20 @@ def configure_budget(name: str) -> None:
     ACTIVE_BUDGET = name
     N = int(_BUDGETS[name]["N"])
     K = int(_BUDGETS[name]["K"])
+
+
+def shared_replicate_seeds(
+    replicates: int,
+    *,
+    seed_start: int = DEFAULT_REPLICATE_SEED_START,
+    seed_step: int = DEFAULT_REPLICATE_SEED_STEP,
+) -> list[int]:
+    """Return the reproducible replicate seeds shared by both methods."""
+    if replicates < 1:
+        raise ValueError("replicates must be at least 1")
+    if seed_step == 0:
+        raise ValueError("seed_step must not be 0")
+    return [int(seed_start) + index * int(seed_step) for index in range(replicates)]
 
 
 def sha256_file(path: Path) -> str:

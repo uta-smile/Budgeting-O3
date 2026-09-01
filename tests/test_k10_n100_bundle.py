@@ -12,7 +12,13 @@ BUNDLE = ROOT / "experiments" / "1cll" / "k10_n100"
 sys.path.insert(0, str(BUNDLE))
 
 import common  # noqa: E402
-from common import configure_budget, output_root, sample_seed, validate_frozen_msa  # noqa: E402
+from common import (  # noqa: E402
+    configure_budget,
+    output_root,
+    sample_seed,
+    shared_replicate_seeds,
+    validate_frozen_msa,
+)
 from public_runner import run_replicate  # noqa: E402
 from verify import check_fixture  # noqa: E402
 
@@ -28,6 +34,11 @@ def test_replicates_use_disjoint_notebook_seed_blocks() -> None:
     assert [sample_seed(0, i) for i in (0, 99)] == [0, 99]
     assert [sample_seed(1, i) for i in (0, 99)] == [common.N, 2 * common.N - 1]
     assert sample_seed(4, 0) not in {sample_seed(0, i) for i in range(common.N)}
+
+
+def test_shared_replicate_seed_schedule_is_reproducible() -> None:
+    assert shared_replicate_seeds(5) == [20250117, 20251126, 20252135, 20253144, 20254153]
+    assert shared_replicate_seeds(3, seed_start=17, seed_step=19) == [17, 36, 55]
 
 
 def test_public_runner_resumes_without_regenerating(tmp_path: Path) -> None:
@@ -65,25 +76,6 @@ def test_public_runner_resumes_without_regenerating(tmp_path: Path) -> None:
         predict.assert_not_called()
 
 
-def test_custom_boltz_adapter_is_rejected_by_legacy_baseline() -> None:
-    from o3_boltz import baseline
-
-    adapter_type = type("Boltz2PFODEAdapter", (), {})
-    adapter = adapter_type()
-    try:
-        baseline.run_best_k_of_n(
-            adapter=adapter,
-            config={"latent_dim": 1},
-            budget={"N": 1, "K": 1},
-            run_seed=0,
-            output_dir=ROOT / "tmp-test-output",
-        )
-    except RuntimeError as error:
-        assert "reserved for O3" in str(error)
-    else:
-        raise AssertionError("legacy baseline accepted the custom O3 adapter")
-
-
 def test_small_budget_configs_are_distinct() -> None:
     configure_budget("n20_k2")
     assert (common.N, output_root("best_k_of_n", "run").parts[-5:]) == (
@@ -98,11 +90,20 @@ def test_small_budget_configs_are_distinct() -> None:
     configure_budget("n100_k10")
 
 
+def test_o3_configs_use_unit_pfode_step_scale() -> None:
+    import yaml
+
+    for name in ("o3.yaml", "o3_n20_k2.yaml", "o3_n50_k5.yaml"):
+        config = yaml.safe_load((BUNDLE / name).read_text(encoding="utf-8"))
+        assert config["boltz2"]["step_scale"] == 1.0
+        assert config["seed"] == 20250117
+        assert config["seed_step"] == 1009
+
+
 if __name__ == "__main__":
     test_frozen_msa_and_notebook_fixture()
     test_replicates_use_disjoint_notebook_seed_blocks()
     with TemporaryDirectory(prefix="k10_n100_test_") as temp:
         test_public_runner_resumes_without_regenerating(Path(temp))
-    test_custom_boltz_adapter_is_rejected_by_legacy_baseline()
     test_small_budget_configs_are_distinct()
     print("bundle tests passed")

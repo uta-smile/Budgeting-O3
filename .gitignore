@@ -5,6 +5,7 @@ __pycache__/
 .pytest_cache/
 data/1CLL.pdb
 data/boltz2_1cll/
+data/boltz_cache/
 outputs/*
 
 

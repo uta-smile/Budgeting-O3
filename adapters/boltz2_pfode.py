@@ -9,8 +9,10 @@ Boltz command remains unchanged.
 from __future__ import annotations
 
 import os
+import hashlib
 import tarfile
 import urllib.request
+from contextlib import nullcontext
 from dataclasses import asdict, replace
 from pathlib import Path
 from typing import Any, Mapping
@@ -61,6 +63,31 @@ def _ensure_assets(cache_dir: Path) -> Path:
     return checkpoint
 
 
+def _processed_cache_path(
+    base_dir: Path,
+    input_yaml: Path,
+    *,
+    use_msa_server: bool,
+    msa_server_url: str,
+    max_msa_seqs: int,
+) -> tuple[Path, str]:
+    """Choose a cache that is unique to the preprocessing inputs/options.
+
+    Boltz's ``process_inputs`` skips records already present in a directory,
+    without checking whether the MSA options changed. A cache fingerprint
+    prevents a previous single-sequence or different-server run from being
+    silently reused for this benchmark.
+    """
+
+    digest = hashlib.sha256()
+    digest.update(input_yaml.read_bytes())
+    digest.update(f"use_msa_server={use_msa_server}\n".encode("utf-8"))
+    digest.update(f"msa_server_url={msa_server_url}\n".encode("utf-8"))
+    digest.update(f"max_msa_seqs={max_msa_seqs}\n".encode("utf-8"))
+    fingerprint = digest.hexdigest()
+    return base_dir / f"o3cache_{fingerprint[:16]}", fingerprint
+
+
 class Boltz2PFODEAdapter:
     """One cached Boltz-2 model plus the TM-score oracle."""
 
@@ -75,19 +102,48 @@ class Boltz2PFODEAdapter:
             boltz_config.get("input_yaml", "data/1cll_boltz_input.yaml"),
             project_root,
         )
-        self.processed_dir = _path(
+        self.requested_processed_dir = _path(
             boltz_config.get("processed_dir", "data/boltz2_1cll"),
             project_root,
         )
         self.recycling_steps = int(boltz_config.get("recycling_steps", 3))
         self.sampling_steps = int(boltz_config.get("sampling_steps", 200))
         self.step_scale = float(boltz_config.get("step_scale", 1.5))
+        # Boltz-2's ordinary sampler uses EDM churn gamma_0=0.8. O3 changes
+        # this to zero at call time for PF-ODE sampling; keep the two modes
+        # separate instead of silently using PF-ODE parameters for the
+        # Best-k-of-N baseline.
+        self.stochastic_gamma_0 = float(boltz_config.get("stochastic_gamma_0", 0.8))
+        if self.stochastic_gamma_0 < 0.0:
+            raise ValueError("boltz2.stochastic_gamma_0 must be non-negative")
+        self.explicit_latent = bool(boltz_config.get("explicit_latent", True))
+        # Match an unflagged upstream ``boltz predict`` invocation. The
+        # ``--subsample_msa`` Click option is an is_flag with no explicit
+        # default, so Click passes False when the flag is omitted (despite the
+        # stale function signature/help text claiming a True default).
+        self.subsample_msa = bool(boltz_config.get("subsample_msa", False))
+        self.num_subsampled_msa = int(boltz_config.get("num_subsampled_msa", 1024))
+        if self.num_subsampled_msa <= 0:
+            raise ValueError("boltz2.num_subsampled_msa must be positive")
         self.deterministic = bool(boltz_config.get("deterministic", True))
         self.use_msa_server = bool(boltz_config.get("use_msa_server", False))
         self.msa_server_url = str(
             boltz_config.get("msa_server_url", "https://api.colabfold.com")
         )
+        self.max_msa_seqs = int(boltz_config.get("max_msa_seqs", 8192))
+        if self.max_msa_seqs <= 0:
+            raise ValueError("boltz2.max_msa_seqs must be positive")
         self.no_kernels = bool(boltz_config.get("no_kernels", False))
+        # The upstream Boltz CLI constructs a Lightning Trainer with
+        # precision="bf16-mixed" for Boltz-2. The adapter calls forward()
+        # directly, so it must reproduce that autocast context explicitly.
+        self.inference_precision = str(
+            boltz_config.get("inference_precision", "bf16-mixed")
+        )
+        if self.inference_precision not in {"bf16-mixed", "32"}:
+            raise ValueError(
+                "boltz2.inference_precision must be 'bf16-mixed' or '32'"
+            )
         configured_atom_slots = boltz_config.get("atom_slots")
         self.configured_atom_slots = (
             None if configured_atom_slots in (None, "auto") else int(configured_atom_slots)
@@ -99,6 +155,7 @@ class Boltz2PFODEAdapter:
         reference = _path(str(target["reference_pdb"]), project_root)
         self.oracle = TMScoreOracle(reference, target.get("reference_chain"))
         self.sequence = str(target["sequence"])
+        self.last_model_metrics: dict[str, float] = {}
 
         self._load_model(config)
 
@@ -125,6 +182,9 @@ class Boltz2PFODEAdapter:
             raise RuntimeError(
                 "The O3 Boltz-2 generator requires a CUDA GPU. Run it on the lab GPU node."
             )
+        # Match the upstream CLI's matmul setting before constructing the
+        # model. This is process-global, just as it is in boltz.main.predict.
+        torch.set_float32_matmul_precision("highest")
         if not self.input_yaml.exists():
             raise FileNotFoundError(f"Missing Boltz input YAML: {self.input_yaml}")
 
@@ -132,6 +192,15 @@ class Boltz2PFODEAdapter:
         configured_checkpoint = config.get("boltz2", {}).get("checkpoint")
         if configured_checkpoint:
             checkpoint = _path(str(configured_checkpoint), Path(str(config["project_root"])))
+        self.checkpoint_path = checkpoint
+
+        self.processed_dir, self.processing_fingerprint = _processed_cache_path(
+            self.requested_processed_dir,
+            self.input_yaml,
+            use_msa_server=self.use_msa_server,
+            msa_server_url=self.msa_server_url,
+            max_msa_seqs=self.max_msa_seqs,
+        )
 
         process_inputs(
             data=[self.input_yaml],
@@ -140,7 +209,7 @@ class Boltz2PFODEAdapter:
             mol_dir=self.cache_dir / "mols",
             msa_server_url=self.msa_server_url,
             msa_pairing_strategy="greedy",
-            max_msa_seqs=int(config.get("boltz2", {}).get("max_msa_seqs", 8192)),
+            max_msa_seqs=self.max_msa_seqs,
             use_msa_server=self.use_msa_server,
             boltz2=True,
             preprocessing_threads=1,
@@ -196,16 +265,18 @@ class Boltz2PFODEAdapter:
         )
 
         diffusion_params = Boltz2DiffusionParams()
-        # The paper's PF-ODE conversion explicitly disables EDM churn.
-        diffusion_params.gamma_0 = 0.0
+        # Load the ordinary stochastic Boltz-2 setting. O3's deterministic
+        # PF-ODE override is applied per generation in generate(), because the
+        # same model instance serves both O3 and Best-k-of-N modes.
+        diffusion_params.gamma_0 = self.stochastic_gamma_0
         diffusion_params.step_scale = self.step_scale
         steering_args = BoltzSteeringParams()
         steering_args.fk_steering = False
         steering_args.physical_guidance_update = False
         steering_args.contact_guidance_update = False
         msa_args = MSAModuleArgs(
-            subsample_msa=False,
-            num_subsampled_msa=1024,
+            subsample_msa=self.subsample_msa,
+            num_subsampled_msa=self.num_subsampled_msa,
             use_paired_feature=True,
         )
         predict_args = {
@@ -250,30 +321,72 @@ class Boltz2PFODEAdapter:
             )
         deterministic = bool(metadata.get("deterministic", self.deterministic))
         sampling_mode = "deterministic PF-ODE" if deterministic else "stochastic Boltz-2"
-        print(f"[Boltz-2] sampling={sampling_mode} | deterministic={deterministic}", flush=True)
+        active_gamma_0 = 0.0 if deterministic else self.stochastic_gamma_0
+        latent_source = "explicit z" if self.explicit_latent else "internal torch noise"
+        print(
+            f"[Boltz-2] sampling={sampling_mode} | deterministic={deterministic} "
+            f"| latent={latent_source} | gamma_0={active_gamma_0:g}",
+            flush=True,
+        )
         initial_coords = (
             torch.from_numpy(latent_array.reshape(1, self.atom_slots, 3)).to(self.device)
-            if deterministic
+            if self.explicit_latent
             else None
         )
 
-        with torch.inference_mode():
-            result = self.model(
-                self.features,
-                recycling_steps=self.recycling_steps,
-                num_sampling_steps=self.sampling_steps,
-                diffusion_samples=1,
-                max_parallel_samples=1,
-                run_confidence_sequentially=True,
-                initial_atom_coords=initial_coords,
-                deterministic=deterministic,
+        # The paper's PF-ODE conversion is deterministic because it removes
+        # EDM churn. The ordinary baseline retains Boltz-2's stochastic churn
+        # and random SE(3) augmentation. The model is shared across calls, so
+        # set the mode-specific parameter immediately around the forward pass.
+        diffusion_module = getattr(self.model, "structure_module", None)
+        if diffusion_module is None or not hasattr(diffusion_module, "gamma_0"):
+            raise RuntimeError(
+                "Boltz-2 model does not expose structure_module.gamma_0; "
+                "cannot enforce separate PF-ODE and stochastic sampling modes"
             )
+        previous_gamma_0 = diffusion_module.gamma_0
+        diffusion_module.gamma_0 = 0.0 if deterministic else self.stochastic_gamma_0
+
+        try:
+            autocast_context = (
+                torch.autocast(device_type="cuda", dtype=torch.bfloat16)
+                if self.inference_precision == "bf16-mixed"
+                else nullcontext()
+            )
+            with torch.inference_mode(), autocast_context:
+                result = self.model(
+                    self.features,
+                    recycling_steps=self.recycling_steps,
+                    num_sampling_steps=self.sampling_steps,
+                    diffusion_samples=1,
+                    max_parallel_samples=1,
+                    run_confidence_sequentially=True,
+                    initial_atom_coords=initial_coords,
+                    deterministic=deterministic,
+                )
+                self.last_model_metrics = self._extract_model_metrics(result, torch)
+        finally:
+            diffusion_module.gamma_0 = previous_gamma_0
 
         model_coords = result["sample_atom_coords"][0]
         pad_mask = self.features["atom_pad_mask"][0].bool()
         coord_unpad = model_coords[pad_mask].detach().cpu().numpy()
         self._write_pdb(output_path, coord_unpad, to_pdb)
         return output_path
+
+    @staticmethod
+    def _extract_model_metrics(result: Mapping[str, Any], torch) -> dict[str, float]:
+        """Return scalar Boltz confidence outputs for optional diagnostics."""
+
+        metrics: dict[str, float] = {}
+        for name in ("ptm", "complex_plddt", "complex_pde"):
+            value = result.get(name)
+            if value is None or not torch.is_tensor(value):
+                continue
+            flattened = value.detach().float().reshape(-1)
+            if flattened.numel() == 1 and bool(torch.isfinite(flattened).item()):
+                metrics[name] = float(flattened.item())
+        return metrics
 
     def _write_pdb(self, output_path: Path, coordinates: np.ndarray, to_pdb) -> None:
         from boltz.data.types import Coords, Interface, StructureV2

@@ -3,4 +3,9 @@ sequences:
   - protein:
       id: A
       sequence: LTEEQIAEFKEAFSLFDKDGDGTITTKELGTVMRSLGQNPTEAELQDMINEVDADGNGTIDFPEFLTMMARKMKDTDSEEEIREAFRVFDKDGNGYISAAELRHVMTNLGEKLTDEEVDEMIREADIDGDGQVNYEEFVQMMTA
+      # 144-residue PDB-observed construct used by the paper. The full
+      # 148-residue calmodulin sequence has terminal ADQ and K residues that
+      # are not present in the observed chain used for this benchmark.
+      # Keep the comparison in single-sequence mode; MSA retrieval is not
+      # specified by the paper and is not needed by the O3/Best-k algorithms.
       msa: empty

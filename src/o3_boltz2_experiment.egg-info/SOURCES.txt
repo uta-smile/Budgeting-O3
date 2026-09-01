@@ -3,12 +3,15 @@ pyproject.toml
 src/o3_boltz/__init__.py
 src/o3_boltz/adapter.py
 src/o3_boltz/baseline.py
+src/o3_boltz/chart.py
 src/o3_boltz/cli.py
 src/o3_boltz/o3.py
+src/o3_boltz/run_metadata.py
 src/o3_boltz/tmscore.py
 src/o3_boltz2_experiment.egg-info/PKG-INFO
 src/o3_boltz2_experiment.egg-info/SOURCES.txt
 src/o3_boltz2_experiment.egg-info/dependency_links.txt
 src/o3_boltz2_experiment.egg-info/requires.txt
 src/o3_boltz2_experiment.egg-info/top_level.txt
+tests/test_budget_accounting.py
 tests/test_o3_chart.py

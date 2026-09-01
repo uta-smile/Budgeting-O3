@@ -1,6 +1,9 @@
 target:
   name: 1cll
-  # Observed 1CLL chain A sequence: 144 residues.
+  # Paper/PDB-observed 1CLL chain A construct: 144 residues. The commonly
+  # distributed 148-residue sequence starts with ADQ and ends with K; this
+  # benchmark sequence is full_sequence[3:-1], matching the observed PDB
+  # coordinates and the paper's stated length and D=3552 latent width.
   sequence: LTEEQIAEFKEAFSLFDKDGDGTITTKELGTVMRSLGQNPTEAELQDMINEVDADGNGTIDFPEFLTMMARKMKDTDSEEEIREAFRVFDKDGNGYISAAELRHVMTNLGEKLTDEEVDEMIREADIDGDGQVNYEEFVQMMTA
   reference_pdb: data/1CLL.pdb
   reference_chain: A
@@ -9,16 +12,30 @@ target:
 # uses 1,184 sampler coordinate slots, giving a 3,552-value latent.
 latent_dim: auto
 
-# The generator uses the vendored Boltz-2 implementation. With msa: empty in
-# the input YAML, Boltz obtains an MSA from the configured server.
+# The generator uses the vendored Boltz-2 implementation. The input YAML uses
+# ``msa: empty`` so this benchmark runs in single-sequence mode. The paper
+# does not specify an MSA source; retrieval can be enabled only as a separate
+# ablation.
 boltz2:
   input_yaml: data/1cll_boltz_input.yaml
   processed_dir: data/boltz2_1cll
-  use_msa_server: true
+  use_msa_server: false
   msa_server_url: https://api.colabfold.com
   recycling_steps: 3
   sampling_steps: 200
   step_scale: 1.5
+  # Ordinary stochastic Boltz-2 setting used by Best K-of-N. O3 overrides
+  # gamma_0 to zero per call for deterministic PF-ODE sampling.
+  stochastic_gamma_0: 0.8
+  # Best K-of-N and O3 both receive an explicit z ~ N(0,I); stochastic mode
+  # additionally applies Boltz-2 churn and random SE(3) augmentation.
+  explicit_latent: true
+  # Match an unflagged upstream ``boltz predict`` invocation. Set true only
+  # when deliberately reproducing a command that passes --subsample_msa.
+  subsample_msa: false
+  num_subsampled_msa: 1024
+  # Upstream Boltz-2's Lightning CLI uses bf16 mixed precision for inference.
+  inference_precision: bf16-mixed
   # Paper Section 4: Z = R^(1184*3). Boltz treats the extra slots as masked
   # padding and removes them before writing/scoring the 1,134 real atoms.
   atom_slots: 1184
@@ -31,15 +48,19 @@ boltz2:
 # Best K-of-N follows the paper and uses ordinary stochastic Boltz-2 sampling.
 best_k_of_n:
   deterministic: false
+  # The paper's stated algorithm ranks by external TM-score. Set this to
+  # model_ptm only for the diagnostic alternative described in README.md.
+  selection_metric: oracle_tm_score
 
-# The six budget settings from the experiment notes. M and d follow the
-# O3 appendix configuration so the runner can execute the whole sweep.
+# Main-text benchmark K values with the O3 appendix M,d settings. The paper's
+# Appendix Table A.1 has inconsistent K values for some rows; the main-text
+# benchmark values are used for returned-candidate metrics here.
 budgets:
   - name: n20_k2
     N: 20
     K: 2
     M: 10
-    d: 6
+    d: 5
   - name: n50_k5
     N: 50
     K: 5

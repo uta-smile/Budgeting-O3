@@ -10,6 +10,7 @@ import yaml
 
 from .adapter import load_adapter
 from .baseline import run_best_k_of_n
+from .run_metadata import collect_run_metadata
 from .o3 import run_o3
 
 
@@ -42,6 +43,12 @@ def _parse_args() -> argparse.Namespace:
         default="o3",
         help="Use O3 optimization or the random Best K-of-N baseline.",
     )
+    parser.add_argument(
+        "--selection-metric",
+        choices=("oracle_tm_score", "model_ptm"),
+        default=None,
+        help="Best-K selection metric; model_ptm is diagnostic-only.",
+    )
     return parser.parse_args()
 
 
@@ -54,6 +61,8 @@ def main() -> None:
 
     if not isinstance(config, dict):
         raise ValueError(f"Expected a mapping in {config_path}")
+    if args.selection_metric is not None:
+        config.setdefault("best_k_of_n", {})["selection_metric"] = args.selection_metric
     project_root = config_path.parent.parent
     config["project_root"] = str(project_root)
     sequence = "".join(str(config["target"]["sequence"]).split()).upper()
@@ -76,6 +85,7 @@ def main() -> None:
     run_seeds = [seed_start + replicate * seed_step for replicate in range(replicates)]
 
     adapter = load_adapter(args.adapter, config)
+    provenance = collect_run_metadata(config=config, adapter=adapter)
     adapter_latent_dim = getattr(adapter, "latent_dim", None)
     configured_latent_dim = config.get("latent_dim")
     if adapter_latent_dim is not None:
@@ -150,6 +160,7 @@ def main() -> None:
             "seed_start": seed_start,
             "seed_step": seed_step,
             "seeds": run_seeds,
+            "provenance": provenance,
         }
         with (summary_root / "run_metadata.json").open(
             "w", encoding="utf-8"

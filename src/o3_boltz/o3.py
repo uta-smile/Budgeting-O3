@@ -18,9 +18,10 @@ from botorch.sampling.normal import SobolQMCNormalSampler
 from gpytorch.kernels import RBFKernel, ScaleKernel
 from gpytorch.means import ConstantMean
 from gpytorch.mlls import ExactMarginalLogLikelihood
-from scipy.special import betaincinv
 
 from .adapter import GeneratorOracle
+from .chart import SURROGATE_CHART_VERSION, SurrogateChart
+from .run_metadata import collect_run_metadata
 
 
 @dataclass
@@ -35,59 +36,7 @@ class Evaluation:
     u: list[float] | None
 
 
-def hypersphere_weights(u: np.ndarray) -> np.ndarray:
-    """Map ``[0, 1]^(d-1)`` to the positive unit hypersphere.
-
-    This is the measure-preserving Knothe--Rosenblatt stick-breaking chart
-    used by O3.  If ``u`` is uniform, the squared weights follow a symmetric
-    Dirichlet(1/2) distribution and the returned weights are uniform on the
-    positive orthant of the unit hypersphere.
-    """
-
-    u = np.asarray(u, dtype=np.float64)
-    if u.ndim != 1:
-        raise ValueError("u must be a one-dimensional point")
-    if not np.all(np.isfinite(u)) or np.any((u < 0.0) | (u > 1.0)):
-        raise ValueError("u must contain finite values in [0, 1]")
-
-    d = u.size + 1
-    remaining = 1.0
-    squared_weights = np.empty(d, dtype=np.float64)
-    for index, value in enumerate(u):
-        # Paper Appendix D.2 uses one-based k and
-        # v_k = I^-1_u(1/2, (d-k)/2).
-        beta_b = (d - index - 1) / 2.0
-        stick = float(betaincinv(0.5, beta_b, value))
-        squared_weights[index] = remaining * stick
-        remaining *= 1.0 - stick
-    squared_weights[-1] = remaining
-
-    # Clip round-off only; mathematically these are non-negative and sum to 1.
-    squared_weights = np.clip(squared_weights, 0.0, 1.0)
-    weights = np.sqrt(squared_weights)
-    norm = np.linalg.norm(weights)
-    if not np.isfinite(norm) or norm == 0.0:
-        raise ValueError("Knothe--Rosenblatt chart produced invalid weights")
-    return weights / norm
-
-
-def hypersphere_vertices(d: int) -> np.ndarray:
-    """Return canonical U coordinates mapping to the d basis weights."""
-
-    if d < 2:
-        raise ValueError("d must be at least 2")
-    vertices = np.zeros((d, d - 1), dtype=np.float64)
-    for i in range(d - 1):
-        vertices[i, i] = 1.0
-    return vertices
-
-
-def map_u_to_latent(u: np.ndarray, seed_latents: np.ndarray) -> np.ndarray:
-    weights = hypersphere_weights(u)
-    seeds = np.asarray(seed_latents, dtype=np.float64)
-    if seeds.ndim != 2 or seeds.shape[0] != len(weights):
-        raise ValueError("seed_latents must have shape (d, latent_dim)")
-    return weights @ seeds
+from .chart import hypersphere_vertices, hypersphere_weights, map_u_to_latent
 
 
 def _validate_budget(budget: Mapping[str, Any]) -> tuple[int, int, int, int]:
@@ -104,7 +53,7 @@ def _validate_budget(budget: Mapping[str, Any]) -> tuple[int, int, int, int]:
     return n, k, m, d
 
 
-def _fit_and_acquire(train_u: np.ndarray, train_scores: np.ndarray, rng: np.random.Generator) -> np.ndarray:
+def _fit_and_acquire(train_u: np.ndarray, train_scores: np.ndarray) -> np.ndarray:
     train_x = torch.as_tensor(train_u, dtype=torch.double)
     train_y = torch.as_tensor(train_scores[:, None], dtype=torch.double)
     model = SingleTaskGP(
@@ -136,12 +85,10 @@ def _fit_and_acquire(train_u: np.ndarray, train_scores: np.ndarray, rng: np.rand
     )
     point = candidate.detach().cpu().numpy()[0]
     if not np.all(np.isfinite(point)):
-        point = rng.uniform(0.0, 1.0, size=dim)
+        raise RuntimeError("BoTorch acquisition optimization returned a non-finite point")
+    if np.any(point < -1.0e-8) or np.any(point > 1.0 + 1.0e-8):
+        raise RuntimeError("BoTorch acquisition optimization returned a point outside [0, 1]")
     return np.clip(point, 0.0, 1.0)
-
-
-def _is_duplicate(point: np.ndarray, previous: list[np.ndarray], tolerance: float = 1e-7) -> bool:
-    return any(np.linalg.norm(point - old) <= tolerance for old in previous)
 
 
 def run_o3(
@@ -253,11 +200,11 @@ def run_o3(
         selected_scores=seed_scores,
     )
 
-    # The selected phase-1 structures are already scored. Reuse those scores
-    # as the d hypersphere-basis training observations and spend two fresh calls
-    # on random points, exactly accounting for the N oracle budget.
-    vertices = hypersphere_vertices(d)
-    train_u = vertices.copy()
+    # The selected phase-1 structures are already scored. Project each seed
+    # through the reference chart's inverse map, reuse those scores, and spend
+    # two fresh calls on random points. This exactly accounts for N calls.
+    chart = SurrogateChart(seed_latents)
+    train_u = np.asarray(chart.from_z_to_u(seed_latents), dtype=np.float64)
     train_scores = seed_scores.copy()
 
     for i in range(2):
@@ -267,17 +214,10 @@ def run_o3(
         train_u = np.vstack([train_u, u])
         train_scores = np.append(train_scores, score)
 
-    u_points = [row.copy() for row in train_u]
     for round_index in range(n - m - 2):
         print_progress(f"fitting BO round {round_index + 1}/{n - m - 2}")
-        u = _fit_and_acquire(train_u, train_scores, rng)
-        if _is_duplicate(u, u_points):
-            for _ in range(20):
-                trial = np.clip(u + rng.normal(0.0, 1e-3, size=d - 1), 0.0, 1.0)
-                if not _is_duplicate(trial, u_points):
-                    u = trial
-                    break
-        latent = map_u_to_latent(u, seed_latents)
+        u = _fit_and_acquire(train_u, train_scores)
+        latent = chart.from_u_to_z(u)
         score = evaluate(
             latent,
             "bo_acquisition",
@@ -286,7 +226,6 @@ def run_o3(
         )
         train_u = np.vstack([train_u, u])
         train_scores = np.append(train_scores, score)
-        u_points.append(u.copy())
 
     if len(evaluations) != n:
         raise AssertionError(f"Budget accounting error: expected {n}, got {len(evaluations)}")
@@ -295,6 +234,8 @@ def run_o3(
 
     ranked = sorted(evaluations, key=lambda item: item.score, reverse=True)
     returned = ranked[:k]
+    all_scores = np.asarray([item.score for item in evaluations], dtype=np.float64)
+    selected_scores = np.asarray([item.score for item in returned], dtype=np.float64)
     records = [asdict(item) for item in evaluations]
     with (output_dir / "evaluations.json").open("w", encoding="utf-8") as handle:
         json.dump(records, handle, indent=2)
@@ -311,21 +252,29 @@ def run_o3(
         "K": k,
         "M": m,
         "d": d,
+        "k": k,
+        "D": latent_dim,
         "latent_dim": latent_dim,
+        "chart_version": SURROGATE_CHART_VERSION,
         "o3_chart": "knothe_rosenblatt_positive_unit_hypersphere",
         "generator_atom_count": getattr(adapter, "atom_count", None),
         "generator_atom_slots": getattr(adapter, "atom_slots", None),
         "seed": run_seed,
         "oracle_evaluations": len(evaluations),
         "generator_sampling": "deterministic_pf_ode",
+        "selection_metric": "oracle_tm_score",
+        "total_mean": float(np.mean(all_scores)),
+        "mean_all": float(np.mean(all_scores)),
         "phase1_max": float(np.max(phase1_scores)),
         "new_points_max": float(np.max(new_scores)),
         "new_points_improvement": float(np.max(new_scores) - np.max(phase1_scores)),
-        "max_of_K": max(item.score for item in returned),
-        "mean_of_K": float(np.mean([item.score for item in returned])),
+        "max_of_K": float(np.max(selected_scores)),
+        "top_k_mean": float(np.mean(selected_scores)),
+        "mean_of_K": float(np.mean(selected_scores)),
         "best_structure": returned[0].structure,
         "output_dir": str(output_dir),
     }
+    summary.update(collect_run_metadata(config=config, adapter=adapter))
     with (output_dir / "summary.json").open("w", encoding="utf-8") as handle:
         json.dump(summary, handle, indent=2)
     return summary

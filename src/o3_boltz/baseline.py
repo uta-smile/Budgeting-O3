@@ -11,6 +11,8 @@ import numpy as np
 import torch
 
 from .adapter import GeneratorOracle
+from .chart import SURROGATE_CHART_VERSION
+from .run_metadata import collect_run_metadata
 
 
 @dataclass
@@ -22,6 +24,7 @@ class BaselineEvaluation:
     latent_file: str
     budget: str
     seed: int
+    model_ptm: float | None
 
 
 def run_best_k_of_n(
@@ -42,6 +45,11 @@ def run_best_k_of_n(
     budget_name = str(budget.get("name", f"n{n}_k{k}"))
     baseline_settings = config.get("best_k_of_n", {})
     deterministic = bool(baseline_settings.get("deterministic", False))
+    selection_metric = str(baseline_settings.get("selection_metric", "oracle_tm_score"))
+    if selection_metric not in {"oracle_tm_score", "model_ptm"}:
+        raise ValueError(
+            "best_k_of_n.selection_metric must be 'oracle_tm_score' or 'model_ptm'"
+        )
     rng = np.random.default_rng(run_seed)
     random.seed(run_seed)
     torch.manual_seed(run_seed)
@@ -83,6 +91,12 @@ def run_best_k_of_n(
         score = float(adapter.score(final_path, config))
         if not np.isfinite(score):
             raise ValueError(f"Oracle returned a non-finite score for {final_path}")
+        model_ptm = getattr(adapter, "last_model_metrics", {}).get("ptm")
+        if selection_metric == "model_ptm" and model_ptm is None:
+            raise RuntimeError(
+                "best_k_of_n.selection_metric=model_ptm requires the adapter to expose "
+                "last_model_metrics['ptm']"
+            )
         evaluations.append(
             BaselineEvaluation(
                 index=index,
@@ -92,6 +106,7 @@ def run_best_k_of_n(
                 latent_file=str(latent_path),
                 budget=budget_name,
                 seed=run_seed,
+                model_ptm=model_ptm,
             )
         )
         print(
@@ -100,8 +115,13 @@ def run_best_k_of_n(
             flush=True,
         )
 
-    ranked = sorted(evaluations, key=lambda item: item.score, reverse=True)
+    if selection_metric == "oracle_tm_score":
+        ranked = sorted(evaluations, key=lambda item: item.score, reverse=True)
+    else:
+        ranked = sorted(evaluations, key=lambda item: item.model_ptm, reverse=True)
     returned = ranked[:k]
+    all_scores = np.asarray([item.score for item in evaluations], dtype=np.float64)
+    selected_scores = np.asarray([item.score for item in returned], dtype=np.float64)
     records = [asdict(item) for item in evaluations]
     with (output_dir / "evaluations.json").open("w", encoding="utf-8") as handle:
         json.dump(records, handle, indent=2)
@@ -112,20 +132,34 @@ def run_best_k_of_n(
     with (output_dir / "returned_candidates.json").open("w", encoding="utf-8") as handle:
         json.dump([asdict(item) for item in returned], handle, indent=2)
 
-    return {
+    summary = {
         "method": "best_k_of_n",
         "budget": budget_name,
         "N": n,
         "K": k,
+        "k": k,
+        "M": None,
+        "d": None,
+        "D": latent_dim,
         "latent_dim": latent_dim,
+        "chart_version": SURROGATE_CHART_VERSION,
+        "o3_chart": None,
         "generator_atom_count": getattr(adapter, "atom_count", None),
         "generator_atom_slots": getattr(adapter, "atom_slots", None),
         "seed": run_seed,
         "oracle_evaluations": len(evaluations),
         "generator_sampling": ("deterministic_pf_ode" if deterministic else "stochastic_boltz2"),
-        "score_std": float(np.std([item.score for item in evaluations])),
-        "max_of_K": max(item.score for item in returned),
-        "mean_of_K": float(np.mean([item.score for item in returned])),
+        "selection_metric": selection_metric,
+        "score_std": float(np.std(all_scores)),
+        "total_mean": float(np.mean(all_scores)),
+        "mean_all": float(np.mean(all_scores)),
+        "max_of_K": float(np.max(selected_scores)),
+        "top_k_mean": float(np.mean(selected_scores)),
+        "mean_of_K": float(np.mean(selected_scores)),
         "best_structure": returned[0].structure,
         "output_dir": str(output_dir),
     }
+    summary.update(collect_run_metadata(config=config, adapter=adapter))
+    with (output_dir / "summary.json").open("w", encoding="utf-8") as handle:
+        json.dump(summary, handle, indent=2)
+    return summary

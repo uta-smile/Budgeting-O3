@@ -17,22 +17,18 @@ from common import (  # noqa: E402
     output_root,
     sample_seed,
     shared_replicate_seeds,
-    validate_frozen_msa,
 )
 from public_runner import run_replicate  # noqa: E402
-from verify import check_fixture  # noqa: E402
+from verify import check_static  # noqa: E402
 
 
-def test_frozen_msa_and_notebook_fixture() -> None:
-    assert len(validate_frozen_msa()) == 64
-    result = check_fixture()
-    assert result["mean_of_K"] == 0.6788870863920917
-    assert result["max_of_K"] == 0.7958910827539285
+def test_single_sequence_setup() -> None:
+    check_static()
 
 
 def test_replicates_use_disjoint_notebook_seed_blocks() -> None:
-    assert [sample_seed(0, i) for i in (0, 99)] == [0, 99]
-    assert [sample_seed(1, i) for i in (0, 99)] == [common.N, 2 * common.N - 1]
+    assert [sample_seed(0, i) for i in (0, 99)] == [1, 100]
+    assert all(0 <= sample_seed(20250117, i) <= 2**32 - 1 for i in range(100))
     assert sample_seed(4, 0) not in {sample_seed(0, i) for i in range(common.N)}
 
 
@@ -108,7 +104,7 @@ def test_o3_configs_use_unit_pfode_step_scale() -> None:
 
 
 if __name__ == "__main__":
-    test_frozen_msa_and_notebook_fixture()
+    test_single_sequence_setup()
     test_replicates_use_disjoint_notebook_seed_blocks()
     test_shared_replicate_seed_schedule_is_reproducible()
     test_random_replicate_seeds_are_unique_valid_31_bit_values()

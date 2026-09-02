@@ -190,7 +190,7 @@ def main() -> None:
             writer.writerows(summaries)
         aggregate_path = summary_root / "aggregate.csv"
         with aggregate_path.open("w", newline="", encoding="utf-8") as handle:
-            fields = ["seed", "N", "K", "mean_of_K", "max_of_K", "mean_all"]
+            fields = ["seed", "N", "K", "mean_of_K", "max_of_K"]
             writer = csv.DictWriter(handle, fieldnames=fields)
             writer.writeheader()
             for summary in summaries:

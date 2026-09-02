@@ -31,6 +31,10 @@ Run the complete N20 comparison with five fresh random replicate seeds:
 This single command runs all three methods with the same five seeds. The seeds
 are printed in the log and saved in every method's metadata.
 
+Use `--replicates 3` for a three-replicate run (or `--replicates 1` for a
+single smoke replicate). The same replicate seed list is shared across all
+selected methods.
+
 Use these budget names for other experiments:
 
 ```text
@@ -71,8 +75,9 @@ metadata. Use a new run ID instead of mixing results from older experiments.
 
 ## Important details
 
-- The frozen input MSA is `experiments/1cll/k10_n100/inputs/1CLL_0.csv`.
-- MSA-server retrieval is disabled for the canonical comparison.
+- Both methods use single-sequence conditioning, with no retrieved MSA and no
+  MSA-server retrieval, matching the paper's setup. Boltz's official
+  `msa: empty` marker is used where its input schema requires an MSA field.
 - O3 uses the custom vendored Boltz-2 adapter and deterministic PF-ODE.
 - O3-random uses that same custom decoder but samples all `N` latents randomly.
 - Best K-of-N uses the isolated official `boltz==2.2.1` environment.

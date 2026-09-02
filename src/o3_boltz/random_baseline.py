@@ -132,7 +132,6 @@ def run_random_pfode(
         "latent_sampler": "standard_normal_Z",
         "selection_metric": "oracle_tm_score",
         "total_mean": float(np.mean(all_scores)),
-        "mean_all": float(np.mean(all_scores)),
         "max_of_K": float(np.max(selected_scores)),
         "top_k_mean": float(np.mean(selected_scores)),
         "mean_of_K": float(np.mean(selected_scores)),

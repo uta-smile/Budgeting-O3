@@ -69,7 +69,7 @@ def _processed_cache_path(
     input_yaml: Path,
     *,
     use_msa_server: bool,
-    msa_server_url: str,
+    msa_server_url: str | None,
     max_msa_seqs: int,
 ) -> tuple[Path, str]:
     """Choose a cache that is unique to the preprocessing inputs/options.
@@ -112,11 +112,9 @@ class Boltz2PFODEAdapter:
         input_data = yaml.safe_load(self.input_yaml.read_text(encoding="utf-8"))
         input_msa = input_data["sequences"][0]["protein"].get("msa")
         if input_msa not in (None, "", 0, "empty"):
-            self.input_msa_path = str(_path(str(input_msa), project_root))
-            msa_path = Path(self.input_msa_path)
-            if not msa_path.is_file():
-                raise FileNotFoundError(f"Missing configured MSA: {msa_path}")
-            self.input_msa_sha256 = hashlib.sha256(msa_path.read_bytes()).hexdigest()
+            raise ValueError(
+                "MSA inputs are disabled for this benchmark; use an omitted MSA or 'msa: empty'"
+            )
         self.recycling_steps = int(boltz_config.get("recycling_steps", 3))
         self.sampling_steps = int(boltz_config.get("sampling_steps", 200))
         self.step_scale = float(boltz_config.get("step_scale", 1.0))
@@ -137,10 +135,10 @@ class Boltz2PFODEAdapter:
         if self.num_subsampled_msa <= 0:
             raise ValueError("boltz2.num_subsampled_msa must be positive")
         self.deterministic = bool(boltz_config.get("deterministic", True))
-        self.use_msa_server = bool(boltz_config.get("use_msa_server", False))
-        self.msa_server_url = str(
-            boltz_config.get("msa_server_url", "https://api.colabfold.com")
-        )
+        if bool(boltz_config.get("use_msa_server", False)):
+            raise ValueError("MSA-server retrieval is disabled for this benchmark")
+        self.use_msa_server = False
+        self.msa_server_url = None
         self.max_msa_seqs = int(boltz_config.get("max_msa_seqs", 8192))
         if self.max_msa_seqs <= 0:
             raise ValueError("boltz2.max_msa_seqs must be positive")

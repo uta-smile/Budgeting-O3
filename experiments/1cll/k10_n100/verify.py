@@ -12,7 +12,7 @@ from typing import Any
 
 import yaml
 
-from common import BUNDLE, REPO_ROOT, SEQUENCE, input_yaml_path, msa_path, sha256_file, validate_frozen_msa
+from common import BUNDLE, REPO_ROOT, SEQUENCE, input_yaml_path
 
 ALLOWED_VENDOR_CHANGES = json.loads(
     (BUNDLE / "vendor_patch_allowlist.json").read_text(encoding="utf-8")
@@ -23,10 +23,37 @@ def check_static() -> None:
     input_text = input_yaml_path().read_text(encoding="utf-8")
     if SEQUENCE not in input_text or len(SEQUENCE) != 144:
         raise AssertionError("1CLL input sequence is not the expected 144-residue sequence")
-    validate_frozen_msa()
+    for input_name in ("1cll.yaml", "1cll_n20.yaml", "1cll_n50.yaml"):
+        input_text = (BUNDLE / "inputs" / input_name).read_text(encoding="utf-8")
+        if "msa: empty" not in input_text:
+            raise AssertionError(f"{input_name} must explicitly select single-sequence mode")
+        if "msa:" in input_text.replace("msa: empty", ""):
+            raise AssertionError(f"{input_name} supplies an MSA despite single-sequence setup")
     public_project = (BUNDLE / "public_boltz" / "pyproject.toml").read_text(encoding="utf-8")
     if '"boltz==2.2.1"' not in public_project or "vendor/boltz" in public_project:
         raise AssertionError("Public environment is not pinned to public boltz==2.2.1")
+    public_runner = (BUNDLE / "public_runner.py").read_text(encoding="utf-8")
+    if 'PUBLIC_INPUT = BUNDLE / "inputs" / "1cll_single_sequence.yaml"' not in public_runner:
+        raise AssertionError("Public baseline is not using the single-sequence input")
+    if '"--use_msa_server"' in public_runner:
+        raise AssertionError("Public baseline must remain in single-sequence mode")
+    single_input = (BUNDLE / "inputs" / "1cll_single_sequence.yaml").read_text(encoding="utf-8")
+    if "msa: empty" not in single_input:
+        raise AssertionError("Public baseline must use Boltz's explicit empty-MSA marker")
+    notebook = (BUNDLE / "notebook" / "Boltz2_1CLL_TMscore_Benchmark.ipynb").read_text(encoding="utf-8")
+    if '"USE_MSA_SERVER = True\\n"' in notebook:
+        raise AssertionError("Benchmark notebook must not enable the MSA server")
+    for forbidden_override in (
+        '"--step_scale"',
+        '"--recycling_steps"',
+        '"--sampling_steps"',
+        '"--diffusion_samples"',
+        '"--max_parallel_samples"',
+    ):
+        if forbidden_override in public_runner:
+            raise AssertionError(
+                f"Public baseline overrides a Boltz-2 prediction default: {forbidden_override}"
+            )
     adapter_text = (REPO_ROOT / "adapters" / "boltz2_pfode.py").read_text(encoding="utf-8")
     for required in ("initial_atom_coords", "deterministic", "gamma_0", "Boltz2.load_from_checkpoint"):
         if required not in adapter_text:
@@ -35,23 +62,10 @@ def check_static() -> None:
         o3_config = yaml.safe_load((BUNDLE / config_name).read_text(encoding="utf-8"))
         if float(o3_config["boltz2"]["step_scale"]) != 1.0:
             raise AssertionError(f"{config_name} must use step_scale=1.0 for PF-ODE")
-
-
-def check_fixture() -> dict[str, float]:
-    import csv
-
-    fixture = BUNDLE / "inputs" / "notebook_1CLL_TMscore_results.csv"
-    with fixture.open(newline="", encoding="utf-8") as handle:
-        rows = list(csv.DictReader(handle))
-    if len(rows) != 100:
-        raise AssertionError(f"Expected 100 notebook fixture scores, got {len(rows)}")
-    scores = sorted((float(row["TM_score"]) for row in rows), reverse=True)
-    mean_top10 = sum(scores[:10]) / 10
-    max_top10 = scores[0]
-    expected = {"mean_of_K": 0.6788870863920918, "max_of_K": 0.7958910827539285}
-    if abs(mean_top10 - expected["mean_of_K"]) > 1e-12 or abs(max_top10 - expected["max_of_K"]) > 1e-12:
-        raise AssertionError(f"Notebook fixture mismatch: {mean_top10=}, {max_top10=}")
-    return {"mean_of_K": mean_top10, "max_of_K": max_top10}
+        if bool(o3_config["boltz2"].get("use_msa_server", False)):
+            raise AssertionError(f"{config_name} must not enable the MSA server")
+        if any(key in o3_config["boltz2"] for key in ("msa_server_url", "subsample_msa", "num_subsampled_msa")):
+            raise AssertionError(f"{config_name} contains unnecessary MSA configuration")
 
 
 def public_info() -> dict[str, Any]:
@@ -115,7 +129,7 @@ def gpu_smoke() -> dict[str, object]:
     import yaml
 
     config = yaml.safe_load((BUNDLE / "o3.yaml").read_text(encoding="utf-8"))
-    # Boltz resolves the MSA path in the input YAML relative to cwd.
+    # Boltz resolves the input YAML relative to cwd.
     os.chdir(REPO_ROOT)
     config["project_root"] = str(REPO_ROOT)
     config["target"]["reference_pdb"] = "data/1CLL.pdb"
@@ -156,8 +170,7 @@ def main() -> None:
     parser.add_argument("--gpu", action="store_true")
     args = parser.parse_args()
     check_static()
-    fixture = check_fixture()
-    result: dict[str, object] = {"fixture": fixture, "msa_sha256": sha256_file(msa_path())}
+    result: dict[str, object] = {"conditioning": "single_sequence"}
     if args.audit_vendor:
         result["vendor_audit"] = audit_vendor()
     if args.gpu:

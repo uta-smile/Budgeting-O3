@@ -19,7 +19,6 @@ from common import (
     random_replicate_seeds,
     resolve_replicate_seeds,
     shared_replicate_seeds,
-    validate_frozen_msa,
 )
 from public_runner import run as run_public
 from random_pfode_runner import run as run_random_pfode
@@ -33,7 +32,7 @@ def parse_args() -> argparse.Namespace:
         default="both",
     )
     parser.add_argument("--budget", choices=("n20_k2", "n50_k5", "n100_k10"), default="n100_k10")
-    parser.add_argument("--replicates", type=int, choices=(1, 5), default=5)
+    parser.add_argument("--replicates", type=int, choices=(1, 3, 5), default=5)
     parser.add_argument("--run-id", default=None)
     parser.add_argument("--seed-start", type=int, default=DEFAULT_REPLICATE_SEED_START)
     parser.add_argument("--seed-step", type=int, default=DEFAULT_REPLICATE_SEED_STEP)
@@ -75,8 +74,8 @@ def run_o3(
 
 def main() -> None:
     args = parse_args()
+    os.environ.setdefault("UV_CACHE_DIR", str(REPO_ROOT / ".uv-cache"))
     configure_budget(args.budget)
-    validate_frozen_msa()
     if args.random_seeds and args.seed_list is not None:
         raise ValueError("Use either --random-seeds or --seed-list, not both")
     if args.seed_list is not None:

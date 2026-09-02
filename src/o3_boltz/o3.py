@@ -303,8 +303,6 @@ def run_o3(
         "oracle_evaluations": len(evaluations),
         "generator_sampling": "deterministic_pf_ode",
         "selection_metric": "oracle_tm_score",
-        "total_mean": float(np.mean(all_scores)),
-        "mean_all": float(np.mean(all_scores)),
         "phase1_max": float(np.max(phase1_scores)),
         "new_points_max": float(np.max(new_scores)),
         "new_points_improvement": float(np.max(new_scores) - np.max(phase1_scores)),

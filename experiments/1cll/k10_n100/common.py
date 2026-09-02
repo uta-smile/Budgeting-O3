@@ -36,6 +36,7 @@ K = _BUDGETS[ACTIVE_BUDGET]["K"]
 # seeds being a special case.
 DEFAULT_REPLICATE_SEED_START = 20250117
 DEFAULT_REPLICATE_SEED_STEP = 1009
+UINT32_SEED_MODULUS = 2**32 - 1
 
 
 def configure_budget(name: str) -> None:
@@ -98,27 +99,14 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def validate_frozen_msa() -> str:
-    path = msa_path()
-    if not path.is_file():
-        raise FileNotFoundError(f"Missing frozen MSA: {path}")
-    with path.open(encoding="utf-8") as handle:
-        header = handle.readline().strip()
-    if header != "key,sequence":
-        raise ValueError(f"Unexpected frozen MSA format in {path}: {header!r}")
-    expected = path.with_name(path.name + ".sha256").read_text(encoding="utf-8").split()[0]
-    actual = sha256_file(path)
-    if actual != expected:
-        raise ValueError(f"Frozen MSA checksum mismatch: expected {expected}, got {actual}")
-    return actual
-
-
 def sample_seed(run_seed: int, sample_index: int) -> int:
-    return run_seed * N + sample_index
-
-
-def msa_path() -> Path:
-    return BUNDLE / "inputs" / "1CLL_0.csv"
+    """Derive a deterministic public-Boltz seed in NumPy's valid range."""
+    if sample_index < 0:
+        raise ValueError("sample_index must be non-negative")
+    # Public Boltz passes this value through NumPy/Lightning, which accepts
+    # only unsigned 32-bit seeds. The multiplicative mix keeps samples from
+    # different replicate seeds separated without overflowing that range.
+    return (int(run_seed) * 1_000_003 + int(sample_index) + 1) % UINT32_SEED_MODULUS
 
 
 def input_yaml_path() -> Path:
@@ -185,8 +173,10 @@ def provenance(backend: str, **extra: Any) -> dict[str, Any]:
     return {
         "backend": backend,
         "sequence_length": len(SEQUENCE),
-        "msa_path": str(msa_path()),
-        "msa_sha256": sha256_file(msa_path()),
+        "conditioning": "single_sequence",
+        "msa_path": None,
+        "msa_sha256": None,
+        "use_msa_server": False,
         "reference_pdb": str(reference_path()),
         "reference_chain": "A",
         **extra,

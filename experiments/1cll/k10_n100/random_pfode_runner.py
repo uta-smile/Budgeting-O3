@@ -56,7 +56,7 @@ def run(
                 output_dir=root / f"seed_{run_seed:04d}",
             )
         )
-    fields = ["seed", "N", "K", "mean_of_K", "max_of_K", "mean_all"]
+    fields = ["seed", "N", "K", "mean_of_K", "max_of_K"]
     with (root / "sweep_summary.csv").open("w", newline="", encoding="utf-8") as handle:
         import csv
 

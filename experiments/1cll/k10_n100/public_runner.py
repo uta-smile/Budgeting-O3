@@ -1,4 +1,4 @@
-"""Notebook-faithful public Boltz-2 Best K-of-N runner."""
+"""Paper-faithful single-sequence public Boltz-2 Best K-of-N runner."""
 
 from __future__ import annotations
 
@@ -10,10 +10,23 @@ from pathlib import Path
 from typing import Any
 
 import common
-from common import BUNDLE, REPO_ROOT, convert_cif_to_pdb, find_prediction, output_root, provenance, read_csv, score_structure, validate_frozen_msa, write_csv, write_json
+from common import (
+    BUNDLE,
+    REPO_ROOT,
+    convert_cif_to_pdb,
+    find_prediction,
+    output_root,
+    provenance,
+    read_csv,
+    score_structure,
+    sha256_file,
+    write_csv,
+    write_json,
+)
 
 PUBLIC_PROJECT = BUNDLE / "public_boltz"
 PUBLIC_CACHE = BUNDLE / "cache" / "public_boltz"
+PUBLIC_INPUT = BUNDLE / "inputs" / "1cll_single_sequence.yaml"
 
 
 def _public_env() -> dict[str, str]:
@@ -64,35 +77,44 @@ def public_installation_info() -> dict[str, Any]:
 
 def _run_public_predict(sample_dir: Path, sample_seed: int) -> Path:
     boltz_out = sample_dir / "boltz"
+    if boltz_out.exists() and any(boltz_out.iterdir()) and not list(boltz_out.rglob("*.cif")):
+        retry_index = 1
+        while True:
+            candidate = sample_dir / f"boltz_retry{retry_index}"
+            if not candidate.exists() or not any(candidate.iterdir()) or list(candidate.rglob("*.cif")):
+                boltz_out = candidate
+                break
+            retry_index += 1
     boltz_out.mkdir(parents=True, exist_ok=True)
     command = [
         _uv(), "run", "--project", str(PUBLIC_PROJECT), "boltz", "predict",
-        str(common.input_yaml_path()),
+        str(PUBLIC_INPUT),
         "--out_dir", str(boltz_out),
         "--cache", str(PUBLIC_CACHE),
         "--seed", str(sample_seed),
-        "--accelerator", "gpu",
-        "--devices", "1",
-        "--model", "boltz2",
-        "--num_workers", "0",
         "--no_kernels",
         "--output_format", "mmcif",
-        "--recycling_steps", "3",
-        "--sampling_steps", "200",
-        "--diffusion_samples", "1",
-        "--max_parallel_samples", "1",
     ]
     log_path = sample_dir / "boltz.log"
     with log_path.open("w", encoding="utf-8") as log:
         log.write("$ " + " ".join(command) + "\n")
-        subprocess.run(
-            command,
-            cwd=REPO_ROOT,
-            check=True,
-            stdout=log,
-            stderr=subprocess.STDOUT,
-            env=_public_env(),
-        )
+        try:
+            subprocess.run(
+                command,
+                cwd=REPO_ROOT,
+                check=True,
+                stdout=log,
+                stderr=subprocess.STDOUT,
+                env=_public_env(),
+            )
+        except subprocess.CalledProcessError:
+            # Boltz 2.2.1 can fail while writing its optional confidence
+            # sidecar in single-sequence mode after the prediction CIF has
+            # already been written. The CIF is the required oracle input;
+            # only propagate failures that produced no structure.
+            if not list(boltz_out.rglob("*.cif")):
+                raise
+            log.write("\n[warning] Boltz exited nonzero after writing a prediction CIF; continuing.\n")
     return find_prediction(boltz_out)
 
 
@@ -104,30 +126,37 @@ def _write_replicate_summary(replicate_dir: Path, rows: list[dict[str, Any]], ru
     write_csv(replicate_dir / "evaluations.csv", ordered)
     returned = ordered[:common.K]
     write_json(replicate_dir / "returned_candidates.json", returned)
-    scores = [float(row["tm_score"]) for row in ordered]
     selected = [float(row["tm_score"]) for row in returned]
+    first_sample_seed = common.sample_seed(run_seed, 0)
+    input_provenance = provenance(
+        "public_boltz",
+        msa_path=None,
+        msa_sha256=None,
+        input_yaml=str(PUBLIC_INPUT),
+        input_yaml_sha256=sha256_file(PUBLIC_INPUT),
+        use_msa_server=False,
+        msa_server_url=None,
+    )
     summary = {
         "method": "best_k_of_n",
         "N": common.N,
         "K": common.K,
         "seed": run_seed,
-        "sample_seed_start": run_seed * common.N,
+        "first_sample_seed": first_sample_seed,
         "oracle_evaluations": len(ordered),
-        "total_mean": sum(scores) / len(scores),
-        "mean_all": sum(scores) / len(scores),
         "max_of_K": max(selected),
         "mean_of_K": sum(selected) / len(selected),
         "top_k_mean": sum(selected) / len(selected),
         "best_structure": returned[0]["structure"],
         "generator": {"package": "boltz", "version": info["version"], "module": info["module"], "sampling": "official_stochastic_boltz2"},
-        "msa": provenance("public_boltz", use_msa_server=False),
+        "msa": input_provenance,
     }
     write_json(replicate_dir / "summary.json", summary)
     write_json(replicate_dir / "provenance.json", summary["msa"] | {
         "backend": "public_boltz",
         "generator": summary["generator"],
         "seed": run_seed,
-        "sample_seed_start": run_seed * common.N,
+        "first_sample_seed": first_sample_seed,
         "N": common.N,
         "K": common.K,
     })
@@ -135,7 +164,8 @@ def _write_replicate_summary(replicate_dir: Path, rows: list[dict[str, Any]], ru
 
 
 def run_replicate(run_id: str, run_seed: int, resume: bool = False) -> dict[str, Any]:
-    validate_frozen_msa()
+    if not PUBLIC_INPUT.is_file():
+        raise FileNotFoundError(f"Missing public Boltz single-sequence input: {PUBLIC_INPUT}")
     info = public_installation_info()
     replicate_dir = output_root("best_k_of_n", run_id) / f"replicate_{run_seed:03d}"
     evaluations_path = replicate_dir / "evaluations.csv"
@@ -177,8 +207,8 @@ def run(
     seed_step: int = common.DEFAULT_REPLICATE_SEED_STEP,
     seeds: list[int] | None = None,
 ) -> dict[str, Any]:
-    if replicates not in {1, 5}:
-        raise ValueError("replicates must be 1 or 5")
+    if replicates not in {1, 3, 5}:
+        raise ValueError("replicates must be 1, 3, or 5")
     run_seeds = common.resolve_replicate_seeds(
         replicates, seeds=seeds, seed_start=seed_start, seed_step=seed_step
     )
@@ -195,17 +225,22 @@ def run(
             "K": summary["K"],
             "mean_of_K": summary["mean_of_K"],
             "max_of_K": summary["max_of_K"],
-            "mean_all": summary["mean_all"],
         })
     write_csv(run_dir / "aggregate.csv", aggregate_rows)
     write_json(run_dir / "provenance.json", provenance(
         "public_boltz",
+        msa_path=None,
+        msa_sha256=None,
+        input_yaml=str(PUBLIC_INPUT),
+        input_yaml_sha256=sha256_file(PUBLIC_INPUT),
+        use_msa_server=False,
+        msa_server_url=None,
         budget=common.ACTIVE_BUDGET,
         replicates=replicates,
         seed_mode="explicit_list" if seeds is not None else "arithmetic_schedule",
         seed_start=metadata_seed_start,
         seed_step=metadata_seed_step,
         seeds=run_seeds,
-        seed_blocks="run_seed*N + sample_index",
+        sample_seed_function="common.sample_seed(run_seed, sample_index)",
     ))
     return {"method": "best_k_of_n", "replicates": summaries, "aggregate": aggregate_rows}

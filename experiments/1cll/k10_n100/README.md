@@ -18,6 +18,9 @@ From the repository root:
 The first command checks the setup and GPU. The second command runs all three
 methods with the same five freshly generated seeds.
 
+Set `--replicates 3` for a three-replicate comparison; supported values are 1,
+3, and 5.
+
 Available budgets:
 
 ```text
@@ -51,7 +54,13 @@ outputs/1cll/k2_n20/o3/
 outputs/1cll/k2_n20/random_pfode/
 ```
 
-The frozen input MSA is `inputs/1CLL_0.csv`; MSA-server retrieval is disabled.
-The public baseline uses its isolated environment in `public_boltz/`. O3 and
-O3-random use the custom adapter in `adapters/boltz2_pfode.py` and the
-vendored Boltz source.
+Both methods use single-sequence conditioning: Boltz's official `msa: empty`
+marker is supplied, no MSA is retrieved, and no MSA server is contacted.
+Best-K-of-N uses the stock public Boltz-2 package in its
+isolated `public_boltz/` environment. Its only compatibility switch is the
+same `--no_kernels` flag used by the reference notebook. O3 and O3-random use
+the custom adapter in `adapters/boltz2_pfode.py` and the vendored Boltz source.
+
+The primary comparison metric is `mean_of_K`, the mean TM-score of the K
+returned structures. `max_of_K` is the secondary best-found metric. Aggregate
+reports do not score methods by the mean of all N generated structures.

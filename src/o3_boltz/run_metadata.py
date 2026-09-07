@@ -6,10 +6,12 @@ import hashlib
 import json
 import platform
 import sys
+from functools import lru_cache
 from pathlib import Path
 from typing import Any, Mapping
 
 
+@lru_cache(maxsize=None)
 def _sha256_tree(root: Path) -> str | None:
     if not root.exists():
         return None
@@ -23,6 +25,7 @@ def _sha256_tree(root: Path) -> str | None:
     return digest.hexdigest()
 
 
+@lru_cache(maxsize=None)
 def _sha256_file(path: Path) -> str | None:
     if not path.exists() or not path.is_file():
         return None
@@ -91,6 +94,7 @@ def collect_run_metadata(
             "path": str(checkpoint_path),
             "exists": checkpoint_path.exists(),
             "size_bytes": checkpoint_path.stat().st_size if checkpoint_path.exists() else None,
+            "sha256": _sha256_file(checkpoint_path),
         }
 
     return {

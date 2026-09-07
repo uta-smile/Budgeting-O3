@@ -1259,7 +1259,7 @@ def predict(  # noqa: C901, PLR0915, PLR0912
         callbacks=[pred_writer],
         accelerator=accelerator,
         devices=devices,
-        precision=32 if model == "boltz1" else "bf16-mixed",
+        precision=32 if model == "boltz1" else "16-mixed",
     )
 
     if filtered_manifest.records:

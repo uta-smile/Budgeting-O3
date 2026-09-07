@@ -6,16 +6,19 @@ import random
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Mapping
+from warnings import WarningMessage
 
 import numpy as np
 import torch
 from botorch.acquisition.logei import qLogExpectedImprovement
+from botorch.exceptions.warnings import OptimizationWarning
 from botorch.fit import fit_gpytorch_mll
 from botorch.models import SingleTaskGP
 from botorch.models.transforms.outcome import Standardize
 from botorch.optim import optimize_acqf
 from botorch.sampling.normal import SobolQMCNormalSampler
 from gpytorch.kernels import RBFKernel, ScaleKernel
+from gpytorch.constraints import Interval
 from gpytorch.means import ConstantMean
 from gpytorch.mlls import ExactMarginalLogLikelihood
 
@@ -53,6 +56,26 @@ def _validate_budget(budget: Mapping[str, Any]) -> tuple[int, int, int, int]:
     return n, k, m, d
 
 
+def _o3_gp_warning_handler(warning: WarningMessage) -> bool:
+    """Accept recoverable GP optimizer warnings but not optimizer timeouts.
+
+    BoTorch 0.18 treats SciPy line-search warnings such as
+    ``ABNORMAL_TERMINATION_IN_LNSRCH`` as retry-worthy. On this small,
+    deterministic oracle problem, the returned model can still be finite and
+    usable for acquisition; retrying the same fit five times can otherwise
+    abort an otherwise valid O3 run. Timeouts remain unresolved so they still
+    trigger the normal failure path.
+    """
+
+    if not issubclass(warning.category, OptimizationWarning):
+        return False
+    message = str(warning.message)
+    if "Optimization timed out" in message:
+        return False
+    print(f"[O3] accepting recoverable GP optimizer warning: {message}", flush=True)
+    return True
+
+
 def _fit_and_acquire(train_u: np.ndarray, train_scores: np.ndarray) -> np.ndarray:
     train_x = torch.as_tensor(train_u, dtype=torch.double)
     train_y = torch.as_tensor(train_scores[:, None], dtype=torch.double)
@@ -60,11 +83,22 @@ def _fit_and_acquire(train_u: np.ndarray, train_scores: np.ndarray) -> np.ndarra
         train_x,
         train_y,
         mean_module=ConstantMean(),
-        covar_module=ScaleKernel(RBFKernel(ard_num_dims=train_u.shape[1])),
+        # U lives in a unit cube.  Without an upper bound, the optimizer can
+        # make an ARD length scale effectively infinite, producing an almost
+        # rank-one covariance matrix that cannot be Cholesky-factorized after
+        # the chart points accumulate.  Ten is already much larger than the
+        # cube's diameter and is therefore a numerical guard, not a material
+        # restriction on the surrogate's useful length scales.
+        covar_module=ScaleKernel(
+            RBFKernel(
+                ard_num_dims=train_u.shape[1],
+                lengthscale_constraint=Interval(1.0e-2, 10.0),
+            )
+        ),
         outcome_transform=Standardize(m=1),
     )
     mll = ExactMarginalLogLikelihood(model.likelihood, model)
-    fit_gpytorch_mll(mll)
+    fit_gpytorch_mll(mll, warning_handler=_o3_gp_warning_handler)
 
     acquisition = qLogExpectedImprovement(
         model=model,
@@ -91,6 +125,216 @@ def _fit_and_acquire(train_u: np.ndarray, train_scores: np.ndarray) -> np.ndarra
     return np.clip(point, 0.0, 1.0)
 
 
+def _load_resume_state(
+    *,
+    adapter: GeneratorOracle,
+    config: Mapping[str, Any],
+    budget_name: str,
+    run_seed: int,
+    output_dir: Path,
+    m: int,
+    d: int,
+    latent_dim: int,
+    bo_rounds: int,
+    expected_phase1_latents: np.ndarray,
+    initial_u_points: np.ndarray,
+) -> dict[str, Any] | None:
+    """Rebuild the in-memory O3 state from a contiguous saved prefix.
+
+    Latents are checked against the points implied by ``run_seed``.  This is
+    what makes ``--resume`` a continuation of the same experiment rather than
+    a new random trajectory that happens to share an output directory.
+    """
+
+    archive_path = output_dir / "phase1_latents.npz"
+    evaluations: list[Evaluation] = []
+    phase1_latents = np.empty((m, latent_dim), dtype=np.float64)
+    phase1_scores = np.empty(m, dtype=np.float64)
+
+    def add_existing(
+        *,
+        index: int,
+        stage: str,
+        latent_path: Path,
+        structure_path: Path,
+        u: np.ndarray | None,
+        expected_latent: np.ndarray | None = None,
+    ) -> float:
+        if not latent_path.exists() or not structure_path.exists():
+            raise FileNotFoundError(
+                f"Cannot resume {output_dir}: missing {latent_path} or {structure_path}"
+            )
+        latent = np.asarray(np.load(latent_path), dtype=np.float64)
+        if latent.shape != (latent_dim,) or not np.all(np.isfinite(latent)):
+            raise ValueError(f"Cannot resume {output_dir}: invalid latent in {latent_path}")
+        if expected_latent is not None and not np.array_equal(latent, expected_latent):
+            raise ValueError(
+                f"Cannot resume {output_dir}: {latent_path} does not match seed {run_seed}"
+            )
+        value = float(adapter.score(structure_path, config))
+        if not np.isfinite(value):
+            raise ValueError(f"Cannot resume {output_dir}: non-finite score for {structure_path}")
+        evaluations.append(
+            Evaluation(
+                index=index,
+                stage=stage,
+                score=value,
+                structure=str(structure_path),
+                latent_file=str(latent_path),
+                budget=budget_name,
+                seed=run_seed,
+                u=None if u is None else u.tolist(),
+            )
+        )
+        return value
+
+    phase1_completed = 0
+    for index in range(m):
+        latent_path = output_dir / "latents" / f"latent_{index:04d}.npy"
+        structure_path = output_dir / "phase1" / f"sample_{index:04d}.pdb"
+        if structure_path.exists() and not latent_path.exists():
+            raise FileNotFoundError(
+                f"Cannot resume {output_dir}: structure exists without {latent_path}"
+            )
+        if not (latent_path.exists() and structure_path.exists()):
+            break
+        phase1_latents[index] = expected_phase1_latents[index]
+        phase1_scores[index] = add_existing(
+            index=index,
+            stage="phase1_random",
+            latent_path=latent_path,
+            structure_path=structure_path,
+            u=None,
+            expected_latent=expected_phase1_latents[index],
+        )
+        phase1_completed += 1
+
+    if phase1_completed == 0 and not archive_path.exists():
+        return None
+    if archive_path.exists() and phase1_completed != m:
+        raise ValueError(
+            f"Cannot resume {output_dir}: phase1_latents.npz exists but only "
+            f"{phase1_completed}/{m} phase-1 structures are complete"
+        )
+    if phase1_completed < m:
+        print(
+            f"[{budget_name} seed={run_seed}] resuming from "
+            f"{phase1_completed}/{m + 2 + bo_rounds} saved evaluations",
+            flush=True,
+        )
+        return {
+            "evaluations": evaluations,
+            "phase1_latents": phase1_latents,
+            "phase1_scores": phase1_scores,
+            "phase1_completed": phase1_completed,
+            "phase2_completed": 0,
+            "bo_rounds_completed": 0,
+        }
+
+    selected = np.argsort(phase1_scores)[-d:][::-1]
+    seed_latents = phase1_latents[selected].copy()
+    seed_scores = phase1_scores[selected].copy()
+
+    if archive_path.exists():
+        with np.load(archive_path) as archive:
+            archived_latents = np.asarray(archive["latents"], dtype=np.float64)
+            archived_selected = np.asarray(archive["selected_indices"], dtype=np.int64)
+        if not np.array_equal(archived_latents, phase1_latents):
+            raise ValueError(f"Cannot resume {output_dir}: phase-1 archive latent mismatch")
+        if not np.array_equal(archived_selected, selected):
+            raise ValueError(f"Cannot resume {output_dir}: phase-1 archive selection mismatch")
+
+    chart = SurrogateChart(seed_latents)
+    train_u = np.asarray(chart.from_z_to_u(seed_latents), dtype=np.float64)
+    train_scores = seed_scores.copy()
+    phase2_completed = 0
+    for index in range(2):
+        latent_path = output_dir / "latents" / f"latent_{m + index:04d}.npy"
+        u_path = output_dir / "u" / f"u_{m + index:04d}.npy"
+        structure_path = output_dir / "bo" / f"initial_{index:02d}.pdb"
+        if structure_path.exists() and not latent_path.exists():
+            raise FileNotFoundError(
+                f"Cannot resume {output_dir}: structure exists without {latent_path}"
+            )
+        if not (latent_path.exists() and structure_path.exists()):
+            break
+        if not u_path.exists():
+            raise FileNotFoundError(
+                f"Cannot resume {output_dir}: completed U evaluation is missing {u_path}"
+            )
+        u = np.asarray(np.load(u_path), dtype=np.float64)
+        if not np.array_equal(u, initial_u_points[index]):
+            raise ValueError(
+                f"Cannot resume {output_dir}: {u_path} does not match seed {run_seed}"
+            )
+        expected_latent = np.asarray(chart.from_u_to_z(u), dtype=np.float64)
+        score = add_existing(
+            index=m + index,
+            stage="bo_initial_random",
+            latent_path=latent_path,
+            structure_path=structure_path,
+            u=u,
+            expected_latent=expected_latent,
+        )
+        train_u = np.vstack([train_u, u])
+        train_scores = np.append(train_scores, score)
+        phase2_completed += 1
+
+    bo_rounds_completed = 0
+    for round_index in range(bo_rounds):
+        latent_path = output_dir / "latents" / f"latent_{m + 2 + round_index:04d}.npy"
+        u_path = output_dir / "u" / f"u_{m + 2 + round_index:04d}.npy"
+        structure_path = output_dir / "bo" / f"round_{round_index:04d}.pdb"
+        if structure_path.exists() and not latent_path.exists():
+            raise FileNotFoundError(
+                f"Cannot resume {output_dir}: structure exists without {latent_path}"
+            )
+        if not (latent_path.exists() and structure_path.exists()):
+            break
+        if not u_path.exists():
+            raise FileNotFoundError(
+                f"Cannot resume {output_dir}: completed BO evaluation is missing {u_path}"
+            )
+        latent = np.asarray(np.load(latent_path), dtype=np.float64)
+        u = np.asarray(np.load(u_path), dtype=np.float64)
+        if u.shape != (d - 1,) or not np.all(np.isfinite(u)):
+            raise ValueError(f"Cannot resume {output_dir}: invalid U point in {u_path}")
+        expected_latent = np.asarray(chart.from_u_to_z(u), dtype=np.float64)
+        score = add_existing(
+            index=m + 2 + round_index,
+            stage="bo_acquisition",
+            latent_path=latent_path,
+            structure_path=structure_path,
+            u=u,
+            expected_latent=expected_latent,
+        )
+        train_u = np.vstack([train_u, u])
+        train_scores = np.append(train_scores, score)
+        bo_rounds_completed += 1
+
+    if phase2_completed < 2 and bo_rounds_completed:
+        raise ValueError(f"Cannot resume {output_dir}: BO rounds exist before both initial U samples")
+    print(
+        f"[{budget_name} seed={run_seed}] resuming from "
+        f"{len(evaluations)}/{m + 2 + bo_rounds} saved evaluations "
+        f"({bo_rounds_completed} BO rounds complete)",
+        flush=True,
+    )
+    return {
+        "evaluations": evaluations,
+        "phase1_latents": phase1_latents,
+        "phase1_scores": phase1_scores,
+        "phase1_completed": phase1_completed,
+        "seed_latents": seed_latents,
+        "seed_scores": seed_scores,
+        "chart": chart,
+        "train_u": train_u,
+        "train_scores": train_scores,
+        "phase2_completed": phase2_completed,
+        "bo_rounds_completed": bo_rounds_completed,
+    }
+
+
 def run_o3(
     *,
     adapter: GeneratorOracle,
@@ -98,6 +342,7 @@ def run_o3(
     budget: Mapping[str, Any],
     run_seed: int,
     output_dir: Path,
+    resume: bool = False,
 ) -> dict[str, Any]:
     """Run one budget/seed pair and write all artifacts below output_dir."""
 
@@ -106,6 +351,15 @@ def run_o3(
     budget_name = str(budget.get("name", f"n{n}_k{k}"))
     bo_rounds = n - m - 2
     rng = np.random.default_rng(run_seed)
+    # Materialize the seed-derived random points up front.  Besides making the
+    # protocol explicit, this lets a resumed process validate its saved prefix
+    # and continue with exactly the same two random U points.
+    expected_phase1_latents = np.stack(
+        [rng.normal(size=latent_dim) for _ in range(m)], axis=0
+    )
+    initial_u_points = np.stack(
+        [rng.uniform(0.0, 1.0, size=d - 1) for _ in range(2)], axis=0
+    )
     random.seed(run_seed)
     torch.manual_seed(run_seed)
     if torch.cuda.is_available():
@@ -116,9 +370,52 @@ def run_o3(
     seed_dir.mkdir(exist_ok=True)
     bo_dir.mkdir(exist_ok=True)
 
+    summary_path = output_dir / "summary.json"
+    if resume and summary_path.exists():
+        with summary_path.open("r", encoding="utf-8") as handle:
+            summary = json.load(handle)
+        expected_summary_values = {
+            "budget": budget_name,
+            "N": n,
+            "K": k,
+            "M": m,
+            "d": d,
+            "seed": run_seed,
+            "latent_dim": latent_dim,
+        }
+        mismatches = {
+            key: (summary.get(key), expected)
+            for key, expected in expected_summary_values.items()
+            if summary.get(key) != expected
+        }
+        if mismatches:
+            raise ValueError(
+                f"Cannot resume {output_dir}: completed summary does not match "
+                f"this run ({mismatches})"
+            )
+        print(f"[{budget_name} seed={run_seed}] resume: summary already complete", flush=True)
+        return summary
+
     evaluations: list[Evaluation] = []
     phase1_latents = np.empty((m, latent_dim), dtype=np.float64)
     phase1_scores = np.empty(m, dtype=np.float64)
+    resumed = (
+        _load_resume_state(
+            adapter=adapter,
+            config=config,
+            budget_name=budget_name,
+            run_seed=run_seed,
+            output_dir=output_dir,
+            m=m,
+            d=d,
+            latent_dim=latent_dim,
+            bo_rounds=bo_rounds,
+            expected_phase1_latents=expected_phase1_latents,
+            initial_u_points=initial_u_points,
+        )
+        if resume
+        else None
+    )
 
     print(
         f"[{budget_name} seed={run_seed}] O3 protocol: "
@@ -153,6 +450,10 @@ def run_o3(
         latent_path = output_dir / "latents" / f"latent_{len(evaluations):04d}.npy"
         latent_path.parent.mkdir(exist_ok=True)
         np.save(latent_path, latent)
+        if u is not None:
+            u_path = output_dir / "u" / f"u_{len(evaluations):04d}.npy"
+            u_path.parent.mkdir(exist_ok=True)
+            np.save(u_path, u)
         print_progress(f"generating {stage}")
         written_path = adapter.generate(
             latent=latent,
@@ -191,8 +492,20 @@ def run_o3(
         print_progress("completed", score)
         return score
 
-    for i in range(m):
-        latent = rng.normal(size=latent_dim)
+    if resumed is None:
+        phase1_completed = 0
+        phase2_completed = 0
+        bo_rounds_completed = 0
+    else:
+        evaluations = resumed["evaluations"]
+        phase1_latents = resumed["phase1_latents"]
+        phase1_scores = resumed["phase1_scores"]
+        phase1_completed = int(resumed["phase1_completed"])
+        phase2_completed = int(resumed["phase2_completed"])
+        bo_rounds_completed = int(resumed["bo_rounds_completed"])
+
+    for i in range(phase1_completed, m):
+        latent = expected_phase1_latents[i]
         phase1_latents[i] = latent
         phase1_scores[i] = evaluate(
             latent,
@@ -223,6 +536,19 @@ def run_o3(
         selected_scores=seed_scores,
     )
 
+    if resumed is None or phase1_completed < m:
+        chart = SurrogateChart(seed_latents)
+        train_u = np.asarray(chart.from_z_to_u(seed_latents), dtype=np.float64)
+        train_scores = seed_scores.copy()
+        phase2_completed = 0
+        bo_rounds_completed = 0
+    else:
+        seed_latents = resumed["seed_latents"]
+        seed_scores = resumed["seed_scores"]
+        chart = resumed["chart"]
+        train_u = resumed["train_u"]
+        train_scores = resumed["train_scores"]
+
     # The selected phase-1 structures are already scored. Project each seed
     # through the reference chart's inverse map, reuse those scores, and spend
     # two fresh calls on random points. This exactly accounts for N calls.
@@ -232,12 +558,8 @@ def run_o3(
         f"(U dimension={d - 1})",
         flush=True,
     )
-    chart = SurrogateChart(seed_latents)
-    train_u = np.asarray(chart.from_z_to_u(seed_latents), dtype=np.float64)
-    train_scores = seed_scores.copy()
-
-    for i in range(2):
-        u = rng.uniform(0.0, 1.0, size=d - 1)
+    for i in range(phase2_completed, 2):
+        u = initial_u_points[i]
         latent = map_u_to_latent(u, seed_latents)
         score = evaluate(latent, "bo_initial_random", bo_dir / f"initial_{i:02d}.pdb", u)
         train_u = np.vstack([train_u, u])
@@ -249,8 +571,14 @@ def run_o3(
         f"starting phase 3 BO for {bo_rounds} rounds",
         flush=True,
     )
-    for round_index in range(bo_rounds):
+    for round_index in range(bo_rounds_completed, bo_rounds):
         print_progress(f"fitting BO round {round_index + 1}/{bo_rounds}")
+        # Make every acquisition round reproducible in isolation so restarting
+        # the process does not change BoTorch's Sobol/raw-sample sequence.
+        acquisition_seed = (int(run_seed) * 1_000_003 + round_index + 1) % (2**63 - 1)
+        torch.manual_seed(acquisition_seed)
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed_all(acquisition_seed)
         u = _fit_and_acquire(train_u, train_scores)
         latent = chart.from_u_to_z(u)
         score = evaluate(

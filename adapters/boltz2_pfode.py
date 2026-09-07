@@ -110,7 +110,20 @@ class Boltz2PFODEAdapter:
         self.input_msa_path = None
         self.input_msa_sha256 = None
         input_data = yaml.safe_load(self.input_yaml.read_text(encoding="utf-8"))
-        input_msa = input_data["sequences"][0]["protein"].get("msa")
+        sequences = input_data.get("sequences", []) if isinstance(input_data, dict) else []
+        if len(sequences) != 1 or "protein" not in sequences[0]:
+            raise ValueError(
+                "The 1CLL benchmark input must contain exactly one protein sequence"
+            )
+        input_protein = sequences[0]["protein"]
+        input_sequence = "".join(str(input_protein.get("sequence", "")).split()).upper()
+        configured_sequence = "".join(str(target["sequence"]).split()).upper()
+        if input_sequence != configured_sequence:
+            raise ValueError(
+                "The Boltz input YAML sequence does not match target.sequence; "
+                "both methods must consume the same 1CLL sequence"
+            )
+        input_msa = input_protein.get("msa")
         if input_msa not in (None, "", 0, "empty"):
             raise ValueError(
                 "MSA inputs are disabled for this benchmark; use an omitted MSA or 'msa: empty'"
@@ -144,14 +157,19 @@ class Boltz2PFODEAdapter:
             raise ValueError("boltz2.max_msa_seqs must be positive")
         self.no_kernels = bool(boltz_config.get("no_kernels", False))
         # The upstream Boltz CLI constructs a Lightning Trainer with
-        # precision="bf16-mixed" for Boltz-2. The adapter calls forward()
-        # directly, so it must reproduce that autocast context explicitly.
+        # The upstream Boltz-2 CLI uses mixed precision. The adapter calls
+        # forward() directly, so it reproduces the selected autocast context
+        # explicitly; ``auto`` is resolved after CUDA capability detection.
         self.inference_precision = str(
-            boltz_config.get("inference_precision", "bf16-mixed")
+            os.environ.get(
+                "O3_INFERENCE_PRECISION",
+                boltz_config.get("inference_precision", "auto"),
+            )
         )
-        if self.inference_precision not in {"bf16-mixed", "32"}:
+        if self.inference_precision not in {"auto", "bf16-mixed", "32"}:
             raise ValueError(
-                "boltz2.inference_precision must be 'bf16-mixed' or '32'"
+                "O3_INFERENCE_PRECISION / boltz2.inference_precision must be "
+                "'auto', 'bf16-mixed', or '32'"
             )
         configured_atom_slots = boltz_config.get("atom_slots")
         self.configured_atom_slots = (
@@ -163,7 +181,10 @@ class Boltz2PFODEAdapter:
 
         reference = _path(str(target["reference_pdb"]), project_root)
         self.oracle = TMScoreOracle(reference, target.get("reference_chain"))
-        self.sequence = str(target["sequence"])
+        # The parsed Boltz YAML is the authoritative generator input.  The
+        # duplicated target value above is retained only as a fail-fast check
+        # against accidentally scoring one construct while generating another.
+        self.sequence = input_sequence
         self.last_model_metrics: dict[str, float] = {}
 
         self._load_model(config)
@@ -191,6 +212,24 @@ class Boltz2PFODEAdapter:
             raise RuntimeError(
                 "The O3 Boltz-2 generator requires a CUDA GPU. Run it on the lab GPU node."
             )
+        if self.inference_precision == "auto":
+            bf16_probe = getattr(torch.cuda, "is_bf16_supported", None)
+            if bf16_probe is None:
+                bf16_supported = False
+            else:
+                try:
+                    bf16_supported = bool(bf16_probe(including_emulation=False))
+                except TypeError:
+                    # Compatibility with older PyTorch releases without the
+                    # ``including_emulation`` keyword.
+                    bf16_supported = bool(bf16_probe())
+            self.inference_precision = "bf16-mixed" if bf16_supported else "32"
+            print(
+                f"[Boltz-2] auto precision selected {self.inference_precision} "
+                f"for {torch.cuda.get_device_name(0)}",
+                flush=True,
+            )
+
         # Match the upstream CLI's matmul setting before constructing the
         # model. This is process-global, just as it is in boltz.main.predict.
         torch.set_float32_matmul_precision("highest")

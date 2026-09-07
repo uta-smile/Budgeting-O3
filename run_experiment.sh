@@ -10,10 +10,12 @@ UV_CACHE_DIR="${UV_CACHE_DIR:-$ROOT_DIR/.uv-cache}"
 export UV_CACHE_DIR
 mkdir -p "$UV_CACHE_DIR"
 
-# Run this script from the project directory in Git Bash on Windows or a shell on Linux.
-# The repository now includes the deterministic adapter. O3_ADAPTER_SPEC can
-# override it for a lab-specific implementation.
-ADAPTER_SPEC="${O3_ADAPTER_SPEC:-adapters.boltz2_pfode:create}"
+# Keep model assets off the quota-limited home filesystem.  FP32 is the safe
+# public-Boltz precision on the lab's GTX Titan; callers may override either.
+BOLTZ_CACHE="${BOLTZ_CACHE:-$ROOT_DIR/.boltz}"
+BOLTZ_PUBLIC_PRECISION="${BOLTZ_PUBLIC_PRECISION:-32}"
+export BOLTZ_CACHE BOLTZ_PUBLIC_PRECISION
+mkdir -p "$BOLTZ_CACHE"
 
 if ! command -v uv >/dev/null 2>&1; then
   echo "uv is required but was not found on PATH." >&2
@@ -44,7 +46,13 @@ if [ ! -s "$REFERENCE_PDB" ]; then
   curl -fsSL "https://files.rcsb.org/download/1CLL.pdb" -o "$REFERENCE_PDB"
 fi
 
-uv run python -m o3_boltz.cli \
-  --config configs/1cll.yaml \
-  --adapter "$ADAPTER_SPEC" \
-  "$@"
+# The comparison bundle routes Best K-of-N to an isolated, unmodified public
+# Boltz 2.2.1 environment and O3 to the vendored deterministic adapter.  It is
+# the single supported experiment entry point.
+if [ "$#" -eq 0 ]; then
+  for BUDGET in n20_k2 n50_k5 n100_k10; do
+    uv run python experiments/1cll/k10_n100/run.py --only "$BUDGET"
+  done
+else
+  uv run python experiments/1cll/k10_n100/run.py "$@"
+fi

@@ -1,9 +1,13 @@
 from pathlib import Path
+from warnings import WarningMessage
 
 import numpy as np
 import yaml
+from botorch.exceptions.warnings import OptimizationWarning
 
 from o3_boltz import o3
+from o3_boltz.cli import _budget_method_root
+from o3_boltz.tmscore import TMScoreOracle
 
 
 def test_1cll_main_protocol_uses_explicit_single_sequence_input() -> None:
@@ -14,6 +18,35 @@ def test_1cll_main_protocol_uses_explicit_single_sequence_input() -> None:
     input_config = yaml.safe_load(input_path.read_text(encoding="utf-8"))
     assert config["boltz2"]["use_msa_server"] is False
     assert input_config["sequences"][0]["protein"]["msa"] == "empty"
+    assert [budget["name"] for budget in config["budgets"]] == [
+        "n20_k2",
+        "n50_k5",
+        "n100_k10",
+    ]
+
+
+def test_canonical_output_layout_groups_methods_under_one_budget(tmp_path) -> None:
+    budget = {"name": "n100_k10", "N": 100, "K": 10}
+    root = _budget_method_root(
+        output_root=tmp_path,
+        target_name="1cll",
+        method_name="o3",
+        budget=budget,
+        output_layout="target_budget_method",
+    )
+    assert root == tmp_path / "1cll" / "k10_n100" / "o3"
+
+
+def test_tm_score_uses_the_requested_reference_chain() -> None:
+    reference = Path(__file__).parents[1] / "data" / "1CLL.pdb"
+    oracle = TMScoreOracle(reference, "A")
+    assert abs(oracle.score(reference, "A") - 1.0) < 1.0e-12
+    try:
+        TMScoreOracle(reference, "missing")
+    except ValueError as exc:
+        assert "Requested chain" in str(exc)
+    else:
+        raise AssertionError("missing reference chain silently fell back to another chain")
 
 
 class FakeAdapter:
@@ -40,6 +73,15 @@ class FakeAdapter:
 
     def score(self, structure_path, config):
         return self.scores[structure_path]
+
+
+def _warning(message: str) -> WarningMessage:
+    return WarningMessage(message, OptimizationWarning, __file__, 1)
+
+
+def test_o3_accepts_recoverable_gp_warning_but_rejects_timeout() -> None:
+    assert o3._o3_gp_warning_handler(_warning("ABNORMAL_TERMINATION_IN_LNSRCH"))
+    assert not o3._o3_gp_warning_handler(_warning("Optimization timed out after 60 seconds"))
 
 
 def test_o3_spends_exactly_n_calls_and_uses_reference_initialization(tmp_path, monkeypatch) -> None:
@@ -115,3 +157,65 @@ def test_random_pfode_spends_n_deterministic_random_z_calls(tmp_path) -> None:
     assert all(call["deterministic"] for call in adapter.calls)
     expected = np.random.default_rng(4).normal(size=(20, adapter.latent_dim))
     np.testing.assert_allclose(np.asarray(adapter.latents), expected)
+
+
+def test_o3_resume_preserves_seeded_latent_sequence(tmp_path, monkeypatch) -> None:
+    monkeypatch.setattr(
+        o3,
+        "_fit_and_acquire",
+        lambda train_u, train_scores: np.full(train_u.shape[1], 0.5),
+    )
+    config = {"latent_dim": FakeAdapter.latent_dim, "boltz2": {}}
+    budget = {"name": "test", "N": 8, "K": 2, "M": 4, "d": 2}
+
+    full_adapter = FakeAdapter()
+    full_dir = tmp_path / "full"
+    full_summary = o3.run_o3(
+        adapter=full_adapter,
+        config=config,
+        budget=budget,
+        run_seed=17,
+        output_dir=full_dir,
+    )
+
+    class InterruptingAdapter(FakeAdapter):
+        def __init__(self, stop_after: int) -> None:
+            super().__init__()
+            self.stop_after: int | None = stop_after
+
+        def generate(self, latent, output_path, config, metadata):
+            if self.stop_after is not None and len(self.calls) == self.stop_after:
+                raise RuntimeError("simulated interruption")
+            return super().generate(latent, output_path, config, metadata)
+
+    for stop_after in (2, 5):
+        resumed_adapter = InterruptingAdapter(stop_after)
+        resumed_dir = tmp_path / f"resumed_{stop_after}"
+        try:
+            o3.run_o3(
+                adapter=resumed_adapter,
+                config=config,
+                budget=budget,
+                run_seed=17,
+                output_dir=resumed_dir,
+            )
+        except RuntimeError as exc:
+            assert str(exc) == "simulated interruption"
+        else:
+            raise AssertionError("simulated interruption did not occur")
+
+        resumed_adapter.stop_after = None
+        resumed_summary = o3.run_o3(
+            adapter=resumed_adapter,
+            config=config,
+            budget=budget,
+            run_seed=17,
+            output_dir=resumed_dir,
+            resume=True,
+        )
+        assert resumed_summary["max_of_K"] == full_summary["max_of_K"]
+        for index in range(8):
+            np.testing.assert_array_equal(
+                np.load(resumed_dir / "latents" / f"latent_{index:04d}.npy"),
+                np.load(full_dir / "latents" / f"latent_{index:04d}.npy"),
+            )

@@ -43,6 +43,11 @@ def _parse_args() -> argparse.Namespace:
         help="Explicit replicate seed list; its length must equal --replicates.",
     )
     parser.add_argument("--run-id", default=None, help="Optional run folder name. Defaults to the current timestamp.")
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="Reuse completed O3 summaries and continue partial seed directories.",
+    )
     parser.add_argument("--only", nargs="*", help="run only these budget names")
     parser.add_argument(
         "--method",
@@ -62,6 +67,30 @@ def _find_project_root(config_path: Path) -> Path:
             return candidate
     raise FileNotFoundError(
         f"Could not find the repository root above configuration {config_path}"
+    )
+
+
+def _budget_method_root(
+    *,
+    output_root: Path,
+    target_name: str,
+    method_name: str,
+    budget: dict,
+    output_layout: str,
+) -> Path:
+    """Resolve one method root without duplicating budget path logic."""
+
+    budget_name = str(budget.get("name", f"n{budget['N']}_k{budget['K']}"))
+    if output_layout == "method_only":
+        return output_root / method_name / budget_name
+    if output_layout == "target_method":
+        return output_root / target_name / method_name / budget_name
+    if output_layout == "target_budget_method":
+        budget_folder = f"k{int(budget['K'])}_n{int(budget['N'])}"
+        return output_root / target_name / budget_folder / method_name
+    raise ValueError(
+        "output_layout must be 'method_only', 'target_method', or "
+        "'target_budget_method'"
     )
 
 
@@ -147,19 +176,34 @@ def main() -> None:
     run_id = args.run_id or datetime.now().strftime("%Y%m%d_%H%M%S")
     method_name = "o3"
     output_layout = str(config.get("output_layout", "target_method"))
-    if output_layout == "method_only":
-        method_root = output_root / method_name
-    elif output_layout == "target_method":
-        method_root = output_root / target_name / method_name
-    else:
-        raise ValueError("output_layout must be 'target_method' or 'method_only'")
     summaries_by_budget: dict[str, list[dict]] = {}
+    roots_by_budget: dict[str, Path] = {}
     for budget in config["budgets"]:
         budget_name = str(budget.get("name", f"n{budget['N']}_k{budget['K']}"))
         if wanted and budget_name not in wanted:
             continue
+        method_root = _budget_method_root(
+            output_root=output_root,
+            target_name=target_name,
+            method_name=method_name,
+            budget=budget,
+            output_layout=output_layout,
+        )
+        if output_layout == "target_budget_method" and args.resume:
+            legacy_root = output_root / target_name / method_name / budget_name
+            if (
+                not (method_root / "runs" / run_id).exists()
+                and (legacy_root / "runs" / run_id).exists()
+            ):
+                print(
+                    f"[{budget_name}] resume: using legacy run location "
+                    f"{legacy_root / 'runs' / run_id}",
+                    flush=True,
+                )
+                method_root = legacy_root
+        roots_by_budget[budget_name] = method_root
         for run_seed in run_seeds:
-            run_dir = method_root / budget_name / "runs" / run_id / f"seed_{run_seed:04d}"
+            run_dir = method_root / "runs" / run_id / f"seed_{run_seed:04d}"
             print(f"[{budget_name} method={args.method} seed={run_seed}] starting", flush=True)
             summary = run_o3(
                 adapter=adapter,
@@ -167,6 +211,7 @@ def main() -> None:
                 budget=budget,
                 run_seed=run_seed,
                 output_dir=run_dir,
+                resume=args.resume,
             )
             summaries_by_budget.setdefault(budget_name, []).append(summary)
             print(
@@ -181,7 +226,7 @@ def main() -> None:
         return
 
     for budget_name, summaries in summaries_by_budget.items():
-        summary_root = method_root / budget_name / "runs" / run_id
+        summary_root = roots_by_budget[budget_name] / "runs" / run_id
         summary_root.mkdir(parents=True, exist_ok=True)
         summary_path = summary_root / "sweep_summary.csv"
         with summary_path.open("w", newline="", encoding="utf-8") as handle:

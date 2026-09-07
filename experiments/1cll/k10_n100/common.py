@@ -23,9 +23,9 @@ SEQUENCE = (
     "DTDSEEEIREAFRVFDKDGNGYISAAELRHVMTNLGEKLTDEEVDEMIREADIDGDGQVNYEEFVQMMTA"
 )
 _BUDGETS = {
-    "n20_k2": {"N": 20, "K": 2, "folder": "k2_n20", "input": "1cll_n20.yaml"},
-    "n50_k5": {"N": 50, "K": 5, "folder": "k5_n50", "input": "1cll_n50.yaml"},
-    "n100_k10": {"N": 100, "K": 10, "folder": "k10_n100", "input": "1cll.yaml"},
+    "n20_k2": {"N": 20, "K": 2, "folder": "k2_n20"},
+    "n50_k5": {"N": 50, "K": 5, "folder": "k5_n50"},
+    "n100_k10": {"N": 100, "K": 10, "folder": "k10_n100"},
 }
 ACTIVE_BUDGET = "n100_k10"
 N = _BUDGETS[ACTIVE_BUDGET]["N"]
@@ -85,6 +85,8 @@ def resolve_replicate_seeds(
             )
         if len(set(resolved)) != len(resolved):
             raise ValueError("replicate seeds must be unique")
+        if any(seed < 0 or seed >= 2**32 for seed in resolved):
+            raise ValueError("replicate seeds must be unsigned 32-bit integers")
         return resolved
     return shared_replicate_seeds(
         replicates, seed_start=seed_start, seed_step=seed_step
@@ -110,7 +112,7 @@ def sample_seed(run_seed: int, sample_index: int) -> int:
 
 
 def input_yaml_path() -> Path:
-    return BUNDLE / "inputs" / str(_BUDGETS[ACTIVE_BUDGET]["input"])
+    return REPO_ROOT / "data" / "1cll_boltz_input.yaml"
 
 
 def reference_path() -> Path:
@@ -120,6 +122,13 @@ def reference_path() -> Path:
 def output_root(method: str, run_id: str) -> Path:
     folder = str(_BUDGETS[ACTIVE_BUDGET]["folder"])
     return REPO_ROOT / "outputs" / "1cll" / folder / method / "runs" / run_id
+
+
+def comparison_run_root(run_id: str) -> Path:
+    """Return the method-independent manifest directory for one comparison."""
+
+    folder = str(_BUDGETS[ACTIVE_BUDGET]["folder"])
+    return REPO_ROOT / "outputs" / "1cll" / folder / "runs" / run_id
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:

@@ -23,19 +23,24 @@ boltz2:
   msa_server_url: https://api.colabfold.com
   recycling_steps: 3
   sampling_steps: 200
-  step_scale: 1.5
+  # Unit Euler step for the deterministic PF-ODE sampler. The public
+  # stochastic baseline is run by its own stock Boltz CLI.
+  step_scale: 1.0
   # Ordinary stochastic Boltz-2 setting used by Best K-of-N. O3 overrides
   # gamma_0 to zero per call for deterministic PF-ODE sampling.
   stochastic_gamma_0: 0.8
-  # Best K-of-N and O3 both receive an explicit z ~ N(0,I); stochastic mode
-  # additionally applies Boltz-2 churn and random SE(3) augmentation.
+  # O3 supplies an explicit z ~ N(0,I) through the custom adapter. The public
+  # Best K-of-N CLI draws its own seeded initial coordinates and then applies
+  # the stock Boltz-2 churn and random SE(3) augmentation.
   explicit_latent: true
   # Match an unflagged upstream ``boltz predict`` invocation. Set true only
   # when deliberately reproducing a command that passes --subsample_msa.
   subsample_msa: false
   num_subsampled_msa: 1024
-  # Upstream Boltz-2's Lightning CLI uses bf16 mixed precision for inference.
-  inference_precision: bf16-mixed
+  # Select BF16 on capable GPUs (for example RTX 5070 Ti), otherwise use
+  # numerically safer FP32 (for example Titan X). Override with
+  # O3_INFERENCE_PRECISION=bf16-mixed or =32 when needed.
+  inference_precision: auto
   # Paper Section 4: Z = R^(1184*3). Boltz treats the extra slots as masked
   # padding and removes them before writing/scoring the 1,134 real atoms.
   atom_slots: 1184
@@ -71,21 +76,6 @@ budgets:
     K: 10
     M: 50
     d: 5
-  - name: n200_k20
-    N: 200
-    K: 20
-    M: 100
-    d: 10
-  - name: n500_k50
-    N: 500
-    K: 50
-    M: 250
-    d: 30
-  - name: n1000_k100
-    N: 1000
-    K: 100
-    M: 400
-    d: 50
 
 # The paper repeats each configuration over five random seeds.
 # Set seed to any integer to choose the first replicate; later replicates use
@@ -95,3 +85,6 @@ replicates: 5
 seed: 0
 seed_step: 1
 output_dir: outputs
+# Match the canonical comparison bundle:
+# outputs/1cll/k10_n100/{best_k_of_n,o3}/runs/<run-id>/...
+output_layout: target_budget_method

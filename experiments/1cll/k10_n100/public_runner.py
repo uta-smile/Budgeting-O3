@@ -6,6 +6,7 @@ import json
 import os
 import shutil
 import subprocess
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -15,6 +16,7 @@ from common import (
     REPO_ROOT,
     convert_cif_to_pdb,
     find_prediction,
+    input_yaml_path,
     output_root,
     provenance,
     read_csv,
@@ -24,9 +26,16 @@ from common import (
     write_json,
 )
 
-PUBLIC_PROJECT = BUNDLE / "public_boltz"
-PUBLIC_CACHE = BUNDLE / "cache" / "public_boltz"
-PUBLIC_INPUT = BUNDLE / "inputs" / "1cll_single_sequence.yaml"
+PUBLIC_PROJECT = Path(
+    os.environ.get("BOLTZ_PUBLIC_PROJECT", str(BUNDLE / "public_boltz"))
+).expanduser()
+PUBLIC_CACHE = Path(
+    os.environ.get("BOLTZ_PUBLIC_CACHE", str(BUNDLE / "cache" / "public_boltz"))
+).expanduser()
+# Use the exact same checked-in Boltz YAML as O3.  Keeping a second ignored
+# copy in the bundle made fresh checkouts depend on an untracked file and made
+# it possible for the two methods to generate different constructs.
+PUBLIC_INPUT = input_yaml_path()
 
 
 def _public_env() -> dict[str, str]:
@@ -75,7 +84,28 @@ def public_installation_info() -> dict[str, Any]:
     return info
 
 
+@lru_cache(maxsize=1)
+def public_checkpoint_info() -> dict[str, Any]:
+    """Return provenance for the checkpoint used by the stock CLI."""
+
+    checkpoint = PUBLIC_CACHE / "boltz2_conf.ckpt"
+    return {
+        "path": str(checkpoint),
+        "exists": checkpoint.is_file(),
+        "size_bytes": checkpoint.stat().st_size if checkpoint.is_file() else None,
+        "sha256": sha256_file(checkpoint) if checkpoint.is_file() else None,
+    }
+
+
 def _run_public_predict(sample_dir: Path, sample_seed: int) -> Path:
+    completed = [
+        path
+        for path in sample_dir.rglob("*.cif")
+        if "predictions" in path.parts
+    ]
+    if completed:
+        return find_prediction(sample_dir)
+
     boltz_out = sample_dir / "boltz"
     if boltz_out.exists() and any(boltz_out.iterdir()) and not list(boltz_out.rglob("*.cif")):
         retry_index = 1
@@ -87,7 +117,14 @@ def _run_public_predict(sample_dir: Path, sample_seed: int) -> Path:
             retry_index += 1
     boltz_out.mkdir(parents=True, exist_ok=True)
     command = [
-        _uv(), "run", "--project", str(PUBLIC_PROJECT), "boltz", "predict",
+        _uv(), "run", "--project", str(PUBLIC_PROJECT),
+    ]
+    requested_precision = os.environ.get("BOLTZ_PUBLIC_PRECISION")
+    if requested_precision is None:
+        command += ["boltz", "predict"]
+    else:
+        command += ["python", str(BUNDLE / "public_entry.py"), "predict"]
+    command += [
         str(PUBLIC_INPUT),
         "--out_dir", str(boltz_out),
         "--cache", str(PUBLIC_CACHE),
@@ -98,6 +135,7 @@ def _run_public_predict(sample_dir: Path, sample_seed: int) -> Path:
     log_path = sample_dir / "boltz.log"
     with log_path.open("w", encoding="utf-8") as log:
         log.write("$ " + " ".join(command) + "\n")
+        log.flush()
         try:
             subprocess.run(
                 command,
@@ -113,7 +151,47 @@ def _run_public_predict(sample_dir: Path, sample_seed: int) -> Path:
             # already been written. The CIF is the required oracle input;
             # only propagate failures that produced no structure.
             if not list(boltz_out.rglob("*.cif")):
-                raise
+                log.flush()
+                failure_log = log_path.read_text(encoding="utf-8")
+                if (
+                    "torch._C._LinAlgError" not in failure_log
+                    or "linalg.svd" not in failure_log
+                    or requested_precision in {"32", "32-true"}
+                ):
+                    raise
+
+                # The official CLI forces FP16. On older GPUs this can make
+                # the CUDA SVD in Boltz's rigid-alignment step fail even
+                # though the same model is valid in FP32. Retry the identical
+                # seed with the installed public package and only precision
+                # changed; do not silently change seeds or sampler settings.
+                fallback_out = sample_dir / "boltz_float32"
+                fallback_out.mkdir(parents=True, exist_ok=True)
+                fallback_command = [
+                    _uv(), "run", "--project", str(PUBLIC_PROJECT),
+                    "python", str(BUNDLE / "public_entry.py"), "predict",
+                    str(PUBLIC_INPUT),
+                    "--out_dir", str(fallback_out),
+                    "--cache", str(PUBLIC_CACHE),
+                    "--seed", str(sample_seed),
+                    "--no_kernels",
+                    "--output_format", "mmcif",
+                ]
+                log.write(
+                    "\n[warning] Stock FP16 Boltz failed in CUDA linalg.svd; "
+                    "retrying the same seed in FP32.\n$ "
+                    + " ".join(fallback_command)
+                    + "\n"
+                )
+                subprocess.run(
+                    fallback_command,
+                    cwd=REPO_ROOT,
+                    check=True,
+                    stdout=log,
+                    stderr=subprocess.STDOUT,
+                    env={**_public_env(), "BOLTZ_PUBLIC_PRECISION": "32"},
+                )
+                return find_prediction(fallback_out)
             log.write("\n[warning] Boltz exited nonzero after writing a prediction CIF; continuing.\n")
     return find_prediction(boltz_out)
 
@@ -127,6 +205,7 @@ def _write_replicate_summary(replicate_dir: Path, rows: list[dict[str, Any]], ru
     returned = ordered[:common.K]
     write_json(replicate_dir / "returned_candidates.json", returned)
     selected = [float(row["tm_score"]) for row in returned]
+    precisions = sorted({str(row.get("inference_precision", "unknown")) for row in rows})
     first_sample_seed = common.sample_seed(run_seed, 0)
     input_provenance = provenance(
         "public_boltz",
@@ -148,7 +227,17 @@ def _write_replicate_summary(replicate_dir: Path, rows: list[dict[str, Any]], ru
         "mean_of_K": sum(selected) / len(selected),
         "top_k_mean": sum(selected) / len(selected),
         "best_structure": returned[0]["structure"],
-        "generator": {"package": "boltz", "version": info["version"], "module": info["module"], "sampling": "official_stochastic_boltz2"},
+        "generator": {
+            "package": "boltz",
+            "version": info["version"],
+            "module": info["module"],
+            "sampling": "official_stochastic_boltz2",
+            "step_scale": 1.5,
+            "gamma_0": 0.8,
+            "no_kernels": True,
+            "inference_precisions": precisions,
+            "checkpoint": public_checkpoint_info(),
+        },
         "msa": input_provenance,
     }
     write_json(replicate_dir / "summary.json", summary)
@@ -180,18 +269,25 @@ def run_replicate(run_id: str, run_seed: int, resume: bool = False) -> dict[str,
         existing = rows_by_index.get(index)
         structure = Path(existing["structure"]) if existing else sample_dir / f"sample_{index:04d}.pdb"
         if existing and structure.exists():
+            existing.setdefault("inference_precision", "not_recorded")
             rows.append(existing)
             continue
-        boltz_root = sample_dir / "boltz"
-        cif_path = find_prediction(boltz_root) if list(boltz_root.rglob("*.cif")) else _run_public_predict(sample_dir, sample_seed_for_index)
+        cif_path = _run_public_predict(sample_dir, sample_seed_for_index)
         convert_cif_to_pdb(cif_path, structure)
         score = score_structure(structure)
+        requested_precision = os.environ.get("BOLTZ_PUBLIC_PRECISION")
+        actual_precision = (
+            "32"
+            if "boltz_float32" in cif_path.parts
+            else requested_precision or "16-mixed"
+        )
         row = {
             "sample_index": index,
             "sample_seed": sample_seed_for_index,
             "run_seed": run_seed,
             "tm_score": score,
             "structure": str(structure),
+            "inference_precision": actual_precision,
         }
         rows.append(row)
         write_csv(evaluations_path, rows)
@@ -242,5 +338,6 @@ def run(
         seed_step=metadata_seed_step,
         seeds=run_seeds,
         sample_seed_function="common.sample_seed(run_seed, sample_index)",
+        checkpoint=public_checkpoint_info(),
     ))
     return {"method": "best_k_of_n", "replicates": summaries, "aggregate": aggregate_rows}

@@ -54,7 +54,12 @@ class TMScoreOracle:
             raise ValueError(
                 "Structure contains no readable model or atom records"
             ) from exc
-        if chain_id is not None and chain_id in model:
+        if chain_id is not None:
+            if chain_id not in model:
+                available = [chain.id for chain in model.get_chains()]
+                raise ValueError(
+                    f"Requested chain {chain_id!r} is absent; available chains: {available}"
+                )
             return model[chain_id]
         try:
             return next(model.get_chains())

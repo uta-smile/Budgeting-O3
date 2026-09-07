@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 from tempfile import TemporaryDirectory
 
@@ -12,6 +14,8 @@ BUNDLE = ROOT / "experiments" / "1cll" / "k10_n100"
 sys.path.insert(0, str(BUNDLE))
 
 import common  # noqa: E402
+import public_runner  # noqa: E402
+import run as bundle_run  # noqa: E402
 from common import (  # noqa: E402
     configure_budget,
     output_root,
@@ -19,11 +23,13 @@ from common import (  # noqa: E402
     shared_replicate_seeds,
 )
 from public_runner import run_replicate  # noqa: E402
+from run import load_baseline_seeds, load_comparison_seeds  # noqa: E402
 from verify import check_static  # noqa: E402
 
 
 def test_single_sequence_setup() -> None:
     check_static()
+    assert public_runner.PUBLIC_INPUT.resolve() == common.input_yaml_path().resolve()
 
 
 def test_replicates_use_disjoint_notebook_seed_blocks() -> None:
@@ -42,6 +48,107 @@ def test_random_replicate_seeds_are_unique_valid_31_bit_values() -> None:
     assert len(seeds) == 5
     assert len(set(seeds)) == 5
     assert all(0 < seed < 2**31 for seed in seeds)
+
+
+def test_replicate_seed_validation_rejects_out_of_range_values() -> None:
+    for seeds in ([-1], [2**32]):
+        try:
+            common.resolve_replicate_seeds(1, seeds=seeds)
+        except ValueError as exc:
+            assert "unsigned 32-bit" in str(exc)
+        else:
+            raise AssertionError("out-of-range seed was accepted")
+
+
+def test_can_import_exact_seeds_from_a_baseline_run(tmp_path: Path) -> None:
+    root = tmp_path / "baseline"
+    root.mkdir()
+    (root / "provenance.json").write_text(
+        '{"budget": "n100_k10", "seeds": [11, 22, 33]}', encoding="utf-8"
+    )
+    with patch("common.output_root", return_value=root):
+        assert load_baseline_seeds("run01", "n100_k10", 3) == [11, 22, 33]
+
+
+def test_comparison_manifest_path_is_method_independent() -> None:
+    common.configure_budget("n100_k10")
+    path = common.comparison_run_root("run01")
+    assert path.parts[-5:] == ("outputs", "1cll", "k10_n100", "runs", "run01")
+
+
+def test_resume_can_restore_seeds_from_early_run_manifest(tmp_path: Path) -> None:
+    root = tmp_path / "comparison"
+    root.mkdir()
+    (root / "run_manifest.json").write_text(
+        '{"budget": "n100_k10", "seeds": [44, 55, 66]}', encoding="utf-8"
+    )
+    with patch("common.comparison_run_root", return_value=root):
+        assert load_comparison_seeds("run01", "n100_k10", 3) == [44, 55, 66]
+
+
+def _runner_args(**overrides):
+    values = {
+        "method": "best-k-of-n",
+        "budget": "n100_k10",
+        "replicates": 3,
+        "run_id": "run01",
+        "seed_start": common.DEFAULT_REPLICATE_SEED_START,
+        "seed_step": common.DEFAULT_REPLICATE_SEED_STEP,
+        "seed_list": None,
+        "seed_mode": None,
+        "seeds_from_baseline_run": None,
+        "resume": False,
+        "smoke": False,
+    }
+    values.update(overrides)
+    return SimpleNamespace(**values)
+
+
+def test_runner_records_default_random_seeds_before_generation(tmp_path: Path) -> None:
+    manifest_root = tmp_path / "comparison"
+    with patch("run.parse_args", return_value=_runner_args()), patch(
+        "run.random_replicate_seeds", return_value=[101, 202, 303]
+    ), patch("common.comparison_run_root", return_value=manifest_root), patch(
+        "run.run_public"
+    ) as run_public:
+        bundle_run.main()
+
+    manifest = json.loads((manifest_root / "run_manifest.json").read_text())
+    assert manifest["seed_mode"] == "fresh_os_random"
+    assert manifest["seeds"] == [101, 202, 303]
+    assert run_public.call_args.kwargs["seeds"] == [101, 202, 303]
+
+
+def test_smoke_does_not_create_seed_manifest() -> None:
+    with patch("run.parse_args", return_value=_runner_args(smoke=True)), patch(
+        "run.subprocess.run"
+    ) as run_process, patch("run.random_replicate_seeds") as random_seeds, patch(
+        "common.comparison_run_root"
+    ) as comparison_root:
+        bundle_run.main()
+
+    random_seeds.assert_not_called()
+    comparison_root.assert_not_called()
+    assert run_process.call_args.args[0][-1] == "--gpu"
+
+
+def test_runner_resume_restores_manifest_seeds(tmp_path: Path) -> None:
+    manifest_root = tmp_path / "comparison"
+    manifest_root.mkdir()
+    (manifest_root / "run_manifest.json").write_text(
+        '{"target":"1cll","budget":"n100_k10","run_id":"run01",'
+        '"method_selection":"both","replicates":3,"seed_mode":"fresh_os_random",'
+        '"seeds":[101,202,303]}',
+        encoding="utf-8",
+    )
+    args = _runner_args(method="o3", resume=True)
+    with patch("run.parse_args", return_value=args), patch(
+        "common.comparison_run_root", return_value=manifest_root
+    ), patch("run.run_o3") as run_o3:
+        bundle_run.main()
+
+    assert run_o3.call_args.args[4] == [101, 202, 303]
+    assert run_o3.call_args.kwargs["resume"] is True
 
 
 def test_public_runner_resumes_without_regenerating(tmp_path: Path) -> None:
@@ -69,6 +176,9 @@ def test_public_runner_resumes_without_regenerating(tmp_path: Path) -> None:
     with patch("public_runner.output_root", fake_output_root), patch(
         "public_runner.public_installation_info",
         return_value={"version": "2.2.1", "module": "public/boltz/__init__.py"},
+    ), patch(
+        "public_runner.public_checkpoint_info",
+        return_value={"path": "fake.ckpt", "exists": True, "size_bytes": 1, "sha256": "abc"},
     ), patch("public_runner._run_public_predict", side_effect=fake_predict) as predict, patch(
         "public_runner.convert_cif_to_pdb", side_effect=fake_convert
     ), patch("public_runner.score_structure", side_effect=fake_score):
@@ -77,6 +187,23 @@ def test_public_runner_resumes_without_regenerating(tmp_path: Path) -> None:
         predict.reset_mock()
         run_replicate("resume_test", 0, resume=True)
         predict.assert_not_called()
+
+
+def test_public_predict_reuses_completed_retry_directory(tmp_path: Path) -> None:
+    sample_dir = tmp_path / "sample_0000"
+    prediction = (
+        sample_dir
+        / "boltz_retry1"
+        / "boltz_results_input"
+        / "predictions"
+        / "input"
+        / "input_model_0.cif"
+    )
+    prediction.parent.mkdir(parents=True)
+    prediction.write_text("data_input\n", encoding="utf-8")
+    with patch("public_runner.subprocess.run") as run_process:
+        assert public_runner._run_public_predict(sample_dir, 123) == prediction
+    run_process.assert_not_called()
 
 
 def test_small_budget_configs_are_distinct() -> None:
@@ -96,11 +223,18 @@ def test_small_budget_configs_are_distinct() -> None:
 def test_o3_configs_use_unit_pfode_step_scale() -> None:
     import yaml
 
-    for name in ("o3.yaml", "o3_n20_k2.yaml", "o3_n50_k5.yaml"):
-        config = yaml.safe_load((BUNDLE / name).read_text(encoding="utf-8"))
-        assert config["boltz2"]["step_scale"] == 1.0
-        assert config["seed"] == 20250117
-        assert config["seed_step"] == 1009
+    config = yaml.safe_load((ROOT / "configs" / "1cll.yaml").read_text(encoding="utf-8"))
+    assert config["boltz2"]["step_scale"] == 1.0
+    assert config["boltz2"]["inference_precision"] == "auto"
+    assert config["output_layout"] == "target_budget_method"
+    assert config["seed"] == 0
+    assert config["seed_step"] == 1
+
+    # The stock baseline omits --step_scale, so public Boltz-2 keeps 1.5;
+    # deterministic O3 explicitly uses the unit PF-ODE Euler step above.
+    from boltz.main import Boltz2DiffusionParams
+
+    assert Boltz2DiffusionParams().step_scale == 1.5
 
 
 if __name__ == "__main__":

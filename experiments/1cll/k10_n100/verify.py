@@ -23,22 +23,25 @@ def check_static() -> None:
     input_text = input_yaml_path().read_text(encoding="utf-8")
     if SEQUENCE not in input_text or len(SEQUENCE) != 144:
         raise AssertionError("1CLL input sequence is not the expected 144-residue sequence")
-    for input_name in ("1cll.yaml", "1cll_n20.yaml", "1cll_n50.yaml"):
-        input_text = (BUNDLE / "inputs" / input_name).read_text(encoding="utf-8")
-        if "msa: empty" not in input_text:
-            raise AssertionError(f"{input_name} must explicitly select single-sequence mode")
-        if "msa:" in input_text.replace("msa: empty", ""):
-            raise AssertionError(f"{input_name} supplies an MSA despite single-sequence setup")
+    input_config = yaml.safe_load(input_text)
+    protein = input_config["sequences"][0]["protein"]
+    if protein.get("id") != "A" or protein.get("sequence") != SEQUENCE:
+        raise AssertionError("Canonical Boltz YAML must contain the exact 1CLL chain A sequence")
+    single_input = input_yaml_path().read_text(encoding="utf-8")
+    if "msa: empty" not in single_input:
+        raise AssertionError("data/1cll_boltz_input.yaml must explicitly select single-sequence mode")
+    if "msa:" in single_input.replace("msa: empty", ""):
+        raise AssertionError("data/1cll_boltz_input.yaml supplies an MSA despite single-sequence setup")
     public_project = (BUNDLE / "public_boltz" / "pyproject.toml").read_text(encoding="utf-8")
     if '"boltz==2.2.1"' not in public_project or "vendor/boltz" in public_project:
         raise AssertionError("Public environment is not pinned to public boltz==2.2.1")
     public_runner = (BUNDLE / "public_runner.py").read_text(encoding="utf-8")
-    if 'PUBLIC_INPUT = BUNDLE / "inputs" / "1cll_single_sequence.yaml"' not in public_runner:
-        raise AssertionError("Public baseline is not using the single-sequence input")
+    if "PUBLIC_INPUT = input_yaml_path()" not in public_runner:
+        raise AssertionError("Public baseline is not using the canonical Boltz input YAML")
     if '"--use_msa_server"' in public_runner:
         raise AssertionError("Public baseline must remain in single-sequence mode")
-    single_input = (BUNDLE / "inputs" / "1cll_single_sequence.yaml").read_text(encoding="utf-8")
-    if "msa: empty" not in single_input:
+    public_input = input_yaml_path().read_text(encoding="utf-8")
+    if "msa: empty" not in public_input:
         raise AssertionError("Public baseline must use Boltz's explicit empty-MSA marker")
     notebook = (BUNDLE / "notebook" / "Boltz2_1CLL_TMscore_Benchmark.ipynb").read_text(encoding="utf-8")
     if '"USE_MSA_SERVER = True\\n"' in notebook:
@@ -58,14 +61,31 @@ def check_static() -> None:
     for required in ("initial_atom_coords", "deterministic", "gamma_0", "Boltz2.load_from_checkpoint"):
         if required not in adapter_text:
             raise AssertionError(f"O3 adapter is missing required custom behavior: {required}")
-    for config_name in ("o3.yaml", "o3_n20_k2.yaml", "o3_n50_k5.yaml"):
-        o3_config = yaml.safe_load((BUNDLE / config_name).read_text(encoding="utf-8"))
-        if float(o3_config["boltz2"]["step_scale"]) != 1.0:
-            raise AssertionError(f"{config_name} must use step_scale=1.0 for PF-ODE")
-        if bool(o3_config["boltz2"].get("use_msa_server", False)):
-            raise AssertionError(f"{config_name} must not enable the MSA server")
-        if any(key in o3_config["boltz2"] for key in ("msa_server_url", "subsample_msa", "num_subsampled_msa")):
-            raise AssertionError(f"{config_name} contains unnecessary MSA configuration")
+    config_path = REPO_ROOT / "configs" / "1cll.yaml"
+    o3_config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+    if o3_config["target"]["sequence"] != protein["sequence"]:
+        raise AssertionError("Configuration and canonical Boltz YAML sequences differ")
+    if o3_config.get("latent_dim") != "auto" or int(o3_config["boltz2"]["atom_slots"]) != 1184:
+        raise AssertionError("1CLL must derive D=3552 from 1,184 sampler slots")
+    if float(o3_config["boltz2"]["step_scale"]) != 1.0:
+        raise AssertionError("configs/1cll.yaml must use step_scale=1.0 for PF-ODE")
+    if bool(o3_config["boltz2"].get("use_msa_server", False)):
+        raise AssertionError("configs/1cll.yaml must not enable the MSA server")
+    if o3_config["boltz2"].get("inference_precision") not in {"auto", "bf16-mixed", "32"}:
+        raise AssertionError("configs/1cll.yaml has an unsupported inference precision")
+    if o3_config.get("output_layout") != "target_budget_method":
+        raise AssertionError("O3 output layout is not grouped with the baseline by budget")
+    expected_budgets = {
+        "n20_k2": (20, 2, 10, 5),
+        "n50_k5": (50, 5, 25, 7),
+        "n100_k10": (100, 10, 50, 5),
+    }
+    actual_budgets = {
+        item["name"]: (item["N"], item["K"], item["M"], item["d"])
+        for item in o3_config["budgets"]
+    }
+    if actual_budgets != expected_budgets:
+        raise AssertionError(f"Unexpected supported budget table: {actual_budgets}")
 
 
 def public_info() -> dict[str, Any]:
@@ -75,7 +95,7 @@ def public_info() -> dict[str, Any]:
 
 
 def public_smoke() -> dict[str, object]:
-    from public_runner import _run_public_predict
+    from public_runner import _run_public_predict, public_checkpoint_info
     from common import convert_cif_to_pdb, score_structure
 
     info = public_info()
@@ -84,25 +104,38 @@ def public_smoke() -> dict[str, object]:
         cif_path = _run_public_predict(sample_dir, 0)
         pdb_path = convert_cif_to_pdb(cif_path, sample_dir / "sample_0000.pdb")
         score = score_structure(pdb_path)
-    return {**info, "sample_seed": 0, "tm_score": score}
+    return {
+        **info,
+        "sample_seed": 0,
+        "tm_score": score,
+        "checkpoint": public_checkpoint_info(),
+    }
 
 
 def audit_vendor() -> dict[str, list[str]]:
-    try:
-        info = public_info()
-        public_root = Path(info["module"]).resolve().parent
-    except (RuntimeError, subprocess.CalledProcessError):
-        cache_roots = []
-        archive_root = REPO_ROOT / ".uv-cache" / "archive-v0"
-        if archive_root.is_dir():
-            for archive in archive_root.iterdir():
-                candidate = archive / "Lib" / "site-packages" / "boltz"
-                if candidate.is_dir() and (candidate.parent / "boltz-2.2.1.dist-info").is_dir():
-                    cache_roots.append(candidate)
-        cache_roots.sort()
-        if not cache_roots:
-            raise
-        public_root = cache_roots[0]
+    # This is a source comparison, so it must not require CUDA initialization
+    # or an online ``uv run``.  Inspect the isolated environment directly.
+    from public_runner import PUBLIC_PROJECT
+
+    candidates = [
+        *PUBLIC_PROJECT.glob(".venv/lib/python*/site-packages/boltz"),
+        PUBLIC_PROJECT / ".venv" / "Lib" / "site-packages" / "boltz",
+    ]
+    archive_root = REPO_ROOT / ".uv-cache" / "archive-v0"
+    if archive_root.is_dir():
+        candidates.extend(archive_root.glob("*/Lib/site-packages/boltz"))
+        candidates.extend(archive_root.glob("*/lib/python*/site-packages/boltz"))
+    public_roots = sorted(
+        candidate
+        for candidate in candidates
+        if candidate.is_dir()
+        and (candidate.parent / "boltz-2.2.1.dist-info").is_dir()
+    )
+    if not public_roots:
+        raise FileNotFoundError(
+            "Public boltz==2.2.1 is not installed; initialize public_boltz first"
+        )
+    public_root = public_roots[0]
     vendor_root = REPO_ROOT / "vendor" / "boltz" / "src" / "boltz"
     changed: list[str] = []
     unexpected: list[str] = []
@@ -125,10 +158,11 @@ def audit_vendor() -> dict[str, list[str]]:
 
 def gpu_smoke() -> dict[str, object]:
     from adapters.boltz2_pfode import create
+    from common import sha256_file
     import numpy as np
     import yaml
 
-    config = yaml.safe_load((BUNDLE / "o3.yaml").read_text(encoding="utf-8"))
+    config = yaml.safe_load((REPO_ROOT / "configs" / "1cll.yaml").read_text(encoding="utf-8"))
     # Boltz resolves the input YAML relative to cwd.
     os.chdir(REPO_ROOT)
     config["project_root"] = str(REPO_ROOT)
@@ -161,7 +195,17 @@ def gpu_smoke() -> dict[str, object]:
             raise AssertionError("Repeated O3 PF-ODE sampling was not numerically stable")
         if np.allclose(first_coords, other_coords, rtol=0.0, atol=1e-5):
             raise AssertionError("O3 ignored the supplied latent")
-    return {"custom_adapter": type(adapter).__name__, "latent_dim": adapter.latent_dim, "atom_slots": adapter.atom_slots}
+    checkpoint_path = Path(adapter.checkpoint_path)
+    return {
+        "custom_adapter": type(adapter).__name__,
+        "latent_dim": adapter.latent_dim,
+        "atom_slots": adapter.atom_slots,
+        "checkpoint": {
+            "path": str(checkpoint_path),
+            "size_bytes": checkpoint_path.stat().st_size,
+            "sha256": sha256_file(checkpoint_path),
+        },
+    }
 
 
 def main() -> None:
@@ -174,8 +218,17 @@ def main() -> None:
     if args.audit_vendor:
         result["vendor_audit"] = audit_vendor()
     if args.gpu:
-        result["public"] = public_smoke()
-        result["gpu_smoke"] = gpu_smoke()
+        public_result = public_smoke()
+        custom_result = gpu_smoke()
+        result["public"] = public_result
+        result["gpu_smoke"] = custom_result
+        public_checkpoint = public_result["checkpoint"]
+        custom_checkpoint = custom_result["checkpoint"]
+        if public_checkpoint["sha256"] != custom_checkpoint["sha256"]:
+            raise AssertionError(
+                "Public and custom runners resolved different Boltz-2 checkpoints: "
+                f"{public_checkpoint} != {custom_checkpoint}"
+            )
     print(json.dumps(result, indent=2))
 
 

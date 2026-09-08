@@ -34,6 +34,7 @@ def run_random_pfode(
     budget: Mapping[str, Any],
     run_seed: int,
     output_dir: Path,
+    resume: bool = False,
 ) -> dict[str, Any]:
     """Spend all N calls on independent standard-normal latents in Z."""
 
@@ -43,6 +44,25 @@ def run_random_pfode(
         raise ValueError(f"Require 0 < K <= N, got N={n}, K={k}")
     latent_dim = int(config["latent_dim"])
     budget_name = str(budget.get("name", f"n{n}_k{k}"))
+    summary_path = output_dir / "summary.json"
+    if resume and summary_path.is_file():
+        summary = json.loads(summary_path.read_text(encoding="utf-8"))
+        expected = {"budget": budget_name, "N": n, "K": k, "seed": run_seed}
+        mismatches = {
+            key: (summary.get(key), value)
+            for key, value in expected.items()
+            if summary.get(key) != value
+        }
+        if mismatches:
+            raise ValueError(
+                f"Cannot resume {output_dir}: completed summary mismatch {mismatches}"
+            )
+        print(
+            f"[{budget_name} random-pfode seed={run_seed}] "
+            "resume: summary already complete",
+            flush=True,
+        )
+        return summary
     rng = np.random.default_rng(run_seed)
     random.seed(run_seed)
     torch.manual_seed(run_seed)
@@ -55,6 +75,7 @@ def run_random_pfode(
     structure_dir.mkdir(exist_ok=True)
     latent_dir.mkdir(exist_ok=True)
     evaluations: list[RandomEvaluation] = []
+    evaluations_path = output_dir / "evaluations.csv"
 
     print(
         f"[{budget_name} random-pfode seed={run_seed}] diagnostic protocol: "
@@ -66,6 +87,31 @@ def run_random_pfode(
         latent = rng.normal(size=latent_dim)
         latent_path = latent_dir / f"latent_{index:04d}.npy"
         structure_path = structure_dir / f"sample_{index:04d}.pdb"
+        if resume and latent_path.is_file() and structure_path.is_file():
+            saved_latent = np.asarray(np.load(latent_path), dtype=np.float64)
+            if not np.array_equal(saved_latent, latent):
+                raise ValueError(
+                    f"Cannot resume {output_dir}: {latent_path} does not match seed {run_seed}"
+                )
+            score = float(adapter.score(structure_path, config))
+            if not np.isfinite(score):
+                raise ValueError(f"Oracle returned a non-finite score for {structure_path}")
+            evaluations.append(
+                RandomEvaluation(
+                    index=index,
+                    stage="random_pfode",
+                    score=score,
+                    structure=str(structure_path),
+                    latent_file=str(latent_path),
+                    budget=budget_name,
+                    seed=run_seed,
+                )
+            )
+            continue
+        if resume and structure_path.exists() and not latent_path.exists():
+            raise FileNotFoundError(
+                f"Cannot resume {output_dir}: structure exists without {latent_path}"
+            )
         np.save(latent_path, latent)
         print(
             f"[{budget_name} random-pfode seed={run_seed}] "
@@ -101,6 +147,11 @@ def run_random_pfode(
                 seed=run_seed,
             )
         )
+        records = [asdict(item) for item in evaluations]
+        with evaluations_path.open("w", newline="", encoding="utf-8") as handle:
+            writer = csv.DictWriter(handle, fieldnames=records[0].keys())
+            writer.writeheader()
+            writer.writerows(records)
         print(
             f"[{budget_name} random-pfode seed={run_seed}] "
             f"completed {index + 1}/{n} | score={score:.4f}",
@@ -114,7 +165,7 @@ def run_random_pfode(
     records = [asdict(item) for item in evaluations]
     with (output_dir / "evaluations.json").open("w", encoding="utf-8") as handle:
         json.dump(records, handle, indent=2)
-    with (output_dir / "evaluations.csv").open("w", newline="", encoding="utf-8") as handle:
+    with evaluations_path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=records[0].keys())
         writer.writeheader()
         writer.writerows(records)
@@ -139,7 +190,7 @@ def run_random_pfode(
         "output_dir": str(output_dir),
     }
     summary.update(collect_run_metadata(config=config, adapter=adapter))
-    with (output_dir / "summary.json").open("w", encoding="utf-8") as handle:
+    with summary_path.open("w", encoding="utf-8") as handle:
         json.dump(summary, handle, indent=2)
     with (output_dir / "provenance.json").open("w", encoding="utf-8") as handle:
         json.dump(

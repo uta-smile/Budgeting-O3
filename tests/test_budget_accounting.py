@@ -159,6 +159,53 @@ def test_random_pfode_spends_n_deterministic_random_z_calls(tmp_path) -> None:
     np.testing.assert_allclose(np.asarray(adapter.latents), expected)
 
 
+def test_random_pfode_resume_reuses_seeded_prefix(tmp_path) -> None:
+    from o3_boltz.random_baseline import run_random_pfode
+
+    class RestartSafeAdapter(FakeAdapter):
+        def __init__(self, stop_after=None):
+            super().__init__()
+            self.stop_after = stop_after
+
+        def generate(self, latent, output_path, config, metadata):
+            if self.stop_after is not None and len(self.calls) == self.stop_after:
+                raise RuntimeError("simulated interruption")
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            output_path.write_text(str(float(latent[0])), encoding="utf-8")
+            self.calls.append(dict(metadata))
+            self.latents.append(np.asarray(latent, dtype=np.float64).copy())
+            return output_path
+
+        def score(self, structure_path, config):
+            return float(Path(structure_path).read_text(encoding="utf-8"))
+
+    output = tmp_path / "random_resume"
+    args = {
+        "config": {"latent_dim": FakeAdapter.latent_dim, "boltz2": {}},
+        "budget": {"name": "test", "N": 8, "K": 2},
+        "run_seed": 31,
+        "output_dir": output,
+    }
+    interrupted = RestartSafeAdapter(stop_after=3)
+    try:
+        run_random_pfode(adapter=interrupted, **args)
+    except RuntimeError as exc:
+        assert str(exc) == "simulated interruption"
+    else:
+        raise AssertionError("simulated interruption did not occur")
+
+    resumed = RestartSafeAdapter()
+    summary = run_random_pfode(adapter=resumed, resume=True, **args)
+    assert summary["oracle_evaluations"] == 8
+    assert len(resumed.calls) == 5
+    expected = np.random.default_rng(31).normal(size=(8, FakeAdapter.latent_dim))
+    for index in range(8):
+        np.testing.assert_array_equal(
+            np.load(output / "latents" / f"latent_{index:04d}.npy"),
+            expected[index],
+        )
+
+
 def test_o3_resume_preserves_seeded_latent_sequence(tmp_path, monkeypatch) -> None:
     monkeypatch.setattr(
         o3,
@@ -219,3 +266,67 @@ def test_o3_resume_preserves_seeded_latent_sequence(tmp_path, monkeypatch) -> No
                 np.load(resumed_dir / "latents" / f"latent_{index:04d}.npy"),
                 np.load(full_dir / "latents" / f"latent_{index:04d}.npy"),
             )
+
+
+class BatchFakeAdapter(FakeAdapter):
+    def __init__(self):
+        super().__init__()
+        self.batch_lengths = []
+
+    def generate_batch(self, latents, output_paths, config, metadata):
+        self.batch_lengths.append(len(latents))
+        return [self.generate(z, path, config, item)
+                for z, path, item in zip(latents, output_paths, metadata)]
+
+
+def test_batching_preserves_latents_budget_and_sequential_bo(tmp_path, monkeypatch):
+    acquired_counts = []
+
+    def acquire(train_u, train_scores):
+        acquired_counts.append(len(train_scores))
+        return np.full(train_u.shape[1], 0.5)
+
+    monkeypatch.setattr(o3, "_fit_and_acquire", acquire)
+    budget = {"name": "test", "N": 10, "K": 2, "M": 5, "d": 2}
+    sequential, batched = FakeAdapter(), BatchFakeAdapter()
+    for adapter, batch_size, folder in [(sequential, 1, "single"), (batched, 3, "batch")]:
+        summary = o3.run_o3(
+            adapter=adapter, config={"latent_dim": 8, "inference_batch_size": batch_size},
+            budget=budget, run_seed=7, output_dir=tmp_path / folder,
+        )
+        assert summary["oracle_evaluations"] == 10
+        assert summary["bo_batch_size"] == 1
+    assert batched.batch_lengths == [3, 2, 2]
+    assert acquired_counts == [4, 5, 6, 4, 5, 6]
+    np.testing.assert_array_equal(sequential.latents, batched.latents)
+    assert sequential.calls == batched.calls
+
+
+def test_batch_resume_replays_partial_batch_and_rejects_size_change(tmp_path, monkeypatch):
+    import pytest
+    monkeypatch.setattr(o3, "_fit_and_acquire", lambda x, y: np.full(x.shape[1], 0.5))
+    adapter = BatchFakeAdapter()
+    original_generate = adapter.generate_batch
+    count = 0
+
+    def interrupted(latents, output_paths, config, metadata):
+        nonlocal count
+        count += 1
+        if count == 2:
+            adapter.generate(latents[0], output_paths[0], config, metadata[0])
+            raise RuntimeError("interrupted")
+        return original_generate(latents, output_paths, config, metadata)
+
+    adapter.generate_batch = interrupted
+    config = {"latent_dim": 8, "inference_batch_size": 3}
+    args = dict(adapter=adapter, config=config,
+                budget={"name": "test", "N": 10, "K": 2, "M": 5, "d": 2},
+                run_seed=7, output_dir=tmp_path)
+    with pytest.raises(RuntimeError, match="interrupted"):
+        o3.run_o3(**args)
+    adapter.generate_batch = original_generate
+    summary = o3.run_o3(**args, resume=True)
+    assert summary["oracle_evaluations"] == 10
+    assert adapter.batch_lengths == [3, 2, 2]
+    with pytest.raises(ValueError, match="different inference batch size"):
+        o3.run_o3(**{**args, "config": {**config, "inference_batch_size": 2}}, resume=True)

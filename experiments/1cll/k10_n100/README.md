@@ -12,7 +12,7 @@ From the repository root:
 
 ```bash
 sh run_experiment.sh --smoke
-sh run_experiment.sh --only n20_k2 --method all --replicates 5 --random-seeds --run-id n20_k2_run01
+sh run_experiment.sh --method all --only n100_k10 --replicates 10 --batch-size 4 --gpus auto --random-seeds --run-id batch4_all_run01
 ```
 
 The shell wrapper applies the Linux lab defaults automatically. Override them
@@ -28,14 +28,30 @@ export UV_CACHE_DIR="$PWD/.uv-cache"
 The wrapper defaults to these same values, so no export is required for the
 normal lab run.
 
-The first command checks the setup and GPU. The second command runs all three
-methods with the same five freshly generated seeds.
+The first command checks the setup and GPU. The second one-line command runs
+all three methods with the same ten freshly generated seeds, using one Linux
+process per visible GPU. The paper uses five seeds; ten is an optional
+higher-confidence repeat count.
 
 Running `sh run_experiment.sh` with no arguments executes Best K-of-N and O3
 for n20, n50, and n100 with five fresh seeds per budget.
 
-Set `--replicates 3` for a three-replicate comparison; supported values are 1,
-3, and 5.
+Supported replicate counts are 1, 3, 5, and 10. Use five to match the paper;
+ten doubles the repeat count and compute cost.
+
+`--gpus auto` discovers visible devices and assigns replicate seeds to them in
+stable round-robin order. For ten seeds on four GPUs, the workers receive
+3, 3, 2, and 2 seeds. Use `--gpus 0,1,2,3` to choose devices explicitly, or
+omit the option for the original sequential path. The same worker handles its
+seed shard for every selected method, and `--batch-size` applies separately on
+each GPU. Multi-worker execution is Linux-only; Windows rejects more than one
+selected GPU. This is replicate-level process parallelism, not a change to
+Boltz's DataLoader worker count.
+
+Worker logs, completion markers, and `schedule.json` are stored below
+`outputs/1cll/kK_nN/runs/<run-id>/workers/`. Resume with the same arguments and
+`--resume`; the saved manifest restores the seed list, completed replicates
+are reused, and a different GPU subset may be selected for the resumed session.
 
 Available budgets:
 

@@ -8,6 +8,7 @@ import os
 import shutil
 import subprocess
 import sys
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -17,6 +18,7 @@ from common import (
     DEFAULT_REPLICATE_SEED_START,
     DEFAULT_REPLICATE_SEED_STEP,
     REPO_ROOT,
+    SUPPORTED_REPLICATES,
     configure_budget,
     random_replicate_seeds,
     resolve_replicate_seeds,
@@ -41,7 +43,9 @@ def parse_args() -> argparse.Namespace:
         default="n100_k10",
         help="Run one supported budget (the --only spelling is kept for run_experiment.sh).",
     )
-    parser.add_argument("--replicates", type=int, choices=(1, 3, 5), default=5)
+    parser.add_argument(
+        "--replicates", type=int, choices=SUPPORTED_REPLICATES, default=5
+    )
     parser.add_argument("--run-id", default=None)
     parser.add_argument("--seed-start", type=int, default=DEFAULT_REPLICATE_SEED_START)
     parser.add_argument("--seed-step", type=int, default=DEFAULT_REPLICATE_SEED_STEP)
@@ -72,6 +76,13 @@ def parse_args() -> argparse.Namespace:
         metavar="RUN_ID",
         default=None,
         help="Load the recorded replicate seeds from a completed Best K-of-N run.",
+    )
+    parser.add_argument("--batch-size", type=int, default=None,
+                        help="Opt into persistent baseline inference and batched O3 initialization (try 2 or 4).")
+    parser.add_argument(
+        "--gpus",
+        default=None,
+        help="Linux replicate workers: comma-separated GPU indices or 'auto'.",
     )
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--smoke", action="store_true", help="Run backend and sampler verification only")
@@ -121,6 +132,8 @@ def run_o3(
     budget: str,
     seeds: list[int],
     resume: bool = False,
+    batch_size: int = 1,
+    worker_only: bool = False,
 ) -> None:
     uv = os.environ.get("BOLTZ_PUBLIC_UV") or shutil.which("uv") or "uv"
     command = [
@@ -131,13 +144,20 @@ def run_o3(
         "--only", budget,
         "--seed-list", *(str(seed) for seed in seeds),
     ]
+    command += ["--batch-size", str(batch_size)]
     if resume:
         command.append("--resume")
+    if worker_only:
+        command.append("--worker-only")
     subprocess.run(command, cwd=REPO_ROOT, check=True)
 
 
 def main() -> None:
     args = parse_args()
+    batch_size = getattr(args, "batch_size", None)
+    gpu_spec = getattr(args, "gpus", None)
+    if batch_size is not None and batch_size < 1:
+        raise ValueError("--batch-size must be positive")
     os.environ.setdefault("UV_CACHE_DIR", str(REPO_ROOT / ".uv-cache"))
     configure_budget(args.budget)
     if args.smoke:
@@ -191,21 +211,28 @@ def main() -> None:
             args.replicates, seed_start=args.seed_start, seed_step=args.seed_step
         )
         seed_mode = "arithmetic_schedule"
+    gpu_ids = None
+    if gpu_spec is not None:
+        import multi_gpu
+
+        gpu_ids = multi_gpu.resolve_gpu_ids(gpu_spec)
     print(f"Seed mode: {seed_mode}", flush=True)
-    print(f"Shared replicate seeds for both methods: {shared_seeds}", flush=True)
+    print(f"Shared replicate seeds for all selected methods: {shared_seeds}", flush=True)
     manifest_path = common.comparison_run_root(run_id) / "run_manifest.json"
     manifest = {
         "target": "1cll",
         "budget": args.budget,
         "run_id": run_id,
         "method_selection": args.method,
+        "batch_size": batch_size,
+        "requested_gpus": gpu_ids,
         "replicates": args.replicates,
         "seed_mode": seed_mode,
         "seeds": shared_seeds,
     }
     if manifest_path.is_file():
         existing_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        immutable_fields = ("target", "budget", "run_id", "replicates", "seeds")
+        immutable_fields = ("target", "budget", "run_id", "replicates", "seeds", "batch_size")
         mismatches = {
             key: (existing_manifest.get(key), manifest.get(key))
             for key in immutable_fields
@@ -221,31 +248,86 @@ def main() -> None:
         f"Run manifest: {manifest_path}",
         flush=True,
     )
+
+    if gpu_ids is not None:
+        parallel_execution = multi_gpu.launch_workers(
+            method=args.method,
+            budget=args.budget,
+            run_id=run_id,
+            seeds=shared_seeds,
+            gpu_ids=gpu_ids,
+            batch_size=batch_size,
+            resume=args.resume,
+        )
+        multi_gpu.finalize_reports(
+            method=args.method,
+            budget=args.budget,
+            run_id=run_id,
+            seeds=shared_seeds,
+            batch_size=batch_size,
+            parallel_execution=parallel_execution,
+        )
+        common.write_json(
+            manifest_path.parent / "execution_timings_this_session.json",
+            {
+                "seconds_by_method": {},
+                "multi_gpu_wall_seconds": parallel_execution["wall_seconds"],
+                "worker_seconds_by_method": {
+                    str(worker["gpu"]): worker["seconds_by_method"]
+                    for worker in parallel_execution["workers"]
+                },
+                "includes_model_startup": True,
+                "resume": args.resume,
+                "batch_size": batch_size,
+                "gpus": gpu_ids,
+            },
+        )
+        print(
+            f"Multi-GPU run complete. Schedule: "
+            f"{common.comparison_run_root(run_id) / 'gpu_schedule_this_session.json'}",
+            flush=True,
+        )
+        return
+
+    session_timings = {}
+
+    def timed(method, function, *positional, **keywords):
+        tick = time.perf_counter()
+        function(*positional, **keywords)
+        session_timings[method] = time.perf_counter() - tick
+        common.write_json(manifest_path.parent / "execution_timings_this_session.json", {
+            "seconds_by_method": session_timings, "includes_model_startup": True,
+            "resume": args.resume, "batch_size": batch_size,
+        })
+
     if args.method in {"best-k-of-n", "both", "all"}:
-        run_public(
+        timed("best_k_of_n", run_public,
             args.replicates,
             run_id,
             resume=args.resume,
             seed_start=args.seed_start,
             seed_step=args.seed_step,
             seeds=shared_seeds,
+            **({"batch_size": batch_size} if batch_size is not None else {}),
         )
     if args.method in {"o3", "both", "all"}:
-        run_o3(
+        timed("o3", run_o3,
             args.replicates,
             run_id,
             REPO_ROOT / "configs" / "1cll.yaml",
             args.budget,
             shared_seeds,
             resume=args.resume,
+            batch_size=batch_size or 1,
         )
     if args.method in {"random-pfode", "all"}:
-        run_random_pfode(
+        timed("random_pfode", run_random_pfode,
             args.replicates,
             run_id,
             REPO_ROOT / "configs" / "1cll.yaml",
             args.budget,
             seeds=shared_seeds,
+            resume=args.resume,
         )
 
 

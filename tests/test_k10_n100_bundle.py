@@ -14,6 +14,8 @@ BUNDLE = ROOT / "experiments" / "1cll" / "k10_n100"
 sys.path.insert(0, str(BUNDLE))
 
 import common  # noqa: E402
+import multi_gpu  # noqa: E402
+import multi_gpu_worker  # noqa: E402
 import public_runner  # noqa: E402
 import run as bundle_run  # noqa: E402
 from common import (  # noqa: E402
@@ -48,6 +50,57 @@ def test_random_replicate_seeds_are_unique_valid_31_bit_values() -> None:
     assert len(seeds) == 5
     assert len(set(seeds)) == 5
     assert all(0 < seed < 2**31 for seed in seeds)
+
+
+def test_ten_replicates_are_supported_by_the_canonical_launcher() -> None:
+    assert common.SUPPORTED_REPLICATES == (1, 3, 5, 10)
+    with patch.object(sys, "argv", ["run.py", "--replicates", "10"]):
+        assert bundle_run.parse_args().replicates == 10
+
+
+def test_gpu_seed_assignment_is_stable_and_uses_each_seed_once() -> None:
+    assert multi_gpu.resolve_gpu_ids("0,2,3") == ["0", "2", "3"]
+    assignments = multi_gpu.assign_seeds(
+        ["0", "1", "2", "3"], list(range(10))
+    )
+    assert [item["seeds"] for item in assignments] == [
+        [0, 4, 8],
+        [1, 5, 9],
+        [2, 6],
+        [3, 7],
+    ]
+    assert sorted(seed for item in assignments for seed in item["seeds"]) == list(
+        range(10)
+    )
+
+
+def test_gpu_auto_discovery_uses_nvidia_smi(monkeypatch) -> None:
+    monkeypatch.delenv("CUDA_VISIBLE_DEVICES", raising=False)
+    discovered = SimpleNamespace(stdout="0\n1\n2\n", returncode=0)
+    with patch("multi_gpu.subprocess.run", return_value=discovered) as run_process:
+        assert multi_gpu.resolve_gpu_ids("auto") == ["0", "1", "2"]
+    assert "--query-gpu=index" in run_process.call_args.args[0]
+
+
+def test_public_assets_are_prepared_in_the_isolated_environment(
+    monkeypatch,
+) -> None:
+    monkeypatch.setenv("VIRTUAL_ENV", "/wrong/project/.venv")
+    with patch("public_runner._uv", return_value="uv"), patch(
+        "public_runner.subprocess.run"
+    ) as run_process:
+        public_runner.prepare_public_assets()
+
+    command = run_process.call_args.args[0]
+    assert command[:4] == [
+        "uv",
+        "run",
+        "--project",
+        str(public_runner.PUBLIC_PROJECT),
+    ]
+    assert command[-1] == str(public_runner.PUBLIC_CACHE)
+    assert run_process.call_args.kwargs["check"] is True
+    assert "VIRTUAL_ENV" not in run_process.call_args.kwargs["env"]
 
 
 def test_replicate_seed_validation_rejects_out_of_range_values() -> None:
@@ -117,6 +170,77 @@ def test_runner_records_default_random_seeds_before_generation(tmp_path: Path) -
     assert manifest["seed_mode"] == "fresh_os_random"
     assert manifest["seeds"] == [101, 202, 303]
     assert run_public.call_args.kwargs["seeds"] == [101, 202, 303]
+
+
+def test_runner_routes_gpu_runs_through_parallel_workers(tmp_path: Path) -> None:
+    manifest_root = tmp_path / "comparison"
+    report = {
+        "wall_seconds": 12.0,
+        "workers": [
+            {"gpu": "0", "seconds_by_method": {"o3": 10.0}},
+            {"gpu": "1", "seconds_by_method": {"o3": 9.0}},
+        ],
+    }
+    args = _runner_args(method="all", gpus="0,1", batch_size=4)
+    with patch("run.parse_args", return_value=args), patch(
+        "run.random_replicate_seeds", return_value=[101, 202, 303]
+    ), patch("common.comparison_run_root", return_value=manifest_root), patch(
+        "multi_gpu.launch_workers", return_value=report
+    ) as launch, patch("multi_gpu.finalize_reports") as finalize, patch(
+        "run.run_public"
+    ) as run_public, patch("run.run_o3") as run_o3, patch(
+        "run.run_random_pfode"
+    ) as run_random:
+        bundle_run.main()
+
+    assert launch.call_args.kwargs["gpu_ids"] == ["0", "1"]
+    assert launch.call_args.kwargs["seeds"] == [101, 202, 303]
+    assert launch.call_args.kwargs["batch_size"] == 4
+    finalize.assert_called_once()
+    run_public.assert_not_called()
+    run_o3.assert_not_called()
+    run_random.assert_not_called()
+
+
+def test_gpu_worker_dispatches_seed_shard_without_shared_reports(
+    tmp_path: Path, monkeypatch
+) -> None:
+    marker = tmp_path / "complete.json"
+    monkeypatch.setenv("CUDA_VISIBLE_DEVICES", "2")
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "multi_gpu_worker.py",
+            "--method",
+            "all",
+            "--budget",
+            "n100_k10",
+            "--run-id",
+            "run01",
+            "--worker-index",
+            "0",
+            "--gpu-id",
+            "2",
+            "--marker",
+            str(marker),
+            "--seed-list",
+            "11",
+            "22",
+            "--batch-size",
+            "4",
+        ],
+    )
+    with patch("multi_gpu_worker.public_runner.run_replicate") as public, patch(
+        "multi_gpu_worker.canonical_run.run_o3"
+    ) as o3, patch("multi_gpu_worker.random_pfode_runner.run") as random_pfode:
+        multi_gpu_worker.main()
+
+    assert [call.args[1] for call in public.call_args_list] == [11, 22]
+    assert all(call.kwargs["batch_size"] == 4 for call in public.call_args_list)
+    assert o3.call_args.kwargs["worker_only"] is True
+    assert random_pfode.call_args.kwargs["write_run_reports"] is False
+    assert json.loads(marker.read_text())["seeds"] == [11, 22]
 
 
 def test_smoke_does_not_create_seed_manifest() -> None:

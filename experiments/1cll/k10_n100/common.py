@@ -30,6 +30,7 @@ _BUDGETS = {
 ACTIVE_BUDGET = "n100_k10"
 N = _BUDGETS[ACTIVE_BUDGET]["N"]
 K = _BUDGETS[ACTIVE_BUDGET]["K"]
+SUPPORTED_REPLICATES = (1, 3, 5, 10)
 
 # Shared by both methods in the canonical comparison. The nontrivial,
 # prime-spaced schedule is reproducible and avoids the first few integer

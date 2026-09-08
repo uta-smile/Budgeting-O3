@@ -12,7 +12,7 @@ Budget: Practical Guidance for Protein Structure Prediction Models*, arXiv
 | Latent | Section 4: `Z = R^3552`, described as 1,184 atom coordinates | `atom_slots: 1184`; adapter derives `latent_dim = atom_slots * 3` and records both values |
 | Oracle | Section 4: C-alpha TM-score against 1CLL, normalized by the 144-residue ground truth | `TMScoreOracle` puts reference chain A first in `tm_align` and returns `tm_norm_chain1` |
 | Budgets | Section 4: `(20,2)`, `(50,5)`, `(100,10)`, then larger settings | Configuration and public runner expose only the first three, per the hardware limit |
-| Repeats | Section 4: five random seeds | Runner supports 1/3/5 replicates, generates OS-random seeds by default, prints them, and saves the exact list |
+| Repeats | Section 4: five random seeds | Runner supports 1/3/5/10 replicates, generates OS-random seeds by default, prints them, and saves the exact list; 5 reproduces the paper and 10 is an optional higher-confidence extension. The optional Linux GPU scheduler changes only replicate placement. |
 | Best K-of-N | Section 3: draw N ordinary samples and return the K highest oracle scores | Isolated public `boltz==2.2.1` CLI; N one-sample seeded calls; top K selected by external TM-score |
 | O3 phase 1 | Section 3.1: score M deterministic generations and retain the best d latent seeds | `run_o3`: M explicit standard-normal latents, deterministic decode, oracle sort, top d |
 | O3 chart | Algorithm 1: KR transform to positive-sphere weights, then `z = w^T Z` | `SurrogateChart` and independent reference tests |

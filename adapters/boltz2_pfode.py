@@ -12,7 +12,7 @@ import os
 import hashlib
 import tarfile
 import urllib.request
-from contextlib import nullcontext
+from contextlib import contextmanager, nullcontext
 from dataclasses import asdict, replace
 from pathlib import Path
 from typing import Any, Mapping
@@ -41,6 +41,23 @@ def _download(urls: list[str], destination: Path) -> None:
         except Exception as exc:  # noqa: BLE001
             last_error = exc
     raise RuntimeError(f"Could not download {destination}") from last_error
+
+
+@contextmanager
+def _exclusive_process_lock(path: Path):
+    """Serialize first-run cache writes across local GPU worker processes."""
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a+", encoding="utf-8") as handle:
+        if os.name != "nt":
+            import fcntl
+
+            fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            if os.name != "nt":
+                fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
 
 
 def _ensure_assets(cache_dir: Path) -> Path:
@@ -236,7 +253,11 @@ class Boltz2PFODEAdapter:
         if not self.input_yaml.exists():
             raise FileNotFoundError(f"Missing Boltz input YAML: {self.input_yaml}")
 
-        checkpoint = _ensure_assets(self.cache_dir)
+        # Multiple replicate workers share the model/CCD cache. Only the
+        # first one may download or extract it; the others wait and then use
+        # the completed assets.
+        with _exclusive_process_lock(self.cache_dir / ".o3_assets.lock"):
+            checkpoint = _ensure_assets(self.cache_dir)
         configured_checkpoint = config.get("boltz2", {}).get("checkpoint")
         if configured_checkpoint:
             checkpoint = _path(str(configured_checkpoint), Path(str(config["project_root"])))
@@ -250,18 +271,20 @@ class Boltz2PFODEAdapter:
             max_msa_seqs=self.max_msa_seqs,
         )
 
-        process_inputs(
-            data=[self.input_yaml],
-            out_dir=self.processed_dir,
-            ccd_path=self.cache_dir / "ccd.pkl",
-            mol_dir=self.cache_dir / "mols",
-            msa_server_url=self.msa_server_url,
-            msa_pairing_strategy="greedy",
-            max_msa_seqs=self.max_msa_seqs,
-            use_msa_server=self.use_msa_server,
-            boltz2=True,
-            preprocessing_threads=1,
-        )
+        processing_lock = self.processed_dir.parent / f".{self.processed_dir.name}.lock"
+        with _exclusive_process_lock(processing_lock):
+            process_inputs(
+                data=[self.input_yaml],
+                out_dir=self.processed_dir,
+                ccd_path=self.cache_dir / "ccd.pkl",
+                mol_dir=self.cache_dir / "mols",
+                msa_server_url=self.msa_server_url,
+                msa_pairing_strategy="greedy",
+                max_msa_seqs=self.max_msa_seqs,
+                use_msa_server=self.use_msa_server,
+                boltz2=True,
+                preprocessing_threads=1,
+            )
 
         processed = self.processed_dir / "processed"
         manifest = Manifest.load(processed / "manifest.json")
@@ -358,16 +381,30 @@ class Boltz2PFODEAdapter:
         config: Mapping[str, Any],
         metadata: Mapping[str, Any],
     ) -> Path:
+        return self.generate_batch([latent], [output_path], config, [metadata])[0]
+
+    def generate_batch(
+        self,
+        latents,
+        output_paths,
+        config: Mapping[str, Any],
+        metadata,
+    ) -> list[Path]:
         del config
         import torch
         from boltz.data.write.pdb import to_pdb
 
-        latent_array = np.asarray(latent, dtype=np.float32)
-        if latent_array.shape != (self.latent_dim,):
+        latent_array = np.asarray(latents, dtype=np.float32)
+        count = len(output_paths)
+        if count < 1 or len(metadata) != count:
+            raise ValueError("Batch needs matching nonempty latents, paths, and metadata")
+        if latent_array.shape != (count, self.latent_dim):
             raise ValueError(
-                f"Expected latent shape {(self.latent_dim,)}, got {latent_array.shape}"
+                f"Expected latent shape {(count, self.latent_dim)}, got {latent_array.shape}"
             )
-        deterministic = bool(metadata.get("deterministic", self.deterministic))
+        deterministic = bool(metadata[0].get("deterministic", self.deterministic))
+        if any(bool(item.get("deterministic", self.deterministic)) != deterministic for item in metadata):
+            raise ValueError("Cannot mix stochastic and deterministic samples in one batch")
         sampling_mode = "deterministic PF-ODE" if deterministic else "stochastic Boltz-2"
         active_gamma_0 = 0.0 if deterministic else self.stochastic_gamma_0
         latent_source = "explicit z" if self.explicit_latent else "internal torch noise"
@@ -377,7 +414,7 @@ class Boltz2PFODEAdapter:
             flush=True,
         )
         initial_coords = (
-            torch.from_numpy(latent_array.reshape(1, self.atom_slots, 3)).to(self.device)
+            torch.from_numpy(latent_array.reshape(count, self.atom_slots, 3)).to(self.device)
             if self.explicit_latent
             else None
         )
@@ -406,8 +443,8 @@ class Boltz2PFODEAdapter:
                     self.features,
                     recycling_steps=self.recycling_steps,
                     num_sampling_steps=self.sampling_steps,
-                    diffusion_samples=1,
-                    max_parallel_samples=1,
+                    diffusion_samples=count,
+                    max_parallel_samples=count,
                     run_confidence_sequentially=True,
                     initial_atom_coords=initial_coords,
                     deterministic=deterministic,
@@ -416,11 +453,14 @@ class Boltz2PFODEAdapter:
         finally:
             diffusion_module.gamma_0 = previous_gamma_0
 
-        model_coords = result["sample_atom_coords"][0]
+        coordinates = result["sample_atom_coords"]
+        if coordinates.shape[0] != count:
+            raise RuntimeError("Boltz returned an unexpected number of samples")
         pad_mask = self.features["atom_pad_mask"][0].bool()
-        coord_unpad = model_coords[pad_mask].detach().cpu().numpy()
-        self._write_pdb(output_path, coord_unpad, to_pdb)
-        return output_path
+        unpadded = coordinates[:, pad_mask].detach().cpu().numpy()
+        for output_path, coords in zip(output_paths, unpadded):
+            self._write_pdb(output_path, coords, to_pdb)
+        return list(output_paths)
 
     @staticmethod
     def _extract_model_metrics(result: Mapping[str, Any], torch) -> dict[str, float]:

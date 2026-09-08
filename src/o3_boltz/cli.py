@@ -48,6 +48,12 @@ def _parse_args() -> argparse.Namespace:
         action="store_true",
         help="Reuse completed O3 summaries and continue partial seed directories.",
     )
+    parser.add_argument("--batch-size", type=int, default=1)
+    parser.add_argument(
+        "--worker-only",
+        action="store_true",
+        help=argparse.SUPPRESS,
+    )
     parser.add_argument("--only", nargs="*", help="run only these budget names")
     parser.add_argument(
         "--method",
@@ -100,9 +106,12 @@ def main() -> None:
     config_path = args.config.resolve()
     with config_path.open("r", encoding="utf-8") as handle:
         config = yaml.safe_load(handle)
+    if args.batch_size < 1:
+        raise ValueError("--batch-size must be positive")
 
     if not isinstance(config, dict):
         raise ValueError(f"Expected a mapping in {config_path}")
+    config["inference_batch_size"] = args.batch_size
     project_root = _find_project_root(config_path)
     os.chdir(project_root)
     config["project_root"] = str(project_root)
@@ -228,6 +237,12 @@ def main() -> None:
     for budget_name, summaries in summaries_by_budget.items():
         summary_root = roots_by_budget[budget_name] / "runs" / run_id
         summary_root.mkdir(parents=True, exist_ok=True)
+        if args.worker_only:
+            print(
+                f"Worker finished {len(summaries)} O3 replicate(s) in {summary_root}",
+                flush=True,
+            )
+            continue
         summary_path = summary_root / "sweep_summary.csv"
         with summary_path.open("w", newline="", encoding="utf-8") as handle:
             writer = csv.DictWriter(handle, fieldnames=summaries[0].keys())

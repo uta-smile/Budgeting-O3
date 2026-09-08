@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import json
 import random
+import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Mapping
@@ -209,6 +210,12 @@ def _load_resume_state(
         )
         phase1_completed += 1
 
+    batch_size = int(config.get("inference_batch_size", 1))
+    if phase1_completed < m and batch_size > 1:
+        # Replay the original whole batch after an interrupted multi-file write.
+        # Generating only its suffix would change the numerical batch shape.
+        phase1_completed -= phase1_completed % batch_size
+        evaluations = evaluations[:phase1_completed]
     if phase1_completed == 0 and not archive_path.exists():
         return None
     if archive_path.exists() and phase1_completed != m:
@@ -280,6 +287,12 @@ def _load_resume_state(
         train_scores = np.append(train_scores, score)
         phase2_completed += 1
 
+    if batch_size > 1 and phase2_completed == 1:
+        phase2_completed = 0
+        evaluations = evaluations[:m]
+        train_u = np.asarray(chart.from_z_to_u(seed_latents), dtype=np.float64)
+        train_scores = seed_scores.copy()
+
     bo_rounds_completed = 0
     for round_index in range(bo_rounds):
         latent_path = output_dir / "latents" / f"latent_{m + 2 + round_index:04d}.npy"
@@ -346,6 +359,13 @@ def run_o3(
 ) -> dict[str, Any]:
     """Run one budget/seed pair and write all artifacts below output_dir."""
 
+    started = time.perf_counter()
+    timings = {"generation_seconds": 0.0, "scoring_seconds": 0.0, "acquisition_seconds": 0.0}
+    batch_size = int(config.get("inference_batch_size", 1))
+    if batch_size < 1:
+        raise ValueError("inference_batch_size must be positive")
+    if batch_size > 1 and not callable(getattr(adapter, "generate_batch", None)):
+        raise ValueError("The selected adapter does not support generate_batch")
     n, k, m, d = _validate_budget(budget)
     latent_dim = int(config["latent_dim"])
     budget_name = str(budget.get("name", f"n{n}_k{k}"))
@@ -370,6 +390,13 @@ def run_o3(
     seed_dir.mkdir(exist_ok=True)
     bo_dir.mkdir(exist_ok=True)
 
+    settings_path = output_dir / "inference_settings.json"
+    settings = {"batch_size": batch_size, "bo_batch_size": 1}
+    if resume:
+        previous = json.loads(settings_path.read_text()) if settings_path.exists() else {"batch_size": 1, "bo_batch_size": 1}
+        if previous != settings:
+            raise ValueError("Cannot resume with a different inference batch size")
+    settings_path.write_text(json.dumps(settings, indent=2), encoding="utf-8")
     summary_path = output_dir / "summary.json"
     if resume and summary_path.exists():
         with summary_path.open("r", encoding="utf-8") as handle:
@@ -440,57 +467,62 @@ def run_o3(
             flush=True,
         )
 
-    def evaluate(
-        latent: np.ndarray,
-        stage: str,
-        structure_path: Path,
-        u: np.ndarray | None,
-    ) -> float:
-        structure_path.parent.mkdir(parents=True, exist_ok=True)
-        latent_path = output_dir / "latents" / f"latent_{len(evaluations):04d}.npy"
-        latent_path.parent.mkdir(exist_ok=True)
-        np.save(latent_path, latent)
-        if u is not None:
-            u_path = output_dir / "u" / f"u_{len(evaluations):04d}.npy"
-            u_path.parent.mkdir(exist_ok=True)
-            np.save(u_path, u)
-        print_progress(f"generating {stage}")
-        written_path = adapter.generate(
-            latent=latent,
-            output_path=structure_path,
-            config=config,
-            metadata={
-                "budget": budget_name,
-                "seed": run_seed,
-                "stage": stage,
-                "evaluation_index": len(evaluations),
-                "u": None if u is None else u.tolist(),
-                "deterministic": True,
-            },
-        )
-        final_path = Path(written_path) if written_path is not None else structure_path
-        if not final_path.exists():
-            raise FileNotFoundError(
-                f"The adapter did not write a structure at {final_path}. "
-                "The generator must create the requested PDB/mmCIF file."
+    def evaluate_many(items) -> list[float]:
+        # Each item is (latent, stage, requested path, U). Save all inputs before
+        # generation so a completed structure always has its corresponding Z/U.
+        metadata = []
+        latent_paths = []
+        for offset, (latent, stage, structure_path, u) in enumerate(items):
+            index = len(evaluations) + offset
+            structure_path.parent.mkdir(parents=True, exist_ok=True)
+            latent_path = output_dir / "latents" / f"latent_{index:04d}.npy"
+            latent_path.parent.mkdir(exist_ok=True)
+            np.save(latent_path, latent)
+            latent_paths.append(latent_path)
+            if u is not None:
+                u_path = output_dir / "u" / f"u_{index:04d}.npy"
+                u_path.parent.mkdir(exist_ok=True)
+                np.save(u_path, u)
+            metadata.append({
+                "budget": budget_name, "seed": run_seed, "stage": stage,
+                "evaluation_index": index,
+                "u": None if u is None else u.tolist(), "deterministic": True,
+            })
+        print_progress(f"generating {items[0][1]} batch={len(items)}")
+        tick = time.perf_counter()
+        if len(items) == 1:
+            paths = [adapter.generate(latent=items[0][0], output_path=items[0][2],
+                                      config=config, metadata=metadata[0])]
+        else:
+            paths = adapter.generate_batch(
+                latents=np.stack([item[0] for item in items]),
+                output_paths=[item[2] for item in items], config=config, metadata=metadata,
             )
-        score = float(adapter.score(final_path, config))
-        if not np.isfinite(score):
-            raise ValueError(f"Oracle returned a non-finite score for {final_path}")
-        evaluations.append(
-            Evaluation(
-                index=len(evaluations),
-                stage=stage,
-                score=score,
-                structure=str(final_path),
-                latent_file=str(latent_path),
-                budget=budget_name,
-                seed=run_seed,
+        timings["generation_seconds"] += time.perf_counter() - tick
+        if len(paths) != len(items):
+            raise RuntimeError("Adapter returned an incorrect batch size")
+        scores = []
+        for item, written, latent_path in zip(items, paths, latent_paths):
+            latent, stage, structure_path, u = item
+            final_path = Path(written) if written is not None else structure_path
+            if not final_path.exists():
+                raise FileNotFoundError(f"The adapter did not write a structure at {final_path}")
+            tick = time.perf_counter()
+            score = float(adapter.score(final_path, config))
+            timings["scoring_seconds"] += time.perf_counter() - tick
+            if not np.isfinite(score):
+                raise ValueError(f"Oracle returned a non-finite score for {final_path}")
+            evaluations.append(Evaluation(
+                index=len(evaluations), stage=stage, score=score, structure=str(final_path),
+                latent_file=str(latent_path), budget=budget_name, seed=run_seed,
                 u=None if u is None else u.tolist(),
-            )
-        )
-        print_progress("completed", score)
-        return score
+            ))
+            scores.append(score)
+            print_progress("completed", score)
+        return scores
+
+    def evaluate(latent, stage, structure_path, u) -> float:
+        return evaluate_many([(latent, stage, structure_path, u)])[0]
 
     if resumed is None:
         phase1_completed = 0
@@ -504,15 +536,13 @@ def run_o3(
         phase2_completed = int(resumed["phase2_completed"])
         bo_rounds_completed = int(resumed["bo_rounds_completed"])
 
-    for i in range(phase1_completed, m):
-        latent = expected_phase1_latents[i]
-        phase1_latents[i] = latent
-        phase1_scores[i] = evaluate(
-            latent,
-            "phase1_random",
-            seed_dir / f"sample_{i:04d}.pdb",
-            None,
-        )
+    for start in range(phase1_completed, m, batch_size):
+        end = min(start + batch_size, m)
+        phase1_latents[start:end] = expected_phase1_latents[start:end]
+        phase1_scores[start:end] = evaluate_many([
+            (expected_phase1_latents[i], "phase1_random", seed_dir / f"sample_{i:04d}.pdb", None)
+            for i in range(start, end)
+        ])
 
     selected = np.argsort(phase1_scores)[-d:][::-1]
     seed_latents = phase1_latents[selected].copy()
@@ -558,12 +588,14 @@ def run_o3(
         f"(U dimension={d - 1})",
         flush=True,
     )
-    for i in range(phase2_completed, 2):
-        u = initial_u_points[i]
-        latent = map_u_to_latent(u, seed_latents)
-        score = evaluate(latent, "bo_initial_random", bo_dir / f"initial_{i:02d}.pdb", u)
-        train_u = np.vstack([train_u, u])
-        train_scores = np.append(train_scores, score)
+    for start in range(phase2_completed, 2, batch_size):
+        points = initial_u_points[start:min(start + batch_size, 2)]
+        scores = evaluate_many([
+            (map_u_to_latent(u, seed_latents), "bo_initial_random", bo_dir / f"initial_{start + offset:02d}.pdb", u)
+            for offset, u in enumerate(points)
+        ])
+        train_u = np.vstack([train_u, points])
+        train_scores = np.append(train_scores, scores)
 
     print(
         f"[{budget_name} seed={run_seed}] phase 2 complete: "
@@ -579,7 +611,9 @@ def run_o3(
         torch.manual_seed(acquisition_seed)
         if torch.cuda.is_available():
             torch.cuda.manual_seed_all(acquisition_seed)
+        tick = time.perf_counter()
         u = _fit_and_acquire(train_u, train_scores)
+        timings["acquisition_seconds"] += time.perf_counter() - tick
         latent = chart.from_u_to_z(u)
         score = evaluate(
             latent,
@@ -624,6 +658,9 @@ def run_o3(
         "D": latent_dim,
         "latent_dim": latent_dim,
         "chart_version": SURROGATE_CHART_VERSION,
+        "inference_batch_size": batch_size,
+        "bo_batch_size": 1,
+        "timings_this_session": {**timings, "wall_seconds": time.perf_counter() - started},
         "o3_chart": "knothe_rosenblatt_positive_unit_hypersphere",
         "generator_atom_count": getattr(adapter, "atom_count", None),
         "generator_atom_slots": getattr(adapter, "atom_slots", None),
@@ -648,6 +685,8 @@ def run_o3(
             {
                 "backend": "custom_boltz2_o3",
                 "method": "o3",
+                "inference_batch_size": batch_size,
+                "bo_batch_size": 1,
                 "generator": summary.get("generator"),
                 "msa_cache": summary.get("msa_cache"),
                 "seed": run_seed,

@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import json
+import math
 import os
 import shutil
 import subprocess
+import time
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
@@ -82,6 +84,32 @@ def public_installation_info() -> dict[str, Any]:
     if not info["cuda_available"]:
         raise RuntimeError(f"Public Boltz environment cannot see CUDA: {info}")
     return info
+
+
+def prepare_public_assets() -> None:
+    """Populate the shared stock-Boltz cache before parallel workers start."""
+
+    code = (
+        "import sys; from pathlib import Path; "
+        "from boltz.main import download_boltz2; "
+        "cache = Path(sys.argv[1]); cache.mkdir(parents=True, exist_ok=True); "
+        "download_boltz2(cache)"
+    )
+    subprocess.run(
+        [
+            _uv(),
+            "run",
+            "--project",
+            str(PUBLIC_PROJECT),
+            "python",
+            "-c",
+            code,
+            str(PUBLIC_CACHE),
+        ],
+        cwd=REPO_ROOT,
+        check=True,
+        env=_public_env(),
+    )
 
 
 @lru_cache(maxsize=1)
@@ -196,6 +224,67 @@ def _run_public_predict(sample_dir: Path, sample_seed: int) -> Path:
     return find_prediction(boltz_out)
 
 
+def _batch_jobs(replicate_dir: Path, run_seed: int, batch_size: int) -> list[dict[str, Any]]:
+    if batch_size < 1:
+        raise ValueError("batch_size must be positive")
+    return [
+        {"start": start, "count": min(batch_size, common.N - start),
+         "seed": common.sample_seed(run_seed, start),
+         "output_dir": str(replicate_dir / "batches" / f"batch_{start:04d}")}
+        for start in range(0, common.N, batch_size)
+    ]
+
+
+def _read_batch(job: dict[str, Any]) -> dict[str, Any] | None:
+    marker = Path(job["output_dir"]) / "complete.json"
+    if not marker.exists():
+        return None
+    saved = json.loads(marker.read_text())
+    if any(saved.get(key) != value for key, value in job.items()):
+        raise ValueError(f"Incompatible batch metadata: {marker}")
+    paths = saved.get("structures", [])
+    if len(paths) != job["count"] or len(set(paths)) != len(paths):
+        raise ValueError(f"Invalid batch structure count: {marker}")
+    if not all(Path(path).is_file() and Path(path).stat().st_size for path in paths):
+        return None
+    return saved
+
+
+def _run_public_batches(replicate_dir: Path, run_seed: int, batch_size: int) -> dict[int, dict[str, Any]]:
+    jobs = _batch_jobs(replicate_dir, run_seed, batch_size)
+    pending = [job for job in jobs if _read_batch(job) is None]
+    if pending:
+        request_path = replicate_dir / "batch_request.json"
+        write_json(request_path, {
+            "input": str(PUBLIC_INPUT), "cache": str(PUBLIC_CACHE),
+            "work_dir": str(replicate_dir / "public_work"), "jobs": pending,
+        })
+        command = [_uv(), "run", "--project", str(PUBLIC_PROJECT), "python",
+                   str(BUNDLE / "public_batch_entry.py"), str(request_path)]
+        print(f"[best-k-of-n] persistent inference: {len(pending)} batches, limit={batch_size}", flush=True)
+        log_path = replicate_dir / "boltz_batches.log"
+        print(f"[best-k-of-n] inference log: {log_path}", flush=True)
+        try:
+            with log_path.open("a", encoding="utf-8") as log:
+                subprocess.run(command, cwd=REPO_ROOT, check=True, stdout=log,
+                               stderr=subprocess.STDOUT, env=_public_env())
+        except subprocess.CalledProcessError as exc:
+            tail = "\n".join(log_path.read_text(errors="replace").splitlines()[-25:])
+            raise RuntimeError(f"Public inference failed. Saved log: {log_path}\n{tail}") from exc
+    generated = {}
+    for job in jobs:
+        saved = _read_batch(job)
+        if saved is None:
+            raise RuntimeError(f"Public batch did not finish: {job['output_dir']}")
+        for rank, structure in enumerate(saved["structures"]):
+            generated[job["start"] + rank] = {
+                "cif": Path(structure), "batch_seed": job["seed"],
+                "batch_start": job["start"], "batch_count": job["count"],
+                "batch_confidence_rank": rank, "precision": saved["precision"],
+            }
+    return generated
+
+
 def _write_replicate_summary(replicate_dir: Path, rows: list[dict[str, Any]], run_seed: int, info: dict[str, Any]) -> dict[str, Any]:
     ordered = sorted(rows, key=lambda row: float(row["tm_score"]), reverse=True)
     for rank, row in enumerate(ordered, start=1):
@@ -252,7 +341,8 @@ def _write_replicate_summary(replicate_dir: Path, rows: list[dict[str, Any]], ru
     return summary
 
 
-def run_replicate(run_id: str, run_seed: int, resume: bool = False) -> dict[str, Any]:
+def run_replicate(run_id: str, run_seed: int, resume: bool = False, batch_size: int | None = None) -> dict[str, Any]:
+    started = time.perf_counter()
     if not PUBLIC_INPUT.is_file():
         raise FileNotFoundError(f"Missing public Boltz single-sequence input: {PUBLIC_INPUT}")
     info = public_installation_info()
@@ -262,7 +352,18 @@ def run_replicate(run_id: str, run_seed: int, resume: bool = False) -> dict[str,
         raise RuntimeError(f"{replicate_dir} already exists; pass --resume or choose another --run-id")
     replicate_dir.mkdir(parents=True, exist_ok=True)
     rows_by_index = {int(row["sample_index"]): row for row in read_csv(evaluations_path)}
+    settings = {"batch_size": batch_size,
+                "seed_policy": "per_sample" if batch_size is None else "per_batch_first_sample_seed"}
+    settings_path = replicate_dir / "inference_settings.json"
+    if settings_path.exists():
+        if json.loads(settings_path.read_text()) != settings:
+            raise ValueError("Cannot change baseline execution mode or batch size within a run")
+    elif batch_size is not None and (rows_by_index or any(replicate_dir.rglob("*.cif"))):
+        raise ValueError("Use a fresh run ID for persistent baseline inference")
+    write_json(settings_path, settings)
+    generated = _run_public_batches(replicate_dir, run_seed, batch_size) if batch_size is not None else None
     rows: list[dict[str, Any]] = []
+    scoring_seconds = 0.0
     for index in range(common.N):
         sample_seed_for_index = common.sample_seed(run_seed, index)
         sample_dir = replicate_dir / "samples" / f"sample_{index:04d}"
@@ -272,9 +373,14 @@ def run_replicate(run_id: str, run_seed: int, resume: bool = False) -> dict[str,
             existing.setdefault("inference_precision", "not_recorded")
             rows.append(existing)
             continue
-        cif_path = _run_public_predict(sample_dir, sample_seed_for_index)
+        cif_path = generated[index]["cif"] if generated is not None else _run_public_predict(sample_dir, sample_seed_for_index)
+        structure.parent.mkdir(parents=True, exist_ok=True)
+        tick = time.perf_counter()
         convert_cif_to_pdb(cif_path, structure)
         score = score_structure(structure)
+        scoring_seconds += time.perf_counter() - tick
+        if not math.isfinite(score):
+            raise ValueError(f"Non-finite TM-score for {structure}")
         requested_precision = os.environ.get("BOLTZ_PUBLIC_PRECISION")
         actual_precision = (
             "32"
@@ -289,9 +395,22 @@ def run_replicate(run_id: str, run_seed: int, resume: bool = False) -> dict[str,
             "structure": str(structure),
             "inference_precision": actual_precision,
         }
+        if generated is not None:
+            item = generated[index]
+            row["sample_seed"] = ""  # No independent per-sample RNG stream in a batch.
+            row.update({key: item[key] for key in ("batch_seed", "batch_start", "batch_count", "batch_confidence_rank")})
+            row["inference_precision"] = item["precision"]
         rows.append(row)
         write_csv(evaluations_path, rows)
-    return _write_replicate_summary(replicate_dir, rows, run_seed, info)
+    summary = _write_replicate_summary(replicate_dir, rows, run_seed, info)
+    summary["inference"] = settings
+    summary["timings_this_session"] = {
+        "wall_seconds": time.perf_counter() - started, "conversion_scoring_seconds": scoring_seconds,
+    }
+    write_json(replicate_dir / "summary.json", summary)
+    provenance_path = replicate_dir / "provenance.json"
+    write_json(provenance_path, json.loads(provenance_path.read_text()) | {"inference": settings})
+    return summary
 
 
 def run(
@@ -302,16 +421,52 @@ def run(
     seed_start: int = common.DEFAULT_REPLICATE_SEED_START,
     seed_step: int = common.DEFAULT_REPLICATE_SEED_STEP,
     seeds: list[int] | None = None,
+    batch_size: int | None = None,
 ) -> dict[str, Any]:
-    if replicates not in {1, 3, 5}:
-        raise ValueError("replicates must be 1, 3, or 5")
+    if replicates not in common.SUPPORTED_REPLICATES:
+        choices = ", ".join(str(value) for value in common.SUPPORTED_REPLICATES)
+        raise ValueError(f"replicates must be one of: {choices}")
     run_seeds = common.resolve_replicate_seeds(
         replicates, seeds=seeds, seed_start=seed_start, seed_step=seed_step
     )
     metadata_seed_start = None if seeds is not None else seed_start
     metadata_seed_step = None if seeds is not None else seed_step
     print(f"[best-k-of-n] shared replicate seeds: {run_seeds}", flush=True)
-    summaries = [run_replicate(run_id, seed, resume=resume) for seed in run_seeds]
+    summaries = [run_replicate(run_id, seed, resume=resume, batch_size=batch_size) for seed in run_seeds]
+    return finalize_run(
+        replicates=replicates,
+        run_id=run_id,
+        run_seeds=run_seeds,
+        summaries=summaries,
+        seed_start=metadata_seed_start,
+        seed_step=metadata_seed_step,
+        batch_size=batch_size,
+    )
+
+
+def finalize_run(
+    *,
+    replicates: int,
+    run_id: str,
+    run_seeds: list[int],
+    summaries: list[dict[str, Any]] | None = None,
+    seed_start: int | None = None,
+    seed_step: int | None = None,
+    batch_size: int | None = None,
+) -> dict[str, Any]:
+    """Write run-level reports after sequential or parallel replicates finish."""
+
+    if summaries is None:
+        summaries = []
+        for seed in run_seeds:
+            path = output_root("best_k_of_n", run_id) / f"replicate_{seed:03d}" / "summary.json"
+            if not path.is_file():
+                raise FileNotFoundError(f"Missing completed baseline summary: {path}")
+            summaries.append(json.loads(path.read_text(encoding="utf-8")))
+    if len(summaries) != replicates:
+        raise ValueError(
+            f"Expected {replicates} baseline summaries, got {len(summaries)}"
+        )
     run_dir = output_root("best_k_of_n", run_id)
     aggregate_rows = []
     for summary in summaries:
@@ -333,11 +488,14 @@ def run(
         msa_server_url=None,
         budget=common.ACTIVE_BUDGET,
         replicates=replicates,
-        seed_mode="explicit_list" if seeds is not None else "arithmetic_schedule",
-        seed_start=metadata_seed_start,
-        seed_step=metadata_seed_step,
+        seed_mode="explicit_list" if seed_start is None else "arithmetic_schedule",
+        seed_start=seed_start,
+        seed_step=seed_step,
         seeds=run_seeds,
-        sample_seed_function="common.sample_seed(run_seed, sample_index)",
+        sample_seed_function=("common.sample_seed(run_seed, sample_index)" if batch_size is None
+                              else "common.sample_seed(run_seed, batch_start_index)"),
+        inference_batch_size=batch_size,
+        execution_mode="per_sample_cli" if batch_size is None else "persistent_batches",
         checkpoint=public_checkpoint_info(),
     ))
     return {"method": "best_k_of_n", "replicates": summaries, "aggregate": aggregate_rows}

@@ -1,0 +1,14 @@
+{
+  "target": "1cll",
+  "budget": "n100_k10",
+  "run_id": "batch4_trial01",
+  "method_selection": "both",
+  "batch_size": 4,
+  "replicates": 3,
+  "seed_mode": "fresh_os_random",
+  "seeds": [
+    538588060,
+    848447009,
+    1742467283
+  ]
+}

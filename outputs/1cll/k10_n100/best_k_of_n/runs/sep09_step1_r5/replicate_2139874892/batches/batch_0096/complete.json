@@ -1,0 +1,14 @@
+{
+  "start": 96,
+  "count": 4,
+  "seed": 4051204218,
+  "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/sep09_step1_r5/replicate_2139874892/batches/batch_0096",
+  "structures": [
+    "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/sep09_step1_r5/replicate_2139874892/batches/batch_0096/predictions/1cll_boltz_input/1cll_boltz_input_model_0.cif",
+    "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/sep09_step1_r5/replicate_2139874892/batches/batch_0096/predictions/1cll_boltz_input/1cll_boltz_input_model_1.cif",
+    "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/sep09_step1_r5/replicate_2139874892/batches/batch_0096/predictions/1cll_boltz_input/1cll_boltz_input_model_2.cif",
+    "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/sep09_step1_r5/replicate_2139874892/batches/batch_0096/predictions/1cll_boltz_input/1cll_boltz_input_model_3.cif"
+  ],
+  "precision": "32",
+  "generation_seconds": 43.11771716363728
+}

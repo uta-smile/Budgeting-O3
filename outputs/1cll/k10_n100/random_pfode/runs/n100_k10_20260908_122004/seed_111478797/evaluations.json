@@ -1,0 +1,902 @@
+[
+  {
+    "index": 0,
+    "stage": "random_pfode",
+    "score": 0.5041295705798681,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0000.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0000.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 1,
+    "stage": "random_pfode",
+    "score": 0.4992193398525681,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0001.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0001.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 2,
+    "stage": "random_pfode",
+    "score": 0.563704537089401,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0002.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0002.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 3,
+    "stage": "random_pfode",
+    "score": 0.5258763731880645,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0003.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0003.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 4,
+    "stage": "random_pfode",
+    "score": 0.7227005380418101,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0004.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0004.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 5,
+    "stage": "random_pfode",
+    "score": 0.7379175844184893,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0005.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0005.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 6,
+    "stage": "random_pfode",
+    "score": 0.5789634905450181,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0006.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0006.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 7,
+    "stage": "random_pfode",
+    "score": 0.4583181765868523,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0007.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0007.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 8,
+    "stage": "random_pfode",
+    "score": 0.6723656780462768,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0008.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0008.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 9,
+    "stage": "random_pfode",
+    "score": 0.6483139401614075,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0009.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0009.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 10,
+    "stage": "random_pfode",
+    "score": 0.715220282579965,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0010.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0010.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 11,
+    "stage": "random_pfode",
+    "score": 0.7727861578482609,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0011.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0011.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 12,
+    "stage": "random_pfode",
+    "score": 0.6016203494835319,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0012.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0012.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 13,
+    "stage": "random_pfode",
+    "score": 0.6933334990071267,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0013.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0013.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 14,
+    "stage": "random_pfode",
+    "score": 0.5912119053207525,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0014.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0014.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 15,
+    "stage": "random_pfode",
+    "score": 0.5422870510583783,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0015.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0015.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 16,
+    "stage": "random_pfode",
+    "score": 0.5230816563255752,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0016.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0016.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 17,
+    "stage": "random_pfode",
+    "score": 0.49422940300216606,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0017.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0017.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 18,
+    "stage": "random_pfode",
+    "score": 0.7418333807566323,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0018.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0018.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 19,
+    "stage": "random_pfode",
+    "score": 0.7191620537967339,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0019.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0019.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 20,
+    "stage": "random_pfode",
+    "score": 0.4506390603864258,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0020.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0020.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 21,
+    "stage": "random_pfode",
+    "score": 0.7093324924620109,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0021.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0021.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 22,
+    "stage": "random_pfode",
+    "score": 0.5590558618307591,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0022.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0022.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 23,
+    "stage": "random_pfode",
+    "score": 0.6284675388519019,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0023.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0023.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 24,
+    "stage": "random_pfode",
+    "score": 0.6074375533061563,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0024.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0024.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 25,
+    "stage": "random_pfode",
+    "score": 0.6407898305529821,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0025.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0025.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 26,
+    "stage": "random_pfode",
+    "score": 0.8464439422002736,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0026.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0026.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 27,
+    "stage": "random_pfode",
+    "score": 0.4599187944165109,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0027.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0027.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 28,
+    "stage": "random_pfode",
+    "score": 0.5859541131406569,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0028.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0028.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 29,
+    "stage": "random_pfode",
+    "score": 0.563579639701262,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0029.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0029.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 30,
+    "stage": "random_pfode",
+    "score": 0.6718015713846807,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0030.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0030.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 31,
+    "stage": "random_pfode",
+    "score": 0.501279220649932,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0031.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0031.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 32,
+    "stage": "random_pfode",
+    "score": 0.6667101080046127,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0032.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0032.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 33,
+    "stage": "random_pfode",
+    "score": 0.5968778211657892,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0033.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0033.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 34,
+    "stage": "random_pfode",
+    "score": 0.5143345858851688,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0034.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0034.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 35,
+    "stage": "random_pfode",
+    "score": 0.46946540797993475,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0035.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0035.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 36,
+    "stage": "random_pfode",
+    "score": 0.4971092502120513,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0036.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0036.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 37,
+    "stage": "random_pfode",
+    "score": 0.6104515546295041,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0037.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0037.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 38,
+    "stage": "random_pfode",
+    "score": 0.60217260166564,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0038.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0038.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 39,
+    "stage": "random_pfode",
+    "score": 0.5657019189726571,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0039.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0039.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 40,
+    "stage": "random_pfode",
+    "score": 0.7125520333819084,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0040.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0040.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 41,
+    "stage": "random_pfode",
+    "score": 0.730573198274524,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0041.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0041.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 42,
+    "stage": "random_pfode",
+    "score": 0.6558263390844512,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0042.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0042.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 43,
+    "stage": "random_pfode",
+    "score": 0.6552158478394113,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0043.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0043.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 44,
+    "stage": "random_pfode",
+    "score": 0.665203786103607,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0044.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0044.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 45,
+    "stage": "random_pfode",
+    "score": 0.6964134788432412,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0045.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0045.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 46,
+    "stage": "random_pfode",
+    "score": 0.8641484663541286,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0046.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0046.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 47,
+    "stage": "random_pfode",
+    "score": 0.4446710333888812,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0047.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0047.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 48,
+    "stage": "random_pfode",
+    "score": 0.781740955662521,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0048.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0048.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 49,
+    "stage": "random_pfode",
+    "score": 0.8255870667150123,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0049.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0049.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 50,
+    "stage": "random_pfode",
+    "score": 0.7088340159527713,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0050.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0050.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 51,
+    "stage": "random_pfode",
+    "score": 0.5370105806151666,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0051.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0051.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 52,
+    "stage": "random_pfode",
+    "score": 0.44529967638129403,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0052.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0052.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 53,
+    "stage": "random_pfode",
+    "score": 0.5611918427615175,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0053.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0053.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 54,
+    "stage": "random_pfode",
+    "score": 0.7906927469984893,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0054.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0054.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 55,
+    "stage": "random_pfode",
+    "score": 0.5738115977380766,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0055.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0055.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 56,
+    "stage": "random_pfode",
+    "score": 0.5263304103215038,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0056.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0056.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 57,
+    "stage": "random_pfode",
+    "score": 0.5271054572279434,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0057.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0057.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 58,
+    "stage": "random_pfode",
+    "score": 0.7063902063048845,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0058.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0058.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 59,
+    "stage": "random_pfode",
+    "score": 0.7465061816570108,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0059.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0059.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 60,
+    "stage": "random_pfode",
+    "score": 0.7624373543496874,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0060.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0060.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 61,
+    "stage": "random_pfode",
+    "score": 0.7838757999737777,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0061.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0061.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 62,
+    "stage": "random_pfode",
+    "score": 0.8103371046708269,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0062.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0062.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 63,
+    "stage": "random_pfode",
+    "score": 0.7523585952999039,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0063.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0063.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 64,
+    "stage": "random_pfode",
+    "score": 0.7159250249467378,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0064.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0064.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 65,
+    "stage": "random_pfode",
+    "score": 0.6744089844797232,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0065.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0065.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 66,
+    "stage": "random_pfode",
+    "score": 0.5315102323152447,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0066.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0066.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 67,
+    "stage": "random_pfode",
+    "score": 0.4567078235580302,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0067.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0067.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 68,
+    "stage": "random_pfode",
+    "score": 0.5246001726124241,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0068.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0068.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 69,
+    "stage": "random_pfode",
+    "score": 0.833968995215488,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0069.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0069.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 70,
+    "stage": "random_pfode",
+    "score": 0.4291252213314889,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0070.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0070.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 71,
+    "stage": "random_pfode",
+    "score": 0.7605793864993915,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0071.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0071.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 72,
+    "stage": "random_pfode",
+    "score": 0.4578441393561507,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0072.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0072.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 73,
+    "stage": "random_pfode",
+    "score": 0.549179123829616,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0073.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0073.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 74,
+    "stage": "random_pfode",
+    "score": 0.5663296266514136,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0074.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0074.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 75,
+    "stage": "random_pfode",
+    "score": 0.7555539249082828,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0075.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0075.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 76,
+    "stage": "random_pfode",
+    "score": 0.8398844272545762,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0076.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0076.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 77,
+    "stage": "random_pfode",
+    "score": 0.6471146250041714,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0077.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0077.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 78,
+    "stage": "random_pfode",
+    "score": 0.5299875748756935,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0078.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0078.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 79,
+    "stage": "random_pfode",
+    "score": 0.8615023054569412,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0079.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0079.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 80,
+    "stage": "random_pfode",
+    "score": 0.5884686263498815,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0080.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0080.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 81,
+    "stage": "random_pfode",
+    "score": 0.6509423913254202,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0081.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0081.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 82,
+    "stage": "random_pfode",
+    "score": 0.6406478293350605,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0082.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0082.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 83,
+    "stage": "random_pfode",
+    "score": 0.5036045006257867,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0083.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0083.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 84,
+    "stage": "random_pfode",
+    "score": 0.6924093192701809,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0084.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0084.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 85,
+    "stage": "random_pfode",
+    "score": 0.6566058511227808,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0085.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0085.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 86,
+    "stage": "random_pfode",
+    "score": 0.4744431206551314,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0086.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0086.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 87,
+    "stage": "random_pfode",
+    "score": 0.7299993145561188,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0087.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0087.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 88,
+    "stage": "random_pfode",
+    "score": 0.5549456413994227,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0088.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0088.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 89,
+    "stage": "random_pfode",
+    "score": 0.6139594337457933,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0089.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0089.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 90,
+    "stage": "random_pfode",
+    "score": 0.5876604793240019,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0090.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0090.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 91,
+    "stage": "random_pfode",
+    "score": 0.5644685205774636,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0091.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0091.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 92,
+    "stage": "random_pfode",
+    "score": 0.5033014620086342,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0092.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0092.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 93,
+    "stage": "random_pfode",
+    "score": 0.7769137488271619,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0093.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0093.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 94,
+    "stage": "random_pfode",
+    "score": 0.7014647340230025,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0094.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0094.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 95,
+    "stage": "random_pfode",
+    "score": 0.7627402679923054,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0095.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0095.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 96,
+    "stage": "random_pfode",
+    "score": 0.7355059514899839,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0096.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0096.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 97,
+    "stage": "random_pfode",
+    "score": 0.5626607491627282,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0097.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0097.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 98,
+    "stage": "random_pfode",
+    "score": 0.4345210292622489,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0098.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0098.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  },
+  {
+    "index": 99,
+    "stage": "random_pfode",
+    "score": 0.6853571980254176,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/random/sample_0099.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/random_pfode/runs/n100_k10_20260908_122004/seed_111478797/latents/latent_0099.npy",
+    "budget": "n100_k10",
+    "seed": 111478797
+  }
+]

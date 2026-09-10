@@ -1,0 +1,22 @@
+[
+  {
+    "sample_index": 11,
+    "sample_seed": 2978466230,
+    "run_seed": 833980046,
+    "tm_score": 0.7265226247697631,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/codex_example_20260907/replicate_833980046/samples/sample_0011/sample_0011.pdb",
+    "inference_precision": "32",
+    "rank": 1,
+    "selected": true
+  },
+  {
+    "sample_index": 16,
+    "sample_seed": 2978466235,
+    "run_seed": 833980046,
+    "tm_score": 0.6628618231444233,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/codex_example_20260907/replicate_833980046/samples/sample_0016/sample_0016.pdb",
+    "inference_precision": "32",
+    "rank": 2,
+    "selected": true
+  }
+]

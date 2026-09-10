@@ -1,0 +1,59 @@
+{
+  "target": "1cll",
+  "budget": "n100_k10",
+  "run_id": "sep09_step1_r5",
+  "replicates": 5,
+  "seeds": [
+    2139874892,
+    1269247094,
+    1326055816,
+    588726372,
+    1544345179
+  ],
+  "methods": [
+    "best_k_of_n",
+    "o3",
+    "random_pfode"
+  ],
+  "comparison_summary_csv": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/runs/sep09_step1_r5/comparison_summary.csv",
+  "comparison_stats_csv": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/runs/sep09_step1_r5/comparison_stats.csv",
+  "comparison_summary_json": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/runs/sep09_step1_r5/comparison_summary.json",
+  "stats": {
+    "best_k_of_n": {
+      "mean_of_K": {
+        "mean": 0.7090993137044308,
+        "std": 0.019555985511502352,
+        "best": 0.7303079562093671
+      },
+      "max_of_K": {
+        "mean": 0.7986922056305418,
+        "std": 0.02166536148526713,
+        "best": 0.8262786957458363
+      }
+    },
+    "o3": {
+      "mean_of_K": {
+        "mean": 0.8884713242828434,
+        "std": 0.05402135675649531,
+        "best": 0.9357507227267684
+      },
+      "max_of_K": {
+        "mean": 0.9108284816222857,
+        "std": 0.04076168842515581,
+        "best": 0.9458342760147674
+      }
+    },
+    "random_pfode": {
+      "mean_of_K": {
+        "mean": 0.8273503668223744,
+        "std": 0.011359465878546828,
+        "best": 0.8365683229427491
+      },
+      "max_of_K": {
+        "mean": 0.900493827748433,
+        "std": 0.02417017889432245,
+        "best": 0.9214933938510631
+      }
+    }
+  }
+}

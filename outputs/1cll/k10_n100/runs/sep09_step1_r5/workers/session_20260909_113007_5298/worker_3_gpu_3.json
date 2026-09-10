@@ -1,0 +1,13 @@
+{
+  "worker_index": 3,
+  "gpu": "3",
+  "visible_device": "cuda:0",
+  "seeds": [
+    588726372
+  ],
+  "seconds_by_method": {
+    "best_k_of_n": 854.2675748057663,
+    "o3": 1446.644797053188,
+    "random_pfode": 2041.6852664705366
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "start": 48,
+  "count": 16,
+  "seed": 994501755,
+  "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/n100_k10_20260908_122004/replicate_679479962/batches/batch_0048",
+  "structures": [
+    "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/n100_k10_20260908_122004/replicate_679479962/batches/batch_0048/predictions/1cll_boltz_input/1cll_boltz_input_model_0.cif",
+    "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/n100_k10_20260908_122004/replicate_679479962/batches/batch_0048/predictions/1cll_boltz_input/1cll_boltz_input_model_1.cif",
+    "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/n100_k10_20260908_122004/replicate_679479962/batches/batch_0048/predictions/1cll_boltz_input/1cll_boltz_input_model_2.cif",
+    "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/n100_k10_20260908_122004/replicate_679479962/batches/batch_0048/predictions/1cll_boltz_input/1cll_boltz_input_model_3.cif",
+    "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/n100_k10_20260908_122004/replicate_679479962/batches/batch_0048/predictions/1cll_boltz_input/1cll_boltz_input_model_4.cif",
+    "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/n100_k10_20260908_122004/replicate_679479962/batches/batch_0048/predictions/1cll_boltz_input/1cll_boltz_input_model_5.cif",
+    "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/n100_k10_20260908_122004/replicate_679479962/batches/batch_0048/predictions/1cll_boltz_input/1cll_boltz_input_model_6.cif",
+    "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/n100_k10_20260908_122004/replicate_679479962/batches/batch_0048/predictions/1cll_boltz_input/1cll_boltz_input_model_7.cif",
+    "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/n100_k10_20260908_122004/replicate_679479962/batches/batch_0048/predictions/1cll_boltz_input/1cll_boltz_input_model_8.cif",
+    "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/n100_k10_20260908_122004/replicate_679479962/batches/batch_0048/predictions/1cll_boltz_input/1cll_boltz_input_model_9.cif",
+    "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/n100_k10_20260908_122004/replicate_679479962/batches/batch_0048/predictions/1cll_boltz_input/1cll_boltz_input_model_10.cif",
+    "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/n100_k10_20260908_122004/replicate_679479962/batches/batch_0048/predictions/1cll_boltz_input/1cll_boltz_input_model_11.cif",
+    "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/n100_k10_20260908_122004/replicate_679479962/batches/batch_0048/predictions/1cll_boltz_input/1cll_boltz_input_model_12.cif",
+    "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/n100_k10_20260908_122004/replicate_679479962/batches/batch_0048/predictions/1cll_boltz_input/1cll_boltz_input_model_13.cif",
+    "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/n100_k10_20260908_122004/replicate_679479962/batches/batch_0048/predictions/1cll_boltz_input/1cll_boltz_input_model_14.cif",
+    "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/n100_k10_20260908_122004/replicate_679479962/batches/batch_0048/predictions/1cll_boltz_input/1cll_boltz_input_model_15.cif"
+  ],
+  "precision": "32",
+  "generation_seconds": 127.03425673954189
+}

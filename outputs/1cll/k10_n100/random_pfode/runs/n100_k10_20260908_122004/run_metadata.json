@@ -1,0 +1,23 @@
+{
+  "method": "random_pfode",
+  "budget": "n100_k10",
+  "run_id": "n100_k10_20260908_122004",
+  "replicates": 10,
+  "seed_mode": "explicit_list",
+  "seed_start": null,
+  "seed_step": null,
+  "seeds": [
+    70118930,
+    1869680097,
+    1232451588,
+    825015182,
+    679479962,
+    444290507,
+    53672067,
+    1739327440,
+    397142107,
+    111478797
+  ],
+  "latent_sampler": "standard_normal_Z",
+  "generator_sampling": "deterministic_pf_ode"
+}

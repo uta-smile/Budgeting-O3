@@ -1,0 +1,21 @@
+sample_index,sample_seed,run_seed,tm_score,structure,inference_precision,batch_seed,batch_start,batch_count,batch_confidence_rank,rank,selected
+8,,408952644,0.7229016708694744,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_408952644/samples/sample_0008/sample_0008.pdb,32,4264897221,8,8,0,1,True
+1,,408952644,0.6971965961302006,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_408952644/samples/sample_0001/sample_0001.pdb,32,4264897213,0,8,1,2,True
+9,,408952644,0.6902386946037228,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_408952644/samples/sample_0009/sample_0009.pdb,32,4264897221,8,8,1,3,False
+16,,408952644,0.6830955167468481,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_408952644/samples/sample_0016/sample_0016.pdb,32,4264897229,16,4,0,4,False
+10,,408952644,0.6828669200431473,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_408952644/samples/sample_0010/sample_0010.pdb,32,4264897221,8,8,2,5,False
+0,,408952644,0.6819365607125746,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_408952644/samples/sample_0000/sample_0000.pdb,32,4264897213,0,8,0,6,False
+2,,408952644,0.606854861222493,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_408952644/samples/sample_0002/sample_0002.pdb,32,4264897213,0,8,2,7,False
+17,,408952644,0.5191659766495609,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_408952644/samples/sample_0017/sample_0017.pdb,32,4264897229,16,4,1,8,False
+11,,408952644,0.49900289531409364,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_408952644/samples/sample_0011/sample_0011.pdb,32,4264897221,8,8,3,9,False
+5,,408952644,0.49776953324126005,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_408952644/samples/sample_0005/sample_0005.pdb,32,4264897213,0,8,5,10,False
+3,,408952644,0.4712719004662719,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_408952644/samples/sample_0003/sample_0003.pdb,32,4264897213,0,8,3,11,False
+4,,408952644,0.46897863973433623,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_408952644/samples/sample_0004/sample_0004.pdb,32,4264897213,0,8,4,12,False
+6,,408952644,0.463988554347595,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_408952644/samples/sample_0006/sample_0006.pdb,32,4264897213,0,8,6,13,False
+15,,408952644,0.4621947213172364,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_408952644/samples/sample_0015/sample_0015.pdb,32,4264897221,8,8,7,14,False
+19,,408952644,0.4586630620763169,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_408952644/samples/sample_0019/sample_0019.pdb,32,4264897229,16,4,3,15,False
+7,,408952644,0.4576558110197035,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_408952644/samples/sample_0007/sample_0007.pdb,32,4264897213,0,8,7,16,False
+13,,408952644,0.4572211251244373,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_408952644/samples/sample_0013/sample_0013.pdb,32,4264897221,8,8,5,17,False
+12,,408952644,0.4537081415691031,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_408952644/samples/sample_0012/sample_0012.pdb,32,4264897221,8,8,4,18,False
+14,,408952644,0.451844806091979,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_408952644/samples/sample_0014/sample_0014.pdb,32,4264897221,8,8,6,19,False
+18,,408952644,0.4138770037799518,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_408952644/samples/sample_0018/sample_0018.pdb,32,4264897229,16,4,2,20,False

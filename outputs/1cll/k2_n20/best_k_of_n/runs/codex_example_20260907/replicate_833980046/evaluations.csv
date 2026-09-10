@@ -1,0 +1,21 @@
+sample_index,sample_seed,run_seed,tm_score,structure,inference_precision,rank,selected
+11,2978466230,833980046,0.7265226247697631,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/codex_example_20260907/replicate_833980046/samples/sample_0011/sample_0011.pdb,32,1,True
+16,2978466235,833980046,0.6628618231444233,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/codex_example_20260907/replicate_833980046/samples/sample_0016/sample_0016.pdb,32,2,True
+17,2978466236,833980046,0.6505382695216801,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/codex_example_20260907/replicate_833980046/samples/sample_0017/sample_0017.pdb,32,3,False
+0,2978466219,833980046,0.5622631693564295,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/codex_example_20260907/replicate_833980046/samples/sample_0000/sample_0000.pdb,32,4,False
+9,2978466228,833980046,0.47227142196230215,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/codex_example_20260907/replicate_833980046/samples/sample_0009/sample_0009.pdb,32,5,False
+19,2978466238,833980046,0.46447454878887495,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/codex_example_20260907/replicate_833980046/samples/sample_0019/sample_0019.pdb,32,6,False
+3,2978466222,833980046,0.46272740146459995,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/codex_example_20260907/replicate_833980046/samples/sample_0003/sample_0003.pdb,32,7,False
+18,2978466237,833980046,0.46076292882287045,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/codex_example_20260907/replicate_833980046/samples/sample_0018/sample_0018.pdb,32,8,False
+15,2978466234,833980046,0.4604730334847153,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/codex_example_20260907/replicate_833980046/samples/sample_0015/sample_0015.pdb,32,9,False
+7,2978466226,833980046,0.4575689722170856,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/codex_example_20260907/replicate_833980046/samples/sample_0007/sample_0007.pdb,32,10,False
+13,2978466232,833980046,0.4575362105077223,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/codex_example_20260907/replicate_833980046/samples/sample_0013/sample_0013.pdb,32,11,False
+1,2978466220,833980046,0.45744057565105556,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/codex_example_20260907/replicate_833980046/samples/sample_0001/sample_0001.pdb,32,12,False
+4,2978466223,833980046,0.45735646939597274,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/codex_example_20260907/replicate_833980046/samples/sample_0004/sample_0004.pdb,32,13,False
+5,2978466224,833980046,0.4572950319650551,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/codex_example_20260907/replicate_833980046/samples/sample_0005/sample_0005.pdb,32,14,False
+10,2978466229,833980046,0.457155731179505,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/codex_example_20260907/replicate_833980046/samples/sample_0010/sample_0010.pdb,32,15,False
+6,2978466225,833980046,0.455347536524389,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/codex_example_20260907/replicate_833980046/samples/sample_0006/sample_0006.pdb,32,16,False
+8,2978466227,833980046,0.4551719161571151,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/codex_example_20260907/replicate_833980046/samples/sample_0008/sample_0008.pdb,32,17,False
+14,2978466233,833980046,0.4543357616806185,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/codex_example_20260907/replicate_833980046/samples/sample_0014/sample_0014.pdb,32,18,False
+12,2978466231,833980046,0.45291155993020893,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/codex_example_20260907/replicate_833980046/samples/sample_0012/sample_0012.pdb,32,19,False
+2,2978466221,833980046,0.44790481947812605,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/codex_example_20260907/replicate_833980046/samples/sample_0002/sample_0002.pdb,32,20,False

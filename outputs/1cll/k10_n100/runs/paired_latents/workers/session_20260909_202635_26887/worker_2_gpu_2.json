@@ -1,0 +1,12 @@
+{
+  "worker_index": 2,
+  "gpu": "2",
+  "visible_device": "cuda:0",
+  "seeds": [
+    20252135
+  ],
+  "seconds_by_method": {
+    "matched_stochastic": 2157.56312032789,
+    "random_pfode": 2141.6111078504473
+  }
+}

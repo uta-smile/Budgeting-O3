@@ -1,0 +1,30 @@
+[
+  {
+    "sample_index": 16,
+    "sample_seed": "",
+    "run_seed": 1559808369,
+    "tm_score": 0.8137020131215587,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_1559808369/samples/sample_0016/sample_0016.pdb",
+    "inference_precision": "32",
+    "batch_seed": 1185965384,
+    "batch_start": 16,
+    "batch_count": 4,
+    "batch_confidence_rank": 0,
+    "rank": 1,
+    "selected": true
+  },
+  {
+    "sample_index": 11,
+    "sample_seed": "",
+    "run_seed": 1559808369,
+    "tm_score": 0.7893211798945449,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_1559808369/samples/sample_0011/sample_0011.pdb",
+    "inference_precision": "32",
+    "batch_seed": 1185965376,
+    "batch_start": 8,
+    "batch_count": 8,
+    "batch_confidence_rank": 3,
+    "rank": 2,
+    "selected": true
+  }
+]

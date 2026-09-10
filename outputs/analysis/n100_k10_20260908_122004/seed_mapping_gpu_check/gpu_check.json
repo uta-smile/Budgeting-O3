@@ -1,0 +1,52 @@
+{
+  "precision": "32",
+  "step_scale": 1.0,
+  "samples": [
+    {
+      "index": 0,
+      "saved_score": 0.9696668874924411,
+      "original_score": 0.9696667481655434,
+      "repeat_score": 0.9696667481655434,
+      "roundtrip_score": 0.9696757940369461,
+      "repeat_ca_rmsd": 1.4609858318121153e-06,
+      "roundtrip_ca_rmsd": 0.0011268590114015624
+    },
+    {
+      "index": 1,
+      "saved_score": 0.9087782076114527,
+      "original_score": 0.9088145352682433,
+      "repeat_score": 0.9088145352682433,
+      "roundtrip_score": 0.9088070027583203,
+      "repeat_ca_rmsd": 8.144915890656446e-07,
+      "roundtrip_ca_rmsd": 0.0007001020444967975
+    },
+    {
+      "index": 2,
+      "saved_score": 0.8423242185952362,
+      "original_score": 0.8328720784286734,
+      "repeat_score": 0.8328720784286734,
+      "roundtrip_score": 0.8328696670520671,
+      "repeat_ca_rmsd": 9.078890877767842e-07,
+      "roundtrip_ca_rmsd": 0.000726681737273255
+    },
+    {
+      "index": 3,
+      "saved_score": 0.7836434859796984,
+      "original_score": 0.7848888049631962,
+      "repeat_score": 0.7848888049631962,
+      "roundtrip_score": 0.7848888049631962,
+      "repeat_ca_rmsd": 1.7243302101139467e-06,
+      "roundtrip_ca_rmsd": 1.7243302101139467e-06
+    },
+    {
+      "index": 4,
+      "saved_score": 0.7788634995174504,
+      "original_score": 0.7790054065808047,
+      "repeat_score": 0.7790054065808047,
+      "roundtrip_score": 0.7790054065808047,
+      "repeat_ca_rmsd": 1.978376833211619e-06,
+      "roundtrip_ca_rmsd": 1.978376833211619e-06
+    }
+  ],
+  "note": "Sequential current-decoder checks; historical batch/precision differences may affect saved-score comparisons."
+}

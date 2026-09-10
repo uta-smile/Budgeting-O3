@@ -1,0 +1,18 @@
+{
+  "method": "matched_stochastic",
+  "budget": "n100_k10",
+  "run_id": "paired_latents",
+  "replicates": 3,
+  "seed_mode": "explicit_list",
+  "seed_start": null,
+  "seed_step": null,
+  "seeds": [
+    20250117,
+    20251126,
+    20252135
+  ],
+  "latent_sampler": "standard_normal_Z",
+  "generator_sampling": "stochastic_boltz2",
+  "latent_source": "shared_standard_normal_bank",
+  "latent_dim": 3552
+}

@@ -1,0 +1,47 @@
+[
+  {
+    "sample_index": 26,
+    "sample_seed": 3913689996,
+    "run_seed": 1156948668,
+    "tm_score": 0.8215745902764557,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k5_n50/best_k_of_n/runs/n50_k5_run01/replicate_1156948668/samples/sample_0026/sample_0026.pdb",
+    "rank": 1,
+    "selected": true
+  },
+  {
+    "sample_index": 23,
+    "sample_seed": 3913689993,
+    "run_seed": 1156948668,
+    "tm_score": 0.7884320335823302,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k5_n50/best_k_of_n/runs/n50_k5_run01/replicate_1156948668/samples/sample_0023/sample_0023.pdb",
+    "rank": 2,
+    "selected": true
+  },
+  {
+    "sample_index": 6,
+    "sample_seed": 3913689976,
+    "run_seed": 1156948668,
+    "tm_score": 0.7635398261537056,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k5_n50/best_k_of_n/runs/n50_k5_run01/replicate_1156948668/samples/sample_0006/sample_0006.pdb",
+    "rank": 3,
+    "selected": true
+  },
+  {
+    "sample_index": 12,
+    "sample_seed": 3913689982,
+    "run_seed": 1156948668,
+    "tm_score": 0.7569662195234446,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k5_n50/best_k_of_n/runs/n50_k5_run01/replicate_1156948668/samples/sample_0012/sample_0012.pdb",
+    "rank": 4,
+    "selected": true
+  },
+  {
+    "sample_index": 7,
+    "sample_seed": 3913689977,
+    "run_seed": 1156948668,
+    "tm_score": 0.7280542772897285,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k5_n50/best_k_of_n/runs/n50_k5_run01/replicate_1156948668/samples/sample_0007/sample_0007.pdb",
+    "rank": 5,
+    "selected": true
+  }
+]

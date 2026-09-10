@@ -1,0 +1,27 @@
+{
+  "seconds_by_method": {},
+  "multi_gpu_wall_seconds": 4323.066609675065,
+  "worker_seconds_by_method": {
+    "0": {
+      "matched_stochastic": 2158.1602181456983,
+      "random_pfode": 2138.3348722290248
+    },
+    "1": {
+      "matched_stochastic": 2169.0125014912337,
+      "random_pfode": 2150.9043456576765
+    },
+    "2": {
+      "matched_stochastic": 2157.56312032789,
+      "random_pfode": 2141.6111078504473
+    }
+  },
+  "includes_model_startup": true,
+  "resume": false,
+  "batch_size": null,
+  "gpus": [
+    "0",
+    "1",
+    "2",
+    "3"
+  ]
+}

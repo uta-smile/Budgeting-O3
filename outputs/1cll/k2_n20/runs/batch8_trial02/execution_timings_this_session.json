@@ -1,0 +1,9 @@
+{
+  "seconds_by_method": {
+    "best_k_of_n": 1188.9914513435215,
+    "o3": 1566.4883176647127
+  },
+  "includes_model_startup": true,
+  "resume": false,
+  "batch_size": 8
+}

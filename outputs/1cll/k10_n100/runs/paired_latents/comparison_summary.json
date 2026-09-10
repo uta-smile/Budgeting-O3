@@ -1,0 +1,44 @@
+{
+  "target": "1cll",
+  "budget": "n100_k10",
+  "run_id": "paired_latents",
+  "replicates": 3,
+  "seeds": [
+    20250117,
+    20251126,
+    20252135
+  ],
+  "methods": [
+    "matched_stochastic",
+    "random_pfode"
+  ],
+  "comparison_summary_csv": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/runs/paired_latents/comparison_summary.csv",
+  "comparison_stats_csv": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/runs/paired_latents/comparison_stats.csv",
+  "comparison_summary_json": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/runs/paired_latents/comparison_summary.json",
+  "stats": {
+    "matched_stochastic": {
+      "mean_of_K": {
+        "mean": 0.7010012690099735,
+        "std": 0.032585231821943984,
+        "best": 0.7282044115309037
+      },
+      "max_of_K": {
+        "mean": 0.8354094163700833,
+        "std": 0.0353854562986783,
+        "best": 0.8743566154740157
+      }
+    },
+    "random_pfode": {
+      "mean_of_K": {
+        "mean": 0.8451022495206078,
+        "std": 0.03368961035447296,
+        "best": 0.8828261213154981
+      },
+      "max_of_K": {
+        "mean": 0.9152082499642462,
+        "std": 0.0300789038770815,
+        "best": 0.9336100036096843
+      }
+    }
+  }
+}

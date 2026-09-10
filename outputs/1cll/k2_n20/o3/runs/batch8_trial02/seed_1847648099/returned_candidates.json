@@ -1,0 +1,27 @@
+[
+  {
+    "index": 9,
+    "stage": "phase1_random",
+    "score": 0.8450651175926851,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1847648099/phase1/sample_0009.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1847648099/latents/latent_0009.npy",
+    "budget": "n20_k2",
+    "seed": 1847648099,
+    "u": null
+  },
+  {
+    "index": 15,
+    "stage": "bo_acquisition",
+    "score": 0.8450480449611647,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1847648099/bo/round_0003.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1847648099/latents/latent_0015.npy",
+    "budget": "n20_k2",
+    "seed": 1847648099,
+    "u": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+    ]
+  }
+]

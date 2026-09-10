@@ -1,0 +1,5 @@
+{
+  "batch_size": 16,
+  "step_scale": 1.0,
+  "seed_policy": "per_batch_first_sample_seed"
+}

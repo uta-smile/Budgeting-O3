@@ -1,0 +1,21 @@
+{
+  "target": "1cll",
+  "budget": "n100_k10",
+  "run_id": "paired_latents",
+  "method_selection": "paired",
+  "step_scale": 1.0,
+  "batch_size": null,
+  "requested_gpus": [
+    "0",
+    "1",
+    "2",
+    "3"
+  ],
+  "replicates": 3,
+  "seed_mode": "arithmetic_schedule",
+  "seeds": [
+    20250117,
+    20251126,
+    20252135
+  ]
+}

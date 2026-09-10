@@ -1,0 +1,80 @@
+[
+  {
+    "index": 29,
+    "stage": "bo_acquisition",
+    "score": 0.8621079292470197,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/o3/n50_k5/runs/n50_k5_run01/seed_1156948668/bo/round_0002.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/o3/n50_k5/runs/n50_k5_run01/seed_1156948668/latents/latent_0029.npy",
+    "budget": "n50_k5",
+    "seed": 1156948668,
+    "u": [
+      0.0,
+      1.0,
+      0.027871123188763683,
+      0.35045779834529334,
+      0.7445183273470899,
+      0.0
+    ]
+  },
+  {
+    "index": 15,
+    "stage": "phase1_random",
+    "score": 0.8620613347454142,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/o3/n50_k5/runs/n50_k5_run01/seed_1156948668/phase1/sample_0015.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/o3/n50_k5/runs/n50_k5_run01/seed_1156948668/latents/latent_0015.npy",
+    "budget": "n50_k5",
+    "seed": 1156948668,
+    "u": null
+  },
+  {
+    "index": 38,
+    "stage": "bo_acquisition",
+    "score": 0.8618827525143511,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/o3/n50_k5/runs/n50_k5_run01/seed_1156948668/bo/round_0011.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/o3/n50_k5/runs/n50_k5_run01/seed_1156948668/latents/latent_0038.npy",
+    "budget": "n50_k5",
+    "seed": 1156948668,
+    "u": [
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      1.0,
+      0.0
+    ]
+  },
+  {
+    "index": 32,
+    "stage": "bo_acquisition",
+    "score": 0.8615949054437944,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/o3/n50_k5/runs/n50_k5_run01/seed_1156948668/bo/round_0005.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/o3/n50_k5/runs/n50_k5_run01/seed_1156948668/latents/latent_0032.npy",
+    "budget": "n50_k5",
+    "seed": 1156948668,
+    "u": [
+      0.0,
+      0.7268421851336728,
+      0.21660977721364136,
+      0.4716809525818156,
+      0.7187939731215292,
+      0.16641473182553523
+    ]
+  },
+  {
+    "index": 34,
+    "stage": "bo_acquisition",
+    "score": 0.8589107423353538,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/o3/n50_k5/runs/n50_k5_run01/seed_1156948668/bo/round_0007.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/o3/n50_k5/runs/n50_k5_run01/seed_1156948668/latents/latent_0034.npy",
+    "budget": "n50_k5",
+    "seed": 1156948668,
+    "u": [
+      0.0,
+      0.40488600741284503,
+      0.2702925093181681,
+      1.0,
+      0.6904297679242574,
+      0.5098794971027072
+    ]
+  }
+]

@@ -1,0 +1,4 @@
+{
+  "batch_size": 8,
+  "seed_policy": "per_batch_first_sample_seed"
+}

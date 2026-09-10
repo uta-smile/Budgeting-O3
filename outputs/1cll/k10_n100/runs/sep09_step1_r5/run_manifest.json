@@ -1,0 +1,23 @@
+{
+  "target": "1cll",
+  "budget": "n100_k10",
+  "run_id": "sep09_step1_r5",
+  "method_selection": "all",
+  "step_scale": 1.0,
+  "batch_size": 16,
+  "requested_gpus": [
+    "0",
+    "1",
+    "2",
+    "3"
+  ],
+  "replicates": 5,
+  "seed_mode": "fresh_os_random",
+  "seeds": [
+    2139874892,
+    1269247094,
+    1326055816,
+    588726372,
+    1544345179
+  ]
+}

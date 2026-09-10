@@ -1,0 +1,107 @@
+Seed set to 4126805093
+Checking input data.
+[11:44:48] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:48] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:48] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:48] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:48] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:48] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:48] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:48] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:48] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:48] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:48] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:48] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:48] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:48] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:48] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:48] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:48] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:48] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:48] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:48] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:48] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+Processing 1 inputs with 1 threads.
+  0%|          | 0/1 [00:00<?, ?it/s]Found explicit empty MSA for some proteins, will run these in single sequence mode. Keep in mind that the model predictions will be suboptimal without an MSA.
+100%|██████████| 1/1 [00:01<00:00,  1.25s/it]100%|██████████| 1/1 [00:01<00:00,  1.25s/it]
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+/mnt/SSD3/Chase/budgetting O3/experiments/1cll/public_boltz/.venv/lib/python3.12/site-packages/pytorch_lightning/trainer/connectors/logger_connector/logger_connector.py:76: Starting from v1.9.0, `tensorboardX` has been removed as a dependency of the `pytorch_lightning` package, due to potential conflicts with other packages in the ML ecosystem. For this reason, `logger=True` will use `CSVLogger` as the default logger, unless the `tensorboard` or `tensorboardX` packages are found. Please `pip install lightning[extra]` or one of them to enable TensorBoard support by default
+Running structure prediction for 1 input.
+/mnt/SSD3/Chase/budgetting O3/experiments/1cll/public_boltz/.venv/lib/python3.12/site-packages/pytorch_lightning/utilities/migration/utils.py:56: The loaded checkpoint was produced with Lightning v2.5.0.post0, which is newer than your current Lightning version: v2.5.0
+[11:45:27] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:45:27] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:45:27] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:45:27] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:45:27] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:45:27] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:45:27] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:45:27] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:45:27] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:45:27] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:45:27] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:45:27] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:45:27] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:45:27] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:45:27] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:45:27] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:45:27] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:45:27] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:45:27] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:45:27] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:45:27] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+/mnt/SSD3/Chase/budgetting O3/experiments/1cll/public_boltz/.venv/lib/python3.12/site-packages/pytorch_lightning/trainer/connectors/data_connector.py:425: The 'predict_dataloader' does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=11` in the `DataLoader` to improve performance.
+Predicting: |          | 0/? [00:00<?, ?it/s]/mnt/SSD3/Chase/budgetting O3/experiments/1cll/public_boltz/.venv/lib/python3.12/site-packages/pytorch_lightning/loops/prediction_loop.py:307: Couldn't infer the batch indices fetched from your dataloader: `DataLoader`
+Seed set to 4126805093
+Predicting:   0%|          | 0/7 [00:00<?, ?it/s]Predicting DataLoader 0:   0%|          | 0/7 [00:00<?, ?it/s]Predicting DataLoader 0:  14%|█▍        | 1/7 [02:08<12:50,  0.01it/s]Seed set to 4126805109
+Predicting DataLoader 0:  29%|██▊       | 2/7 [04:16<10:41,  0.01it/s]Seed set to 4126805125
+Predicting DataLoader 0:  43%|████▎     | 3/7 [06:24<08:32,  0.01it/s]Seed set to 4126805141
+Predicting DataLoader 0:  57%|█████▋    | 4/7 [08:32<06:24,  0.01it/s]Seed set to 4126805157
+Predicting DataLoader 0:  71%|███████▏  | 5/7 [10:39<04:15,  0.01it/s]Seed set to 4126805173
+Predicting DataLoader 0:  86%|████████▌ | 6/7 [12:47<02:07,  0.01it/s]Seed set to 4126805189
+Predicting DataLoader 0: 100%|██████████| 7/7 [13:30<00:00,  0.01it/s]Number of failed examples: 0
+Predicting DataLoader 0: 100%|██████████| 7/7 [13:30<00:00,  0.01it/s]

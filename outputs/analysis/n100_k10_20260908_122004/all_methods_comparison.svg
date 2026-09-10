@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+<rect width="100%" height="100%" fill="#f8fafc"/>
+<text x="56.0" y="58.0" font-family="Arial, Helvetica, sans-serif" font-size="28px" font-weight="700" text-anchor="start" fill="#101828">1CLL oracle-budget comparison</text>
+<text x="56.0" y="89.0" font-family="Arial, Helvetica, sans-serif" font-size="14px" font-weight="400" text-anchor="start" fill="#667085">N=100, K=10  •  10 paired replicates  •  n100_k10_20260908_122004</text>
+<rect x="44.0" y="122.0" width="640.0" height="425.0" rx="12" fill="#ffffff" stroke="#d0d5dd"/>
+<text x="68.0" y="157.0" font-family="Arial, Helvetica, sans-serif" font-size="17px" font-weight="700" text-anchor="start" fill="#172033">Mean-of-K TM-score</text>
+<text x="660.0" y="157.0" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="400" text-anchor="end" fill="#667085">higher is better</text>
+<line x1="116.0" y1="487.0" x2="656.0" y2="487.0" stroke="#d0d5dd" stroke-width="1.3"/>
+<text x="104.0" y="491.0" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="400" text-anchor="end" fill="#667085">0.0</text>
+<line x1="116.0" y1="425.6" x2="656.0" y2="425.6" stroke="#eaecf0" stroke-width="1"/>
+<text x="104.0" y="429.6" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="400" text-anchor="end" fill="#667085">0.2</text>
+<line x1="116.0" y1="364.2" x2="656.0" y2="364.2" stroke="#eaecf0" stroke-width="1"/>
+<text x="104.0" y="368.2" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="400" text-anchor="end" fill="#667085">0.4</text>
+<line x1="116.0" y1="302.8" x2="656.0" y2="302.8" stroke="#eaecf0" stroke-width="1"/>
+<text x="104.0" y="306.8" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="400" text-anchor="end" fill="#667085">0.6</text>
+<line x1="116.0" y1="241.4" x2="656.0" y2="241.4" stroke="#eaecf0" stroke-width="1"/>
+<text x="104.0" y="245.4" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="400" text-anchor="end" fill="#667085">0.8</text>
+<line x1="116.0" y1="180.0" x2="656.0" y2="180.0" stroke="#eaecf0" stroke-width="1"/>
+<text x="104.0" y="184.0" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="400" text-anchor="end" fill="#667085">1.0</text>
+<line x1="116.0" y1="180.0" x2="116.0" y2="487.0" stroke="#98a2b3"/>
+<line x1="116.0" y1="487.0" x2="656.0" y2="487.0" stroke="#98a2b3"/>
+<g transform="translate(66.0,333.5) rotate(-90)"><text x="0.0" y="0.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="400" text-anchor="middle" fill="#344054">TM-score</text></g>
+<rect x="165.0" y="249.4" width="82.0" height="237.6" rx="5" fill="#667085"/>
+<line x1="206.0" y1="253.2" x2="206.0" y2="245.6" stroke="#1d2939" stroke-width="2.5"/>
+<line x1="196.0" y1="253.2" x2="216.0" y2="253.2" stroke="#1d2939" stroke-width="2.5"/>
+<line x1="196.0" y1="245.6" x2="216.0" y2="245.6" stroke="#1d2939" stroke-width="2.5"/>
+<text x="206.0" y="233.6" font-family="Arial, Helvetica, sans-serif" font-size="13px" font-weight="700" text-anchor="middle" fill="#172033">0.774</text>
+<text x="206.0" y="511.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="600" text-anchor="middle" fill="#344054">Best K-of-N</text>
+<text x="206.0" y="529.0" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="400" text-anchor="middle" fill="#667085">n=10</text>
+<rect x="345.0" y="208.1" width="82.0" height="278.9" rx="5" fill="#1769AA"/>
+<line x1="386.0" y1="214.2" x2="386.0" y2="201.9" stroke="#1d2939" stroke-width="2.5"/>
+<line x1="376.0" y1="214.2" x2="396.0" y2="214.2" stroke="#1d2939" stroke-width="2.5"/>
+<line x1="376.0" y1="201.9" x2="396.0" y2="201.9" stroke="#1d2939" stroke-width="2.5"/>
+<text x="386.0" y="197.0" font-family="Arial, Helvetica, sans-serif" font-size="13px" font-weight="700" text-anchor="middle" fill="#172033">0.909</text>
+<text x="386.0" y="511.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="600" text-anchor="middle" fill="#344054">O3</text>
+<text x="386.0" y="529.0" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="400" text-anchor="middle" fill="#667085">n=10</text>
+<rect x="525.0" y="229.9" width="82.0" height="257.1" rx="5" fill="#D97706"/>
+<line x1="566.0" y1="234.1" x2="566.0" y2="225.7" stroke="#1d2939" stroke-width="2.5"/>
+<line x1="556.0" y1="234.1" x2="576.0" y2="234.1" stroke="#1d2939" stroke-width="2.5"/>
+<line x1="556.0" y1="225.7" x2="576.0" y2="225.7" stroke="#1d2939" stroke-width="2.5"/>
+<text x="566.0" y="213.7" font-family="Arial, Helvetica, sans-serif" font-size="13px" font-weight="700" text-anchor="middle" fill="#172033">0.837</text>
+<text x="566.0" y="511.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="600" text-anchor="middle" fill="#344054">Random PF-ODE</text>
+<text x="566.0" y="529.0" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="400" text-anchor="middle" fill="#667085">n=10</text>
+<rect x="716.0" y="122.0" width="640.0" height="425.0" rx="12" fill="#ffffff" stroke="#d0d5dd"/>
+<text x="740.0" y="157.0" font-family="Arial, Helvetica, sans-serif" font-size="17px" font-weight="700" text-anchor="start" fill="#172033">Max-of-K TM-score</text>
+<text x="1332.0" y="157.0" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="400" text-anchor="end" fill="#667085">higher is better</text>
+<line x1="788.0" y1="487.0" x2="1328.0" y2="487.0" stroke="#d0d5dd" stroke-width="1.3"/>
+<text x="776.0" y="491.0" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="400" text-anchor="end" fill="#667085">0.0</text>
+<line x1="788.0" y1="425.6" x2="1328.0" y2="425.6" stroke="#eaecf0" stroke-width="1"/>
+<text x="776.0" y="429.6" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="400" text-anchor="end" fill="#667085">0.2</text>
+<line x1="788.0" y1="364.2" x2="1328.0" y2="364.2" stroke="#eaecf0" stroke-width="1"/>
+<text x="776.0" y="368.2" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="400" text-anchor="end" fill="#667085">0.4</text>
+<line x1="788.0" y1="302.8" x2="1328.0" y2="302.8" stroke="#eaecf0" stroke-width="1"/>
+<text x="776.0" y="306.8" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="400" text-anchor="end" fill="#667085">0.6</text>
+<line x1="788.0" y1="241.4" x2="1328.0" y2="241.4" stroke="#eaecf0" stroke-width="1"/>
+<text x="776.0" y="245.4" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="400" text-anchor="end" fill="#667085">0.8</text>
+<line x1="788.0" y1="180.0" x2="1328.0" y2="180.0" stroke="#eaecf0" stroke-width="1"/>
+<text x="776.0" y="184.0" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="400" text-anchor="end" fill="#667085">1.0</text>
+<line x1="788.0" y1="180.0" x2="788.0" y2="487.0" stroke="#98a2b3"/>
+<line x1="788.0" y1="487.0" x2="1328.0" y2="487.0" stroke="#98a2b3"/>
+<g transform="translate(738.0,333.5) rotate(-90)"><text x="0.0" y="0.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="400" text-anchor="middle" fill="#344054">TM-score</text></g>
+<rect x="837.0" y="229.0" width="82.0" height="258.0" rx="5" fill="#667085"/>
+<line x1="878.0" y1="238.8" x2="878.0" y2="219.2" stroke="#1d2939" stroke-width="2.5"/>
+<line x1="868.0" y1="238.8" x2="888.0" y2="238.8" stroke="#1d2939" stroke-width="2.5"/>
+<line x1="868.0" y1="219.2" x2="888.0" y2="219.2" stroke="#1d2939" stroke-width="2.5"/>
+<text x="878.0" y="207.2" font-family="Arial, Helvetica, sans-serif" font-size="13px" font-weight="700" text-anchor="middle" fill="#172033">0.840</text>
+<text x="878.0" y="511.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="600" text-anchor="middle" fill="#344054">Best K-of-N</text>
+<text x="878.0" y="529.0" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="400" text-anchor="middle" fill="#667085">n=10</text>
+<rect x="1017.0" y="202.9" width="82.0" height="284.1" rx="5" fill="#1769AA"/>
+<line x1="1058.0" y1="208.3" x2="1058.0" y2="197.6" stroke="#1d2939" stroke-width="2.5"/>
+<line x1="1048.0" y1="208.3" x2="1068.0" y2="208.3" stroke="#1d2939" stroke-width="2.5"/>
+<line x1="1048.0" y1="197.6" x2="1068.0" y2="197.6" stroke="#1d2939" stroke-width="2.5"/>
+<text x="1058.0" y="197.0" font-family="Arial, Helvetica, sans-serif" font-size="13px" font-weight="700" text-anchor="middle" fill="#172033">0.925</text>
+<text x="1058.0" y="511.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="600" text-anchor="middle" fill="#344054">O3</text>
+<text x="1058.0" y="529.0" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="400" text-anchor="middle" fill="#667085">n=10</text>
+<rect x="1197.0" y="205.4" width="82.0" height="281.6" rx="5" fill="#D97706"/>
+<line x1="1238.0" y1="212.1" x2="1238.0" y2="198.7" stroke="#1d2939" stroke-width="2.5"/>
+<line x1="1228.0" y1="212.1" x2="1248.0" y2="212.1" stroke="#1d2939" stroke-width="2.5"/>
+<line x1="1228.0" y1="198.7" x2="1248.0" y2="198.7" stroke="#1d2939" stroke-width="2.5"/>
+<text x="1238.0" y="197.0" font-family="Arial, Helvetica, sans-serif" font-size="13px" font-weight="700" text-anchor="middle" fill="#172033">0.917</text>
+<text x="1238.0" y="511.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="600" text-anchor="middle" fill="#344054">Random PF-ODE</text>
+<text x="1238.0" y="529.0" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="400" text-anchor="middle" fill="#667085">n=10</text>
+<rect x="44.0" y="590.0" width="1312.0" height="168.0" rx="10" fill="#ffffff" stroke="#d0d5dd"/>
+<text x="68.0" y="617.0" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="700" text-anchor="start" fill="#667085">Method</text>
+<text x="394.0" y="617.0" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="700" text-anchor="end" fill="#667085">Mean-of-K</text>
+<text x="564.0" y="617.0" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="700" text-anchor="end" fill="#667085">95% CI</text>
+<text x="864.0" y="617.0" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="700" text-anchor="end" fill="#667085">Max-of-K</text>
+<text x="1034.0" y="617.0" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="700" text-anchor="end" fill="#667085">95% CI</text>
+<text x="1319.0" y="617.0" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="700" text-anchor="end" fill="#667085">Mean Δ vs baseline</text>
+<line x1="64.0" y1="632.0" x2="1336.0" y2="632.0" stroke="#eaecf0"/>
+<text x="68.0" y="659.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="600" text-anchor="start" fill="#667085">Best K-of-N</text>
+<text x="394.0" y="659.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="400" text-anchor="end" fill="#172033">0.774</text>
+<text x="564.0" y="659.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="400" text-anchor="end" fill="#667085">± 0.012</text>
+<text x="864.0" y="659.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="400" text-anchor="end" fill="#172033">0.840</text>
+<text x="1034.0" y="659.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="400" text-anchor="end" fill="#667085">± 0.032</text>
+<text x="1319.0" y="659.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="600" text-anchor="end" fill="#667085">baseline</text>
+<rect x="45.0" y="674.0" width="1310.0" height="42.0" fill="#f8fafc"/>
+<text x="68.0" y="701.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="600" text-anchor="start" fill="#1769AA">O3</text>
+<text x="394.0" y="701.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="400" text-anchor="end" fill="#172033">0.909</text>
+<text x="564.0" y="701.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="400" text-anchor="end" fill="#667085">± 0.020</text>
+<text x="864.0" y="701.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="400" text-anchor="end" fill="#172033">0.925</text>
+<text x="1034.0" y="701.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="400" text-anchor="end" fill="#667085">± 0.017</text>
+<text x="1319.0" y="701.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="600" text-anchor="end" fill="#1769AA">+0.135</text>
+<text x="68.0" y="743.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="600" text-anchor="start" fill="#D97706">Random PF-ODE</text>
+<text x="394.0" y="743.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="400" text-anchor="end" fill="#172033">0.837</text>
+<text x="564.0" y="743.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="400" text-anchor="end" fill="#667085">± 0.014</text>
+<text x="864.0" y="743.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="400" text-anchor="end" fill="#172033">0.917</text>
+<text x="1034.0" y="743.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="400" text-anchor="end" fill="#667085">± 0.022</text>
+<text x="1319.0" y="743.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="600" text-anchor="end" fill="#1769AA">+0.063</text>
+<text x="56.0" y="790.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="700" text-anchor="start" fill="#344054">Chart notes</text>
+<text x="56.0" y="816.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="400" text-anchor="start" fill="#667085">Bars show across-seed means; whiskers show 95% t-confidence intervals. All methods use the same paired replicate seeds.</text>
+<text x="56.0" y="840.0" font-family="Arial, Helvetica, sans-serif" font-size="12px" font-weight="400" text-anchor="start" fill="#667085">Primary metric: mean-of-K, the mean TM-score among the K selected structures. Higher TM-score is better.</text>
+<text x="56.0" y="870.0" font-family="Arial, Helvetica, sans-serif" font-size="11px" font-weight="400" text-anchor="start" fill="#98A2B3">Generated from the seed-aligned comparison summary; this is a descriptive comparison, not a significance test.</text>
+</svg>

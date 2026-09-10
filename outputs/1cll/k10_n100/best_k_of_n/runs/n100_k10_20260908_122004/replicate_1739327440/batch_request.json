@@ -1,0 +1,49 @@
+{
+  "input": "/mnt/SSD3/Chase/budgetting O3/data/1cll_boltz_input.yaml",
+  "cache": "/mnt/SSD3/Chase/budgetting O3/experiments/1cll/k10_n100/cache/public_boltz",
+  "work_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/n100_k10_20260908_122004/replicate_1739327440/public_work",
+  "jobs": [
+    {
+      "start": 0,
+      "count": 16,
+      "seed": 4047493466,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/n100_k10_20260908_122004/replicate_1739327440/batches/batch_0000"
+    },
+    {
+      "start": 16,
+      "count": 16,
+      "seed": 4047493482,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/n100_k10_20260908_122004/replicate_1739327440/batches/batch_0016"
+    },
+    {
+      "start": 32,
+      "count": 16,
+      "seed": 4047493498,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/n100_k10_20260908_122004/replicate_1739327440/batches/batch_0032"
+    },
+    {
+      "start": 48,
+      "count": 16,
+      "seed": 4047493514,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/n100_k10_20260908_122004/replicate_1739327440/batches/batch_0048"
+    },
+    {
+      "start": 64,
+      "count": 16,
+      "seed": 4047493530,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/n100_k10_20260908_122004/replicate_1739327440/batches/batch_0064"
+    },
+    {
+      "start": 80,
+      "count": 16,
+      "seed": 4047493546,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/n100_k10_20260908_122004/replicate_1739327440/batches/batch_0080"
+    },
+    {
+      "start": 96,
+      "count": 4,
+      "seed": 4047493562,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/n100_k10_20260908_122004/replicate_1739327440/batches/batch_0096"
+    }
+  ]
+}

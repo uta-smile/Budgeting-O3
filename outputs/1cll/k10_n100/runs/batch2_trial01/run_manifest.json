@@ -1,0 +1,12 @@
+{
+  "target": "1cll",
+  "budget": "n100_k10",
+  "run_id": "batch2_trial01",
+  "method_selection": "both",
+  "batch_size": 2,
+  "replicates": 1,
+  "seed_mode": "arithmetic_schedule",
+  "seeds": [
+    20250117
+  ]
+}

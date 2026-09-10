@@ -1,0 +1,97 @@
+{
+  "method": "random_pfode",
+  "budget": "n100_k10",
+  "run_id": "paired_latents",
+  "replicates": 3,
+  "seed_mode": "explicit_list",
+  "seed_start": null,
+  "seed_step": null,
+  "seeds": [
+    20250117,
+    20251126,
+    20252135
+  ],
+  "latent_sampler": "standard_normal_Z",
+  "generator_sampling": "deterministic_pf_ode",
+  "latent_source": "shared_standard_normal_bank",
+  "latent_dim": 3552,
+  "parallel_execution": {
+    "execution_mode": "replicate_parallel",
+    "method": "paired",
+    "budget": "n100_k10",
+    "run_id": "paired_latents",
+    "batch_size": null,
+    "resume": false,
+    "requested_gpus": [
+      "0",
+      "1",
+      "2",
+      "3"
+    ],
+    "worker_count": 3,
+    "assignments": [
+      {
+        "worker_index": 0,
+        "gpu": "0",
+        "seeds": [
+          20250117
+        ]
+      },
+      {
+        "worker_index": 1,
+        "gpu": "1",
+        "seeds": [
+          20251126
+        ]
+      },
+      {
+        "worker_index": 2,
+        "gpu": "2",
+        "seeds": [
+          20252135
+        ]
+      }
+    ],
+    "workers": [
+      {
+        "worker_index": 0,
+        "gpu": "0",
+        "visible_device": "cuda:0",
+        "seeds": [
+          20250117
+        ],
+        "seconds_by_method": {
+          "matched_stochastic": 2158.1602181456983,
+          "random_pfode": 2138.3348722290248
+        }
+      },
+      {
+        "worker_index": 1,
+        "gpu": "1",
+        "visible_device": "cuda:0",
+        "seeds": [
+          20251126
+        ],
+        "seconds_by_method": {
+          "matched_stochastic": 2169.0125014912337,
+          "random_pfode": 2150.9043456576765
+        }
+      },
+      {
+        "worker_index": 2,
+        "gpu": "2",
+        "visible_device": "cuda:0",
+        "seeds": [
+          20252135
+        ],
+        "seconds_by_method": {
+          "matched_stochastic": 2157.56312032789,
+          "random_pfode": 2141.6111078504473
+        }
+      }
+    ],
+    "public_cache_prepare_seconds": 0.0,
+    "wall_seconds": 4323.066609675065,
+    "session_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/runs/paired_latents/workers/session_20260909_202635_26887"
+  }
+}

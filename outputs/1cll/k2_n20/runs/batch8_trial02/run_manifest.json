@@ -1,0 +1,16 @@
+{
+  "target": "1cll",
+  "budget": "n20_k2",
+  "run_id": "batch8_trial02",
+  "method_selection": "both",
+  "batch_size": 8,
+  "replicates": 5,
+  "seed_mode": "fresh_os_random",
+  "seeds": [
+    1826899933,
+    408952644,
+    1847648099,
+    1559808369,
+    2123994547
+  ]
+}

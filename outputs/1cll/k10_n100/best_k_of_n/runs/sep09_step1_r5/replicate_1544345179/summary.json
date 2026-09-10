@@ -1,0 +1,52 @@
+{
+  "method": "best_k_of_n",
+  "N": 100,
+  "K": 10,
+  "seed": 1544345179,
+  "first_sample_seed": 4126805093,
+  "oracle_evaluations": 100,
+  "max_of_K": 0.7776702289800101,
+  "mean_of_K": 0.7098020576976092,
+  "top_k_mean": 0.7098020576976092,
+  "best_structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/sep09_step1_r5/replicate_1544345179/samples/sample_0032/sample_0032.pdb",
+  "generator": {
+    "package": "boltz",
+    "version": "2.2.1",
+    "module": "/mnt/SSD3/Chase/budgetting O3/experiments/1cll/public_boltz/.venv/lib/python3.12/site-packages/boltz/__init__.py",
+    "sampling": "official_stochastic_boltz2",
+    "step_scale": 1.0,
+    "gamma_0": 0.8,
+    "no_kernels": true,
+    "inference_precisions": [
+      "32"
+    ],
+    "checkpoint": {
+      "path": "/mnt/SSD3/Chase/budgetting O3/experiments/1cll/cache/public_boltz/boltz2_conf.ckpt",
+      "exists": true,
+      "size_bytes": 2286561469,
+      "sha256": "090e82ac8c92f5e943fa1b39e7410a44027bea7243c0bbb3caa67a77fc1428e1"
+    }
+  },
+  "msa": {
+    "backend": "public_boltz",
+    "sequence_length": 144,
+    "conditioning": "single_sequence",
+    "msa_path": null,
+    "msa_sha256": null,
+    "use_msa_server": false,
+    "reference_pdb": "/mnt/SSD3/Chase/budgetting O3/data/1CLL.pdb",
+    "reference_chain": "A",
+    "input_yaml": "/mnt/SSD3/Chase/budgetting O3/data/1cll_boltz_input.yaml",
+    "input_yaml_sha256": "23c59a8cc052fc9980ac2e1ec217b51d5e4ab5815c2c06780f3a9eecd8dc8926",
+    "msa_server_url": null
+  },
+  "inference": {
+    "batch_size": 16,
+    "step_scale": 1.0,
+    "seed_policy": "per_batch_first_sample_seed"
+  },
+  "timings_this_session": {
+    "wall_seconds": 867.8502539675683,
+    "conversion_scoring_seconds": 7.3848599549382925
+  }
+}

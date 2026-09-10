@@ -1,0 +1,81 @@
+{
+  "batch_size": 4,
+  "samples": [
+    {
+      "latent": "outputs/1cll/k10_n100/o3/runs/n100_k10_20260908_122004/seed_444290507/latents/latent_0000.npy",
+      "single_tm_score": 0.702468886662367,
+      "batch_tm_score": 0.7024680418379098,
+      "ca_coordinate_max_abs_delta_angstrom": 0.0010013580322265625
+    },
+    {
+      "latent": "outputs/1cll/k10_n100/o3/runs/n100_k10_20260908_122004/seed_444290507/latents/latent_0001.npy",
+      "single_tm_score": 0.6177668123830558,
+      "batch_tm_score": 0.6177644185533251,
+      "ca_coordinate_max_abs_delta_angstrom": 0.0010013580322265625
+    },
+    {
+      "latent": "outputs/1cll/k10_n100/o3/runs/n100_k10_20260908_122004/seed_444290507/latents/latent_0002.npy",
+      "single_tm_score": 0.5123263962581827,
+      "batch_tm_score": 0.5123275422593425,
+      "ca_coordinate_max_abs_delta_angstrom": 0.0010013580322265625
+    },
+    {
+      "latent": "outputs/1cll/k10_n100/o3/runs/n100_k10_20260908_122004/seed_444290507/latents/latent_0003.npy",
+      "single_tm_score": 0.4840902465237671,
+      "batch_tm_score": 0.4840897495419172,
+      "ca_coordinate_max_abs_delta_angstrom": 0.0010004043579101562
+    },
+    {
+      "latent": "outputs/1cll/k10_n100/o3/runs/n100_k10_20260908_122004/seed_444290507/latents/latent_0004.npy",
+      "single_tm_score": 0.45519232079806876,
+      "batch_tm_score": 0.4551939098186357,
+      "ca_coordinate_max_abs_delta_angstrom": 0.0010013580322265625
+    },
+    {
+      "latent": "outputs/1cll/k10_n100/o3/runs/n100_k10_20260908_122004/seed_444290507/latents/latent_0005.npy",
+      "single_tm_score": 0.6572356492856565,
+      "batch_tm_score": 0.6572346066392248,
+      "ca_coordinate_max_abs_delta_angstrom": 0.0010013580322265625
+    },
+    {
+      "latent": "outputs/1cll/k10_n100/o3/runs/n100_k10_20260908_122004/seed_444290507/latents/latent_0006.npy",
+      "single_tm_score": 0.7221580183225381,
+      "batch_tm_score": 0.7221591917821931,
+      "ca_coordinate_max_abs_delta_angstrom": 0.0010013580322265625
+    },
+    {
+      "latent": "outputs/1cll/k10_n100/o3/runs/n100_k10_20260908_122004/seed_444290507/latents/latent_0007.npy",
+      "single_tm_score": 0.6278697030894468,
+      "batch_tm_score": 0.6278706768967208,
+      "ca_coordinate_max_abs_delta_angstrom": 0.0010013580322265625
+    }
+  ],
+  "generation_seconds": {
+    "single": 163.24932377412915,
+    "batch": 86.08956201188266
+  },
+  "precision": "32",
+  "atom_slots": 1184,
+  "max_tm_score_delta": 2.393829730662489e-06,
+  "single_ranking": [
+    6,
+    0,
+    5,
+    7,
+    1,
+    2,
+    3,
+    4
+  ],
+  "batch_ranking": [
+    6,
+    0,
+    5,
+    7,
+    1,
+    2,
+    3,
+    4
+  ],
+  "note": "Coordinates are PDB-rounded C-alpha coordinates, without alignment. Timing includes warm-up; use run summaries for performance comparisons."
+}

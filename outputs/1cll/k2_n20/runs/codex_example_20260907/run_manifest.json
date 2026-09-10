@@ -1,0 +1,11 @@
+{
+  "target": "1cll",
+  "budget": "n20_k2",
+  "run_id": "codex_example_20260907",
+  "method_selection": "both",
+  "replicates": 1,
+  "seed_mode": "fresh_os_random",
+  "seeds": [
+    833980046
+  ]
+}

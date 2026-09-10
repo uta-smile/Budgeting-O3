@@ -1,0 +1,157 @@
+{
+  "input": "/mnt/SSD3/Chase/budgetting O3/data/1cll_boltz_input.yaml",
+  "cache": "/mnt/SSD3/Chase/budgetting O3/experiments/1cll/k10_n100/cache/public_boltz",
+  "work_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/public_work",
+  "jobs": [
+    {
+      "start": 0,
+      "count": 4,
+      "seed": 776971181,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/batches/batch_0000"
+    },
+    {
+      "start": 4,
+      "count": 4,
+      "seed": 776971185,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/batches/batch_0004"
+    },
+    {
+      "start": 8,
+      "count": 4,
+      "seed": 776971189,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/batches/batch_0008"
+    },
+    {
+      "start": 12,
+      "count": 4,
+      "seed": 776971193,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/batches/batch_0012"
+    },
+    {
+      "start": 16,
+      "count": 4,
+      "seed": 776971197,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/batches/batch_0016"
+    },
+    {
+      "start": 20,
+      "count": 4,
+      "seed": 776971201,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/batches/batch_0020"
+    },
+    {
+      "start": 24,
+      "count": 4,
+      "seed": 776971205,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/batches/batch_0024"
+    },
+    {
+      "start": 28,
+      "count": 4,
+      "seed": 776971209,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/batches/batch_0028"
+    },
+    {
+      "start": 32,
+      "count": 4,
+      "seed": 776971213,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/batches/batch_0032"
+    },
+    {
+      "start": 36,
+      "count": 4,
+      "seed": 776971217,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/batches/batch_0036"
+    },
+    {
+      "start": 40,
+      "count": 4,
+      "seed": 776971221,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/batches/batch_0040"
+    },
+    {
+      "start": 44,
+      "count": 4,
+      "seed": 776971225,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/batches/batch_0044"
+    },
+    {
+      "start": 48,
+      "count": 4,
+      "seed": 776971229,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/batches/batch_0048"
+    },
+    {
+      "start": 52,
+      "count": 4,
+      "seed": 776971233,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/batches/batch_0052"
+    },
+    {
+      "start": 56,
+      "count": 4,
+      "seed": 776971237,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/batches/batch_0056"
+    },
+    {
+      "start": 60,
+      "count": 4,
+      "seed": 776971241,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/batches/batch_0060"
+    },
+    {
+      "start": 64,
+      "count": 4,
+      "seed": 776971245,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/batches/batch_0064"
+    },
+    {
+      "start": 68,
+      "count": 4,
+      "seed": 776971249,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/batches/batch_0068"
+    },
+    {
+      "start": 72,
+      "count": 4,
+      "seed": 776971253,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/batches/batch_0072"
+    },
+    {
+      "start": 76,
+      "count": 4,
+      "seed": 776971257,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/batches/batch_0076"
+    },
+    {
+      "start": 80,
+      "count": 4,
+      "seed": 776971261,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/batches/batch_0080"
+    },
+    {
+      "start": 84,
+      "count": 4,
+      "seed": 776971265,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/batches/batch_0084"
+    },
+    {
+      "start": 88,
+      "count": 4,
+      "seed": 776971269,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/batches/batch_0088"
+    },
+    {
+      "start": 92,
+      "count": 4,
+      "seed": 776971273,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/batches/batch_0092"
+    },
+    {
+      "start": 96,
+      "count": 4,
+      "seed": 776971277,
+      "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/batch4_trial01/replicate_538588060/batches/batch_0096"
+    }
+  ]
+}

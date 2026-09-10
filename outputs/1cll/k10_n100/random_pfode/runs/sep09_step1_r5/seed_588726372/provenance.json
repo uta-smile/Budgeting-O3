@@ -1,0 +1,44 @@
+{
+  "backend": "custom_boltz2_o3",
+  "method": "random_pfode",
+  "generator": {
+    "adapter": "Boltz2PFODEAdapter",
+    "latent_dim": 3552,
+    "atom_count": 1134,
+    "atom_slots": 1184,
+    "recycling_steps": 3,
+    "sampling_steps": 200,
+    "step_scale": 1.0,
+    "stochastic_gamma_0": 0.8,
+    "explicit_latent": true,
+    "subsample_msa": false,
+    "num_subsampled_msa": 1024,
+    "inference_precision": "32",
+    "no_kernels": true,
+    "checkpoint": {
+      "path": "/home/thanh/budgetting-O3/.boltz/boltz2_conf.ckpt",
+      "exists": true,
+      "size_bytes": 2286561469,
+      "sha256": "090e82ac8c92f5e943fa1b39e7410a44027bea7243c0bbb3caa67a77fc1428e1"
+    }
+  },
+  "msa_cache": {
+    "input_msa_path": null,
+    "input_msa_sha256": null,
+    "processed_dir": "/mnt/SSD3/Chase/budgetting O3/data/boltz2_1cll/o3cache_ad2d19683ebd02b3",
+    "processing_fingerprint": "ad2d19683ebd02b3e22facde756dfe6fdd17d7313b086bf5ec9af0c11e3dea14",
+    "msa_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "manifest_sha256": "5566389c8b3891fa18c38709b6c2424637ffc7c00cbde71aa42f7720a8b3815f",
+    "msa_ids": [
+      -1
+    ],
+    "has_msa": false,
+    "use_msa_server": false,
+    "server_url": null
+  },
+  "seed": 588726372,
+  "N": 100,
+  "K": 10,
+  "latent_sampler": "standard_normal_Z",
+  "selection_metric": "oracle_tm_score"
+}

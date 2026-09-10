@@ -1,0 +1,4 @@
+{
+  "batch_size": 4,
+  "bo_batch_size": 1
+}

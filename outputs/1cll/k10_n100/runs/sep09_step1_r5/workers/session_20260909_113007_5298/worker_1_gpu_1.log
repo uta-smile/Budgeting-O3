@@ -1,0 +1,752 @@
+
+=== 2026-09-09T11:30:07.931174 GPU 1 seeds [1269247094] ===
+[best-k-of-n] persistent inference: 7 batches, limit=16
+[best-k-of-n] inference log: /mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/best_k_of_n/runs/sep09_step1_r5/replicate_1269247094/boltz_batches.log
+O3 runner: PDB-output/TM-score fix enabled
+[o3] seed mode: explicit_list
+[o3] shared replicate seeds: [1269247094]
+[Boltz-2] auto precision selected 32 for NVIDIA GeForce GTX TITAN X
+All inputs are already processed.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+Processing 0 inputs with 0 threads.
+0it [00:00, ?it/s]0it [00:00, ?it/s]
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[11:44:49] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+Boltz atom tensor: 1134 real atoms, 1184 padded sampler slots.
+Generator latent_dim=3552
+[n100_k10 method=o3 seed=1269247094] starting
+[n100_k10 seed=1269247094] O3 protocol: 50 random Z samples -> select best 5 seeds -> 2 random U samples -> 48 BO samples
+[n100_k10 seed=1269247094] Total = 50 + 2 + 48 = 100 oracle evaluations
+[n100_k10 seed=1269247094] [>                       ] 0/100 generating phase1_random batch=16
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [>                       ] 1/100 completed | score=0.5836
+[n100_k10 seed=1269247094] [>                       ] 2/100 completed | score=0.7818
+[n100_k10 seed=1269247094] [>                       ] 3/100 completed | score=0.4946
+[n100_k10 seed=1269247094] [>                       ] 4/100 completed | score=0.5893
+[n100_k10 seed=1269247094] [=>                      ] 5/100 completed | score=0.4361
+[n100_k10 seed=1269247094] [=>                      ] 6/100 completed | score=0.5987
+[n100_k10 seed=1269247094] [=>                      ] 7/100 completed | score=0.5635
+[n100_k10 seed=1269247094] [=>                      ] 8/100 completed | score=0.7091
+[n100_k10 seed=1269247094] [==>                     ] 9/100 completed | score=0.7114
+[n100_k10 seed=1269247094] [==>                     ] 10/100 completed | score=0.7732
+[n100_k10 seed=1269247094] [==>                     ] 11/100 completed | score=0.6127
+[n100_k10 seed=1269247094] [==>                     ] 12/100 completed | score=0.7451
+[n100_k10 seed=1269247094] [===>                    ] 13/100 completed | score=0.6841
+[n100_k10 seed=1269247094] [===>                    ] 14/100 completed | score=0.4136
+[n100_k10 seed=1269247094] [===>                    ] 15/100 completed | score=0.7752
+[n100_k10 seed=1269247094] [===>                    ] 16/100 completed | score=0.7586
+[n100_k10 seed=1269247094] [===>                    ] 16/100 generating phase1_random batch=16
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [====>                   ] 17/100 completed | score=0.5987
+[n100_k10 seed=1269247094] [====>                   ] 18/100 completed | score=0.4808
+[n100_k10 seed=1269247094] [====>                   ] 19/100 completed | score=0.4987
+[n100_k10 seed=1269247094] [====>                   ] 20/100 completed | score=0.5041
+[n100_k10 seed=1269247094] [=====>                  ] 21/100 completed | score=0.4507
+[n100_k10 seed=1269247094] [=====>                  ] 22/100 completed | score=0.5641
+[n100_k10 seed=1269247094] [=====>                  ] 23/100 completed | score=0.5714
+[n100_k10 seed=1269247094] [=====>                  ] 24/100 completed | score=0.8244
+[n100_k10 seed=1269247094] [======>                 ] 25/100 completed | score=0.5388
+[n100_k10 seed=1269247094] [======>                 ] 26/100 completed | score=0.4529
+[n100_k10 seed=1269247094] [======>                 ] 27/100 completed | score=0.8810
+[n100_k10 seed=1269247094] [======>                 ] 28/100 completed | score=0.6294
+[n100_k10 seed=1269247094] [======>                 ] 29/100 completed | score=0.5926
+[n100_k10 seed=1269247094] [=======>                ] 30/100 completed | score=0.6687
+[n100_k10 seed=1269247094] [=======>                ] 31/100 completed | score=0.5132
+[n100_k10 seed=1269247094] [=======>                ] 32/100 completed | score=0.6664
+[n100_k10 seed=1269247094] [=======>                ] 32/100 generating phase1_random batch=16
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [=======>                ] 33/100 completed | score=0.5513
+[n100_k10 seed=1269247094] [========>               ] 34/100 completed | score=0.5984
+[n100_k10 seed=1269247094] [========>               ] 35/100 completed | score=0.8052
+[n100_k10 seed=1269247094] [========>               ] 36/100 completed | score=0.7412
+[n100_k10 seed=1269247094] [========>               ] 37/100 completed | score=0.7143
+[n100_k10 seed=1269247094] [=========>              ] 38/100 completed | score=0.8017
+[n100_k10 seed=1269247094] [=========>              ] 39/100 completed | score=0.7499
+[n100_k10 seed=1269247094] [=========>              ] 40/100 completed | score=0.5474
+[n100_k10 seed=1269247094] [=========>              ] 41/100 completed | score=0.6389
+[n100_k10 seed=1269247094] [==========>             ] 42/100 completed | score=0.6009
+[n100_k10 seed=1269247094] [==========>             ] 43/100 completed | score=0.4912
+[n100_k10 seed=1269247094] [==========>             ] 44/100 completed | score=0.6764
+[n100_k10 seed=1269247094] [==========>             ] 45/100 completed | score=0.5266
+[n100_k10 seed=1269247094] [===========>            ] 46/100 completed | score=0.5713
+[n100_k10 seed=1269247094] [===========>            ] 47/100 completed | score=0.6657
+[n100_k10 seed=1269247094] [===========>            ] 48/100 completed | score=0.5984
+[n100_k10 seed=1269247094] [===========>            ] 48/100 generating phase1_random batch=2
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [===========>            ] 49/100 completed | score=0.4814
+[n100_k10 seed=1269247094] [============>           ] 50/100 completed | score=0.8391
+[n100_k10 seed=1269247094] phase 1 complete: selected best 5 seeds from 50 random Z samples by oracle TM-score (index:score=26:0.8810, 49:0.8391, 23:0.8244, 34:0.8052, 37:0.8017)
+[n100_k10 seed=1269247094] phase 2: constructing U from the selected 5 seeds and evaluating 2 random U samples (U dimension=4)
+[n100_k10 seed=1269247094] [============>           ] 50/100 generating bo_initial_random batch=2
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [============>           ] 51/100 completed | score=0.8676
+[n100_k10 seed=1269247094] [============>           ] 52/100 completed | score=0.8924
+[n100_k10 seed=1269247094] phase 2 complete: 50 random Z + 2 random U = 52/100 evaluations; starting phase 3 BO for 48 rounds
+[n100_k10 seed=1269247094] [============>           ] 52/100 fitting BO round 1/48
+[n100_k10 seed=1269247094] [============>           ] 52/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [============>           ] 53/100 completed | score=0.8354
+[n100_k10 seed=1269247094] [============>           ] 53/100 fitting BO round 2/48
+[n100_k10 seed=1269247094] [============>           ] 53/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [============>           ] 54/100 completed | score=0.8958
+[n100_k10 seed=1269247094] [============>           ] 54/100 fitting BO round 3/48
+[n100_k10 seed=1269247094] [============>           ] 54/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [=============>          ] 55/100 completed | score=0.9095
+[n100_k10 seed=1269247094] [=============>          ] 55/100 fitting BO round 4/48
+[n100_k10 seed=1269247094] [=============>          ] 55/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [=============>          ] 56/100 completed | score=0.8349
+[n100_k10 seed=1269247094] [=============>          ] 56/100 fitting BO round 5/48
+[n100_k10 seed=1269247094] [=============>          ] 56/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [=============>          ] 57/100 completed | score=0.9074
+[n100_k10 seed=1269247094] [=============>          ] 57/100 fitting BO round 6/48
+[n100_k10 seed=1269247094] [=============>          ] 57/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [=============>          ] 58/100 completed | score=0.8913
+[n100_k10 seed=1269247094] [=============>          ] 58/100 fitting BO round 7/48
+[n100_k10 seed=1269247094] [=============>          ] 58/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [==============>         ] 59/100 completed | score=0.9111
+[n100_k10 seed=1269247094] [==============>         ] 59/100 fitting BO round 8/48
+[n100_k10 seed=1269247094] [==============>         ] 59/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [==============>         ] 60/100 completed | score=0.8020
+[n100_k10 seed=1269247094] [==============>         ] 60/100 fitting BO round 9/48
+[n100_k10 seed=1269247094] [==============>         ] 60/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [==============>         ] 61/100 completed | score=0.9115
+[n100_k10 seed=1269247094] [==============>         ] 61/100 fitting BO round 10/48
+[n100_k10 seed=1269247094] [==============>         ] 61/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [==============>         ] 62/100 completed | score=0.6547
+[n100_k10 seed=1269247094] [==============>         ] 62/100 fitting BO round 11/48
+[n100_k10 seed=1269247094] [==============>         ] 62/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [===============>        ] 63/100 completed | score=0.7731
+[n100_k10 seed=1269247094] [===============>        ] 63/100 fitting BO round 12/48
+[n100_k10 seed=1269247094] [===============>        ] 63/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [===============>        ] 64/100 completed | score=0.9153
+[n100_k10 seed=1269247094] [===============>        ] 64/100 fitting BO round 13/48
+[n100_k10 seed=1269247094] [===============>        ] 64/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [===============>        ] 65/100 completed | score=0.7739
+[n100_k10 seed=1269247094] [===============>        ] 65/100 fitting BO round 14/48
+[n100_k10 seed=1269247094] [===============>        ] 65/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [===============>        ] 66/100 completed | score=0.9150
+[n100_k10 seed=1269247094] [===============>        ] 66/100 fitting BO round 15/48
+[n100_k10 seed=1269247094] [===============>        ] 66/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [================>       ] 67/100 completed | score=0.8537
+[n100_k10 seed=1269247094] [================>       ] 67/100 fitting BO round 16/48
+[n100_k10 seed=1269247094] [================>       ] 67/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [================>       ] 68/100 completed | score=0.9206
+[n100_k10 seed=1269247094] [================>       ] 68/100 fitting BO round 17/48
+[n100_k10 seed=1269247094] [================>       ] 68/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [================>       ] 69/100 completed | score=0.9340
+[n100_k10 seed=1269247094] [================>       ] 69/100 fitting BO round 18/48
+[n100_k10 seed=1269247094] [================>       ] 69/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [================>       ] 70/100 completed | score=0.8810
+[n100_k10 seed=1269247094] [================>       ] 70/100 fitting BO round 19/48
+[n100_k10 seed=1269247094] [================>       ] 70/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [=================>      ] 71/100 completed | score=0.8790
+[n100_k10 seed=1269247094] [=================>      ] 71/100 fitting BO round 20/48
+[n100_k10 seed=1269247094] [=================>      ] 71/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [=================>      ] 72/100 completed | score=0.8658
+[n100_k10 seed=1269247094] [=================>      ] 72/100 fitting BO round 21/48
+[n100_k10 seed=1269247094] [=================>      ] 72/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [=================>      ] 73/100 completed | score=0.8870
+[n100_k10 seed=1269247094] [=================>      ] 73/100 fitting BO round 22/48
+[n100_k10 seed=1269247094] [=================>      ] 73/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [=================>      ] 74/100 completed | score=0.7707
+[n100_k10 seed=1269247094] [=================>      ] 74/100 fitting BO round 23/48
+[n100_k10 seed=1269247094] [=================>      ] 74/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [==================>     ] 75/100 completed | score=0.7743
+[n100_k10 seed=1269247094] [==================>     ] 75/100 fitting BO round 24/48
+[n100_k10 seed=1269247094] [==================>     ] 75/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [==================>     ] 76/100 completed | score=0.8852
+[n100_k10 seed=1269247094] [==================>     ] 76/100 fitting BO round 25/48
+[n100_k10 seed=1269247094] [==================>     ] 76/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [==================>     ] 77/100 completed | score=0.9236
+[n100_k10 seed=1269247094] [==================>     ] 77/100 fitting BO round 26/48
+[n100_k10 seed=1269247094] [==================>     ] 77/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [==================>     ] 78/100 completed | score=0.9058
+[n100_k10 seed=1269247094] [==================>     ] 78/100 fitting BO round 27/48
+[n100_k10 seed=1269247094] [==================>     ] 78/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [==================>     ] 79/100 completed | score=0.8810
+[n100_k10 seed=1269247094] [==================>     ] 79/100 fitting BO round 28/48
+[n100_k10 seed=1269247094] [==================>     ] 79/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [===================>    ] 80/100 completed | score=0.7849
+[n100_k10 seed=1269247094] [===================>    ] 80/100 fitting BO round 29/48
+[n100_k10 seed=1269247094] [===================>    ] 80/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [===================>    ] 81/100 completed | score=0.9388
+[n100_k10 seed=1269247094] [===================>    ] 81/100 fitting BO round 30/48
+[n100_k10 seed=1269247094] [===================>    ] 81/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [===================>    ] 82/100 completed | score=0.9385
+[n100_k10 seed=1269247094] [===================>    ] 82/100 fitting BO round 31/48
+[n100_k10 seed=1269247094] [===================>    ] 82/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [===================>    ] 83/100 completed | score=0.9061
+[n100_k10 seed=1269247094] [===================>    ] 83/100 fitting BO round 32/48
+[n100_k10 seed=1269247094] [===================>    ] 83/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [====================>   ] 84/100 completed | score=0.9334
+[n100_k10 seed=1269247094] [====================>   ] 84/100 fitting BO round 33/48
+[n100_k10 seed=1269247094] [====================>   ] 84/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [====================>   ] 85/100 completed | score=0.9281
+[n100_k10 seed=1269247094] [====================>   ] 85/100 fitting BO round 34/48
+[n100_k10 seed=1269247094] [====================>   ] 85/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [====================>   ] 86/100 completed | score=0.9375
+[n100_k10 seed=1269247094] [====================>   ] 86/100 fitting BO round 35/48
+[n100_k10 seed=1269247094] [====================>   ] 86/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [====================>   ] 87/100 completed | score=0.9366
+[n100_k10 seed=1269247094] [====================>   ] 87/100 fitting BO round 36/48
+[n100_k10 seed=1269247094] [====================>   ] 87/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [=====================>  ] 88/100 completed | score=0.9394
+[n100_k10 seed=1269247094] [=====================>  ] 88/100 fitting BO round 37/48
+[n100_k10 seed=1269247094] [=====================>  ] 88/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [=====================>  ] 89/100 completed | score=0.9320
+[n100_k10 seed=1269247094] [=====================>  ] 89/100 fitting BO round 38/48
+[n100_k10 seed=1269247094] [=====================>  ] 89/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [=====================>  ] 90/100 completed | score=0.9324
+[n100_k10 seed=1269247094] [=====================>  ] 90/100 fitting BO round 39/48
+[n100_k10 seed=1269247094] [=====================>  ] 90/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [=====================>  ] 91/100 completed | score=0.9259
+[n100_k10 seed=1269247094] [=====================>  ] 91/100 fitting BO round 40/48
+[n100_k10 seed=1269247094] [=====================>  ] 91/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [======================> ] 92/100 completed | score=0.9304
+[n100_k10 seed=1269247094] [======================> ] 92/100 fitting BO round 41/48
+[n100_k10 seed=1269247094] [======================> ] 92/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [======================> ] 93/100 completed | score=0.9101
+[n100_k10 seed=1269247094] [======================> ] 93/100 fitting BO round 42/48
+[n100_k10 seed=1269247094] [======================> ] 93/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [======================> ] 94/100 completed | score=0.9182
+[n100_k10 seed=1269247094] [======================> ] 94/100 fitting BO round 43/48
+[n100_k10 seed=1269247094] [======================> ] 94/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [======================> ] 95/100 completed | score=0.8811
+[n100_k10 seed=1269247094] [======================> ] 95/100 fitting BO round 44/48
+[n100_k10 seed=1269247094] [======================> ] 95/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [=======================>] 96/100 completed | score=0.9263
+[n100_k10 seed=1269247094] [=======================>] 96/100 fitting BO round 45/48
+[n100_k10 seed=1269247094] [=======================>] 96/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [=======================>] 97/100 completed | score=0.9350
+[n100_k10 seed=1269247094] [=======================>] 97/100 fitting BO round 46/48
+[n100_k10 seed=1269247094] [=======================>] 97/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [=======================>] 98/100 completed | score=0.9260
+[n100_k10 seed=1269247094] [=======================>] 98/100 fitting BO round 47/48
+[n100_k10 seed=1269247094] [=======================>] 98/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [=======================>] 99/100 completed | score=0.9230
+[n100_k10 seed=1269247094] [=======================>] 99/100 fitting BO round 48/48
+[n100_k10 seed=1269247094] [=======================>] 99/100 generating bo_acquisition batch=1
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 seed=1269247094] [========================] 100/100 completed | score=0.9271
+[n100_k10 seed=1269247094] O3 protocol complete: 50 + 2 + 48 = 100 oracle evaluations
+[n100_k10 method=o3 seed=1269247094] max-of-K=0.9394 mean-of-K=0.9358
+Worker finished 1 O3 replicate(s) in /mnt/SSD3/Chase/budgetting O3/outputs/1cll/k10_n100/o3/runs/sep09_step1_r5
+[Boltz-2] auto precision selected 32 for NVIDIA GeForce GTX TITAN X
+All inputs are already processed.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+Processing 0 inputs with 0 threads.
+0it [00:00, ?it/s]0it [00:00, ?it/s]
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+[12:10:43] Depickling from a version number (16.2)that is higher than our version (16.1).
+This probably won't work.
+Boltz atom tensor: 1134 real atoms, 1184 padded sampler slots.
+[random-pfode] shared replicate seeds: [1269247094]
+[n100_k10 random-pfode seed=1269247094] diagnostic protocol: 100 independent random Z samples -> select best 10
+[n100_k10 random-pfode seed=1269247094] generating 1/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 1/100 | score=0.5825
+[n100_k10 random-pfode seed=1269247094] generating 2/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 2/100 | score=0.7818
+[n100_k10 random-pfode seed=1269247094] generating 3/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 3/100 | score=0.4945
+[n100_k10 random-pfode seed=1269247094] generating 4/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 4/100 | score=0.5890
+[n100_k10 random-pfode seed=1269247094] generating 5/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 5/100 | score=0.4344
+[n100_k10 random-pfode seed=1269247094] generating 6/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 6/100 | score=0.5962
+[n100_k10 random-pfode seed=1269247094] generating 7/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 7/100 | score=0.5634
+[n100_k10 random-pfode seed=1269247094] generating 8/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 8/100 | score=0.7077
+[n100_k10 random-pfode seed=1269247094] generating 9/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 9/100 | score=0.7103
+[n100_k10 random-pfode seed=1269247094] generating 10/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 10/100 | score=0.7686
+[n100_k10 random-pfode seed=1269247094] generating 11/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 11/100 | score=0.6127
+[n100_k10 random-pfode seed=1269247094] generating 12/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 12/100 | score=0.7454
+[n100_k10 random-pfode seed=1269247094] generating 13/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 13/100 | score=0.6794
+[n100_k10 random-pfode seed=1269247094] generating 14/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 14/100 | score=0.4149
+[n100_k10 random-pfode seed=1269247094] generating 15/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 15/100 | score=0.7755
+[n100_k10 random-pfode seed=1269247094] generating 16/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 16/100 | score=0.7642
+[n100_k10 random-pfode seed=1269247094] generating 17/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 17/100 | score=0.5980
+[n100_k10 random-pfode seed=1269247094] generating 18/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 18/100 | score=0.4833
+[n100_k10 random-pfode seed=1269247094] generating 19/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 19/100 | score=0.4979
+[n100_k10 random-pfode seed=1269247094] generating 20/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 20/100 | score=0.5041
+[n100_k10 random-pfode seed=1269247094] generating 21/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 21/100 | score=0.4500
+[n100_k10 random-pfode seed=1269247094] generating 22/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 22/100 | score=0.5879
+[n100_k10 random-pfode seed=1269247094] generating 23/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 23/100 | score=0.5740
+[n100_k10 random-pfode seed=1269247094] generating 24/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 24/100 | score=0.8203
+[n100_k10 random-pfode seed=1269247094] generating 25/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 25/100 | score=0.5352
+[n100_k10 random-pfode seed=1269247094] generating 26/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 26/100 | score=0.4480
+[n100_k10 random-pfode seed=1269247094] generating 27/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 27/100 | score=0.8817
+[n100_k10 random-pfode seed=1269247094] generating 28/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 28/100 | score=0.6231
+[n100_k10 random-pfode seed=1269247094] generating 29/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 29/100 | score=0.5955
+[n100_k10 random-pfode seed=1269247094] generating 30/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 30/100 | score=0.6676
+[n100_k10 random-pfode seed=1269247094] generating 31/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 31/100 | score=0.5154
+[n100_k10 random-pfode seed=1269247094] generating 32/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 32/100 | score=0.6511
+[n100_k10 random-pfode seed=1269247094] generating 33/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 33/100 | score=0.5518
+[n100_k10 random-pfode seed=1269247094] generating 34/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 34/100 | score=0.5962
+[n100_k10 random-pfode seed=1269247094] generating 35/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 35/100 | score=0.7986
+[n100_k10 random-pfode seed=1269247094] generating 36/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 36/100 | score=0.7420
+[n100_k10 random-pfode seed=1269247094] generating 37/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 37/100 | score=0.7088
+[n100_k10 random-pfode seed=1269247094] generating 38/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 38/100 | score=0.8078
+[n100_k10 random-pfode seed=1269247094] generating 39/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 39/100 | score=0.7485
+[n100_k10 random-pfode seed=1269247094] generating 40/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 40/100 | score=0.5479
+[n100_k10 random-pfode seed=1269247094] generating 41/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 41/100 | score=0.6387
+[n100_k10 random-pfode seed=1269247094] generating 42/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 42/100 | score=0.6098
+[n100_k10 random-pfode seed=1269247094] generating 43/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 43/100 | score=0.4911
+[n100_k10 random-pfode seed=1269247094] generating 44/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 44/100 | score=0.6723
+[n100_k10 random-pfode seed=1269247094] generating 45/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 45/100 | score=0.5266
+[n100_k10 random-pfode seed=1269247094] generating 46/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 46/100 | score=0.5716
+[n100_k10 random-pfode seed=1269247094] generating 47/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 47/100 | score=0.6657
+[n100_k10 random-pfode seed=1269247094] generating 48/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 48/100 | score=0.5981
+[n100_k10 random-pfode seed=1269247094] generating 49/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 49/100 | score=0.4798
+[n100_k10 random-pfode seed=1269247094] generating 50/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 50/100 | score=0.8370
+[n100_k10 random-pfode seed=1269247094] generating 51/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 51/100 | score=0.7773
+[n100_k10 random-pfode seed=1269247094] generating 52/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 52/100 | score=0.5407
+[n100_k10 random-pfode seed=1269247094] generating 53/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 53/100 | score=0.4463
+[n100_k10 random-pfode seed=1269247094] generating 54/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 54/100 | score=0.7591
+[n100_k10 random-pfode seed=1269247094] generating 55/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 55/100 | score=0.5262
+[n100_k10 random-pfode seed=1269247094] generating 56/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 56/100 | score=0.6814
+[n100_k10 random-pfode seed=1269247094] generating 57/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 57/100 | score=0.7501
+[n100_k10 random-pfode seed=1269247094] generating 58/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 58/100 | score=0.8552
+[n100_k10 random-pfode seed=1269247094] generating 59/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 59/100 | score=0.8217
+[n100_k10 random-pfode seed=1269247094] generating 60/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 60/100 | score=0.4489
+[n100_k10 random-pfode seed=1269247094] generating 61/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 61/100 | score=0.4870
+[n100_k10 random-pfode seed=1269247094] generating 62/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 62/100 | score=0.7373
+[n100_k10 random-pfode seed=1269247094] generating 63/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 63/100 | score=0.7477
+[n100_k10 random-pfode seed=1269247094] generating 64/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 64/100 | score=0.6865
+[n100_k10 random-pfode seed=1269247094] generating 65/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 65/100 | score=0.5397
+[n100_k10 random-pfode seed=1269247094] generating 66/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 66/100 | score=0.5815
+[n100_k10 random-pfode seed=1269247094] generating 67/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 67/100 | score=0.6051
+[n100_k10 random-pfode seed=1269247094] generating 68/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 68/100 | score=0.5018
+[n100_k10 random-pfode seed=1269247094] generating 69/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 69/100 | score=0.5280
+[n100_k10 random-pfode seed=1269247094] generating 70/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 70/100 | score=0.6332
+[n100_k10 random-pfode seed=1269247094] generating 71/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 71/100 | score=0.4618
+[n100_k10 random-pfode seed=1269247094] generating 72/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 72/100 | score=0.6820
+[n100_k10 random-pfode seed=1269247094] generating 73/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 73/100 | score=0.5552
+[n100_k10 random-pfode seed=1269247094] generating 74/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 74/100 | score=0.7764
+[n100_k10 random-pfode seed=1269247094] generating 75/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 75/100 | score=0.5336
+[n100_k10 random-pfode seed=1269247094] generating 76/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 76/100 | score=0.7528
+[n100_k10 random-pfode seed=1269247094] generating 77/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 77/100 | score=0.7208
+[n100_k10 random-pfode seed=1269247094] generating 78/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 78/100 | score=0.5076
+[n100_k10 random-pfode seed=1269247094] generating 79/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 79/100 | score=0.5105
+[n100_k10 random-pfode seed=1269247094] generating 80/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 80/100 | score=0.4509
+[n100_k10 random-pfode seed=1269247094] generating 81/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 81/100 | score=0.6093
+[n100_k10 random-pfode seed=1269247094] generating 82/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 82/100 | score=0.6921
+[n100_k10 random-pfode seed=1269247094] generating 83/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 83/100 | score=0.7035
+[n100_k10 random-pfode seed=1269247094] generating 84/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 84/100 | score=0.5180
+[n100_k10 random-pfode seed=1269247094] generating 85/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 85/100 | score=0.6716
+[n100_k10 random-pfode seed=1269247094] generating 86/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 86/100 | score=0.7824
+[n100_k10 random-pfode seed=1269247094] generating 87/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 87/100 | score=0.6565
+[n100_k10 random-pfode seed=1269247094] generating 88/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 88/100 | score=0.4479
+[n100_k10 random-pfode seed=1269247094] generating 89/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 89/100 | score=0.5488
+[n100_k10 random-pfode seed=1269247094] generating 90/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 90/100 | score=0.6388
+[n100_k10 random-pfode seed=1269247094] generating 91/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 91/100 | score=0.7090
+[n100_k10 random-pfode seed=1269247094] generating 92/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 92/100 | score=0.7611
+[n100_k10 random-pfode seed=1269247094] generating 93/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 93/100 | score=0.6346
+[n100_k10 random-pfode seed=1269247094] generating 94/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 94/100 | score=0.9122
+[n100_k10 random-pfode seed=1269247094] generating 95/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 95/100 | score=0.6530
+[n100_k10 random-pfode seed=1269247094] generating 96/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 96/100 | score=0.5695
+[n100_k10 random-pfode seed=1269247094] generating 97/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 97/100 | score=0.8112
+[n100_k10 random-pfode seed=1269247094] generating 98/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 98/100 | score=0.5949
+[n100_k10 random-pfode seed=1269247094] generating 99/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 99/100 | score=0.6157
+[n100_k10 random-pfode seed=1269247094] generating 100/100 random Z samples
+[Boltz-2] sampling=deterministic PF-ODE | deterministic=True | latent=explicit z | gamma_0=0
+[n100_k10 random-pfode seed=1269247094] completed 100/100 | score=0.7046
+[n100_k10 random-pfode seed=1269247094] diagnostic complete: 100 random Z samples -> best 10; mean-of-K=0.8328

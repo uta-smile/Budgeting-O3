@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Create a presentation-ready three-method 1CLL comparison bar chart.
+"""Create a presentation-ready 1CLL comparison bar chart for available methods.
 
 The chart consumes the seed-aligned ``comparison_summary.csv`` produced by
 ``experiments/1cll/compare_methods.py``. It writes a vector SVG with grouped
@@ -28,6 +28,7 @@ from typing import Iterable
 
 METHODS = (
     ("best_k_of_n", "Best K-of-N", "#667085"),
+    ("matched_stochastic", "Matched stochastic", "#667085"),
     ("o3", "O3", "#1769AA"),
     ("random_pfode", "Random PF-ODE", "#D97706"),
 )
@@ -84,12 +85,8 @@ def read_summary(path: Path) -> tuple[tuple[int, int], list[dict[str, object]], 
         for method, _label, _color in METHODS
         if f"{method}_mean_of_K" in fieldnames and f"{method}_max_of_K" in fieldnames
     ]
-    expected = [method for method, _label, _color in METHODS]
-    missing = [method for method in expected if method not in methods]
-    if missing:
-        raise ValueError(
-            f"Summary is missing methods {missing}; expected columns for {expected}: {path}"
-        )
+    if not methods:
+        raise ValueError(f"Summary has no supported method metric pairs: {path}")
 
     n_values = {int(row["N"]) for row in rows}
     k_values = {int(row["K"]) for row in rows}
@@ -288,7 +285,10 @@ def write_svg(
         out.append(text(x, table_y + 27, label, size=11, anchor=anchor, weight="700", fill="#667085"))
     out.append(f'<line x1="{table_x + 20:.1f}" y1="{table_y + row_h:.1f}" x2="{table_x + table_w - 20:.1f}" y2="{table_y + row_h:.1f}" stroke="#eaecf0"/>')
 
-    baseline = next(item for item in stats if item["method"] == "best_k_of_n")
+    baseline = next(
+        (item for item in stats if item["method"] in {"best_k_of_n", "matched_stochastic"}),
+        stats[0],
+    )
     baseline_mean = float(baseline["mean_of_K"])
     for index, item in enumerate(stats):
         row_top = table_y + row_h * (index + 1)
@@ -303,7 +303,7 @@ def write_svg(
         out.append(text(columns[2][0], row_top + 27, f"± {float(item['mean_of_K_ci95']):.3f}", size=12, anchor="end", fill="#667085"))
         out.append(text(columns[3][0], row_top + 27, f"{float(item['max_of_K']):.3f}", size=12, anchor="end", fill="#172033"))
         out.append(text(columns[4][0], row_top + 27, f"± {float(item['max_of_K_ci95']):.3f}", size=12, anchor="end", fill="#667085"))
-        out.append(text(columns[5][0], row_top + 27, "baseline" if method == "best_k_of_n" else f"{delta:+.3f}", size=12, anchor="end", weight="600", fill="#667085" if method == "best_k_of_n" else "#1769AA"))
+        out.append(text(columns[5][0], row_top + 27, "baseline" if method == baseline["method"] else f"{delta:+.3f}", size=12, anchor="end", weight="600", fill="#667085" if method == baseline["method"] else "#1769AA"))
 
     out.extend(
         [

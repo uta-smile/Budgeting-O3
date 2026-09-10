@@ -1,0 +1,21 @@
+sample_index,sample_seed,run_seed,tm_score,structure,inference_precision,batch_seed,batch_start,batch_count,batch_confidence_rank,rank,selected
+0,,2123994547,0.7580552807225392,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_2123994547/samples/sample_0000/sample_0000.pdb,32,2152652702,0,8,0,1,True
+8,,2123994547,0.7385662670778596,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_2123994547/samples/sample_0008/sample_0008.pdb,32,2152652710,8,8,0,2,True
+16,,2123994547,0.5075368943300425,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_2123994547/samples/sample_0016/sample_0016.pdb,32,2152652718,16,4,0,3,False
+9,,2123994547,0.4926501462591777,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_2123994547/samples/sample_0009/sample_0009.pdb,32,2152652710,8,8,1,4,False
+11,,2123994547,0.4675835522605048,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_2123994547/samples/sample_0011/sample_0011.pdb,32,2152652710,8,8,3,5,False
+1,,2123994547,0.4674610798693737,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_2123994547/samples/sample_0001/sample_0001.pdb,32,2152652702,0,8,1,6,False
+15,,2123994547,0.4658963585489674,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_2123994547/samples/sample_0015/sample_0015.pdb,32,2152652710,8,8,7,7,False
+10,,2123994547,0.4646705392856218,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_2123994547/samples/sample_0010/sample_0010.pdb,32,2152652710,8,8,2,8,False
+5,,2123994547,0.46154723786239177,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_2123994547/samples/sample_0005/sample_0005.pdb,32,2152652702,0,8,5,9,False
+18,,2123994547,0.4610853436385217,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_2123994547/samples/sample_0018/sample_0018.pdb,32,2152652718,16,4,2,10,False
+19,,2123994547,0.4559955845662124,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_2123994547/samples/sample_0019/sample_0019.pdb,32,2152652718,16,4,3,11,False
+2,,2123994547,0.45569824852866486,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_2123994547/samples/sample_0002/sample_0002.pdb,32,2152652702,0,8,2,12,False
+6,,2123994547,0.4555078535559314,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_2123994547/samples/sample_0006/sample_0006.pdb,32,2152652702,0,8,6,13,False
+17,,2123994547,0.4549613037735372,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_2123994547/samples/sample_0017/sample_0017.pdb,32,2152652718,16,4,1,14,False
+3,,2123994547,0.4544771155684374,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_2123994547/samples/sample_0003/sample_0003.pdb,32,2152652702,0,8,3,15,False
+14,,2123994547,0.45240571800765306,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_2123994547/samples/sample_0014/sample_0014.pdb,32,2152652710,8,8,6,16,False
+4,,2123994547,0.44904696730710586,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_2123994547/samples/sample_0004/sample_0004.pdb,32,2152652702,0,8,4,17,False
+12,,2123994547,0.4481211105154558,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_2123994547/samples/sample_0012/sample_0012.pdb,32,2152652710,8,8,4,18,False
+7,,2123994547,0.4442744196021302,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_2123994547/samples/sample_0007/sample_0007.pdb,32,2152652702,0,8,7,19,False
+13,,2123994547,0.4428142116791032,/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/best_k_of_n/runs/batch8_trial02/replicate_2123994547/samples/sample_0013/sample_0013.pdb,32,2152652710,8,8,5,20,False

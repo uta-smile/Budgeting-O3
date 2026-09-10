@@ -1,0 +1,252 @@
+[
+  {
+    "index": 0,
+    "stage": "phase1_random",
+    "score": 0.6964277406809375,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/phase1/sample_0000.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/latents/latent_0000.npy",
+    "budget": "n20_k2",
+    "seed": 1826899933,
+    "u": null
+  },
+  {
+    "index": 1,
+    "stage": "phase1_random",
+    "score": 0.5460169037612639,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/phase1/sample_0001.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/latents/latent_0001.npy",
+    "budget": "n20_k2",
+    "seed": 1826899933,
+    "u": null
+  },
+  {
+    "index": 2,
+    "stage": "phase1_random",
+    "score": 0.49991988691038514,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/phase1/sample_0002.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/latents/latent_0002.npy",
+    "budget": "n20_k2",
+    "seed": 1826899933,
+    "u": null
+  },
+  {
+    "index": 3,
+    "stage": "phase1_random",
+    "score": 0.7536090063527939,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/phase1/sample_0003.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/latents/latent_0003.npy",
+    "budget": "n20_k2",
+    "seed": 1826899933,
+    "u": null
+  },
+  {
+    "index": 4,
+    "stage": "phase1_random",
+    "score": 0.6282688517973551,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/phase1/sample_0004.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/latents/latent_0004.npy",
+    "budget": "n20_k2",
+    "seed": 1826899933,
+    "u": null
+  },
+  {
+    "index": 5,
+    "stage": "phase1_random",
+    "score": 0.5972486132607205,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/phase1/sample_0005.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/latents/latent_0005.npy",
+    "budget": "n20_k2",
+    "seed": 1826899933,
+    "u": null
+  },
+  {
+    "index": 6,
+    "stage": "phase1_random",
+    "score": 0.7205592970279953,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/phase1/sample_0006.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/latents/latent_0006.npy",
+    "budget": "n20_k2",
+    "seed": 1826899933,
+    "u": null
+  },
+  {
+    "index": 7,
+    "stage": "phase1_random",
+    "score": 0.6587528128924789,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/phase1/sample_0007.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/latents/latent_0007.npy",
+    "budget": "n20_k2",
+    "seed": 1826899933,
+    "u": null
+  },
+  {
+    "index": 8,
+    "stage": "phase1_random",
+    "score": 0.790822479005658,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/phase1/sample_0008.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/latents/latent_0008.npy",
+    "budget": "n20_k2",
+    "seed": 1826899933,
+    "u": null
+  },
+  {
+    "index": 9,
+    "stage": "phase1_random",
+    "score": 0.7193905531203373,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/phase1/sample_0009.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/latents/latent_0009.npy",
+    "budget": "n20_k2",
+    "seed": 1826899933,
+    "u": null
+  },
+  {
+    "index": 10,
+    "stage": "bo_initial_random",
+    "score": 0.8055008810830966,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/bo/initial_00.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/latents/latent_0010.npy",
+    "budget": "n20_k2",
+    "seed": 1826899933,
+    "u": [
+      0.39703731753638094,
+      0.4100007908868397,
+      0.004010647566624281,
+      0.04930912924262476
+    ]
+  },
+  {
+    "index": 11,
+    "stage": "bo_initial_random",
+    "score": 0.7768246431369589,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/bo/initial_01.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/latents/latent_0011.npy",
+    "budget": "n20_k2",
+    "seed": 1826899933,
+    "u": [
+      0.7676170819249346,
+      0.5906486562509712,
+      0.5139617495558927,
+      0.603165153123406
+    ]
+  },
+  {
+    "index": 12,
+    "stage": "bo_acquisition",
+    "score": 0.8047672883190431,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/bo/round_0000.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/latents/latent_0012.npy",
+    "budget": "n20_k2",
+    "seed": 1826899933,
+    "u": [
+      0.38925607998567757,
+      0.46581909369242325,
+      0.5656174780880615,
+      0.8751650358088567
+    ]
+  },
+  {
+    "index": 13,
+    "stage": "bo_acquisition",
+    "score": 0.7348070916556758,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/bo/round_0001.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/latents/latent_0013.npy",
+    "budget": "n20_k2",
+    "seed": 1826899933,
+    "u": [
+      0.4614109394042871,
+      0.474659774325955,
+      0.41598298941072515,
+      0.6171463784535102
+    ]
+  },
+  {
+    "index": 14,
+    "stage": "bo_acquisition",
+    "score": 0.7496482325413284,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/bo/round_0002.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/latents/latent_0014.npy",
+    "budget": "n20_k2",
+    "seed": 1826899933,
+    "u": [
+      0.3797640812750568,
+      0.27018401504012346,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "index": 15,
+    "stage": "bo_acquisition",
+    "score": 0.7603822828622191,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/bo/round_0003.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/latents/latent_0015.npy",
+    "budget": "n20_k2",
+    "seed": 1826899933,
+    "u": [
+      0.39574237434268456,
+      0.4688591088053366,
+      0.33255720989557624,
+      0.5406070463990338
+    ]
+  },
+  {
+    "index": 16,
+    "stage": "bo_acquisition",
+    "score": 0.8105326816183358,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/bo/round_0004.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/latents/latent_0016.npy",
+    "budget": "n20_k2",
+    "seed": 1826899933,
+    "u": [
+      0.21405004930076413,
+      0.4600523695069574,
+      0.8119099018932999,
+      1.0
+    ]
+  },
+  {
+    "index": 17,
+    "stage": "bo_acquisition",
+    "score": 0.8146600757436198,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/bo/round_0005.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/latents/latent_0017.npy",
+    "budget": "n20_k2",
+    "seed": 1826899933,
+    "u": [
+      1.0,
+      0.45739574916014236,
+      0.4293104184919116,
+      0.13598698776903437
+    ]
+  },
+  {
+    "index": 18,
+    "stage": "bo_acquisition",
+    "score": 0.7866673777164749,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/bo/round_0006.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/latents/latent_0018.npy",
+    "budget": "n20_k2",
+    "seed": 1826899933,
+    "u": [
+      0.7683329825744751,
+      0.6135300242217823,
+      0.08863076066361482,
+      0.20677698689930102
+    ]
+  },
+  {
+    "index": 19,
+    "stage": "bo_acquisition",
+    "score": 0.8177727136271749,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/bo/round_0007.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/1cll/k2_n20/o3/runs/batch8_trial02/seed_1826899933/latents/latent_0019.npy",
+    "budget": "n20_k2",
+    "seed": 1826899933,
+    "u": [
+      0.20658470367701928,
+      0.47447063426196834,
+      0.9225184875595523,
+      0.27559004959517336
+    ]
+  }
+]

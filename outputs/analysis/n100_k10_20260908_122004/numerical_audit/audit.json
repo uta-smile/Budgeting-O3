@@ -1,0 +1,312 @@
+[
+  {
+    "seed": 111478797,
+    "evaluations": 100,
+    "stages": {
+      "bo_acquisition": 48,
+      "bo_initial_random": 2,
+      "phase1_random": 50
+    },
+    "seed_roundtrip_max_relative_l2": 0.00022137420926094872,
+    "saved_latent_max_abs_error": 0.0,
+    "bo_count": 48,
+    "bo_unique_u": 48,
+    "bo_unique_z": 48,
+    "top_k_score_range": 0.026755502666509834,
+    "top_k_ca_rmsd_median_angstrom": 1.5284046369880138,
+    "top_k_pairs_below_0_01_angstrom": 0,
+    "top_k_pair_count": 45,
+    "rescored_max_error": 0.0,
+    "top_k_max_seed_weights": [
+      0.9642800794548343,
+      0.7625577118081219,
+      0.8876842110918183,
+      0.6907803058488421,
+      0.6484813098990433,
+      0.8935762962579027,
+      0.8381276266103621,
+      0.9296328053982912,
+      0.9380299791336035,
+      0.9880221678801303
+    ]
+  },
+  {
+    "seed": 1232451588,
+    "evaluations": 100,
+    "stages": {
+      "bo_acquisition": 48,
+      "bo_initial_random": 2,
+      "phase1_random": 50
+    },
+    "seed_roundtrip_max_relative_l2": 0.00022637789948354526,
+    "saved_latent_max_abs_error": 0.0,
+    "bo_count": 48,
+    "bo_unique_u": 48,
+    "bo_unique_z": 48,
+    "top_k_score_range": 0.00025214842362009104,
+    "top_k_ca_rmsd_median_angstrom": 0.0024939717475178686,
+    "top_k_pairs_below_0_01_angstrom": 45,
+    "top_k_pair_count": 45,
+    "rescored_max_error": 0.0,
+    "top_k_max_seed_weights": [
+      0.9999999741904316,
+      0.9999999741904316,
+      0.9999999741904316,
+      0.9999999741904316,
+      0.9999999741904316,
+      1.0,
+      0.9999999741904316,
+      0.9999999741904316,
+      0.9999999741904316,
+      0.9999999741904316
+    ]
+  },
+  {
+    "seed": 1739327440,
+    "evaluations": 100,
+    "stages": {
+      "bo_acquisition": 48,
+      "bo_initial_random": 2,
+      "phase1_random": 50
+    },
+    "seed_roundtrip_max_relative_l2": 0.00022114295681704396,
+    "saved_latent_max_abs_error": 0.0,
+    "bo_count": 48,
+    "bo_unique_u": 48,
+    "bo_unique_z": 48,
+    "top_k_score_range": 0.09012436663249768,
+    "top_k_ca_rmsd_median_angstrom": 1.4079167665762213,
+    "top_k_pairs_below_0_01_angstrom": 3,
+    "top_k_pair_count": 45,
+    "rescored_max_error": 0.0,
+    "top_k_max_seed_weights": [
+      0.9999999741904316,
+      1.0,
+      0.9999999741904316,
+      0.95492388788827,
+      0.8516899846440976,
+      0.8251472179356181,
+      0.8995694489378855,
+      1.0,
+      0.9178380562427022,
+      0.9427841741451625
+    ]
+  },
+  {
+    "seed": 1869680097,
+    "evaluations": 100,
+    "stages": {
+      "bo_acquisition": 48,
+      "bo_initial_random": 2,
+      "phase1_random": 50
+    },
+    "seed_roundtrip_max_relative_l2": 0.00023279313879986293,
+    "saved_latent_max_abs_error": 0.0,
+    "bo_count": 48,
+    "bo_unique_u": 47,
+    "bo_unique_z": 46,
+    "top_k_score_range": 0.01885046970367077,
+    "top_k_ca_rmsd_median_angstrom": 0.0006119368177768682,
+    "top_k_pairs_below_0_01_angstrom": 28,
+    "top_k_pair_count": 45,
+    "rescored_max_error": 0.0,
+    "top_k_max_seed_weights": [
+      0.8495224561126227,
+      0.7930578529755998,
+      0.9999999741904316,
+      0.9999999741904316,
+      0.9999999741904316,
+      0.9999999741904316,
+      0.9999999741904316,
+      0.9999999741904316,
+      0.9999999741904316,
+      0.9999999741904316
+    ]
+  },
+  {
+    "seed": 397142107,
+    "evaluations": 100,
+    "stages": {
+      "bo_acquisition": 48,
+      "bo_initial_random": 2,
+      "phase1_random": 50
+    },
+    "seed_roundtrip_max_relative_l2": 0.0002271083972684024,
+    "saved_latent_max_abs_error": 0.0,
+    "bo_count": 48,
+    "bo_unique_u": 48,
+    "bo_unique_z": 48,
+    "top_k_score_range": 0.03051803974624634,
+    "top_k_ca_rmsd_median_angstrom": 0.7345095737279815,
+    "top_k_pairs_below_0_01_angstrom": 0,
+    "top_k_pair_count": 45,
+    "rescored_max_error": 0.0,
+    "top_k_max_seed_weights": [
+      0.9213093072458903,
+      0.9160991251425797,
+      0.9212154870739885,
+      0.9397893631220345,
+      0.9236183997491288,
+      0.9160499361692647,
+      0.8870544960979819,
+      0.8930713683619005,
+      0.8742102109438808,
+      0.9090387808340541
+    ]
+  },
+  {
+    "seed": 444290507,
+    "evaluations": 100,
+    "stages": {
+      "bo_acquisition": 48,
+      "bo_initial_random": 2,
+      "phase1_random": 50
+    },
+    "seed_roundtrip_max_relative_l2": 0.00022754968845674388,
+    "saved_latent_max_abs_error": 0.0,
+    "bo_count": 48,
+    "bo_unique_u": 48,
+    "bo_unique_z": 48,
+    "top_k_score_range": 1.2093652753786266e-05,
+    "top_k_ca_rmsd_median_angstrom": 0.0011456341068940051,
+    "top_k_pairs_below_0_01_angstrom": 45,
+    "top_k_pair_count": 45,
+    "rescored_max_error": 0.0,
+    "top_k_max_seed_weights": [
+      0.9999999741904316,
+      0.9999999741904316,
+      0.9999999741904316,
+      0.9999999741904316,
+      0.9999999741904317,
+      1.0,
+      0.9999999741904316,
+      0.9999999741904316,
+      0.9999999741904316,
+      0.9999999741904316
+    ]
+  },
+  {
+    "seed": 53672067,
+    "evaluations": 100,
+    "stages": {
+      "bo_acquisition": 48,
+      "bo_initial_random": 2,
+      "phase1_random": 50
+    },
+    "seed_roundtrip_max_relative_l2": 0.00022840733444448184,
+    "saved_latent_max_abs_error": 0.0,
+    "bo_count": 48,
+    "bo_unique_u": 38,
+    "bo_unique_z": 37,
+    "top_k_score_range": 0.08478519436406928,
+    "top_k_ca_rmsd_median_angstrom": 0.8543451480744975,
+    "top_k_pairs_below_0_01_angstrom": 0,
+    "top_k_pair_count": 45,
+    "rescored_max_error": 0.0,
+    "top_k_max_seed_weights": [
+      0.9214740310645221,
+      0.9054537313251237,
+      0.8739564182161812,
+      0.8482047945544064,
+      0.7911325650220131,
+      0.7852274013718933,
+      0.7698462988731778,
+      0.904579665627255,
+      0.9100034901014779,
+      0.7600302609855075
+    ]
+  },
+  {
+    "seed": 679479962,
+    "evaluations": 100,
+    "stages": {
+      "bo_acquisition": 48,
+      "bo_initial_random": 2,
+      "phase1_random": 50
+    },
+    "seed_roundtrip_max_relative_l2": 0.0002203569785323524,
+    "saved_latent_max_abs_error": 0.0,
+    "bo_count": 48,
+    "bo_unique_u": 48,
+    "bo_unique_z": 48,
+    "top_k_score_range": 0.018701043162766107,
+    "top_k_ca_rmsd_median_angstrom": 1.322906051293151,
+    "top_k_pairs_below_0_01_angstrom": 1,
+    "top_k_pair_count": 45,
+    "rescored_max_error": 0.0,
+    "top_k_max_seed_weights": [
+      0.9262673338098786,
+      0.9290235513910251,
+      0.9316554945721891,
+      0.8862685315866422,
+      0.9391843869385136,
+      0.8821513512534566,
+      0.8269277272754664,
+      0.7528654896491516,
+      0.9999999741904316,
+      0.9999999741904316
+    ]
+  },
+  {
+    "seed": 70118930,
+    "evaluations": 100,
+    "stages": {
+      "bo_acquisition": 48,
+      "bo_initial_random": 2,
+      "phase1_random": 50
+    },
+    "seed_roundtrip_max_relative_l2": 0.00022744225982065878,
+    "saved_latent_max_abs_error": 0.0,
+    "bo_count": 48,
+    "bo_unique_u": 48,
+    "bo_unique_z": 48,
+    "top_k_score_range": 0.0478401498904063,
+    "top_k_ca_rmsd_median_angstrom": 1.3741596658110407,
+    "top_k_pairs_below_0_01_angstrom": 0,
+    "top_k_pair_count": 45,
+    "rescored_max_error": 0.0,
+    "top_k_max_seed_weights": [
+      1.0,
+      0.9825333362619377,
+      1.0,
+      1.0,
+      0.988053420109485,
+      0.860415635405709,
+      0.8295215520635345,
+      0.9135356858479552,
+      0.8484134541663823,
+      0.915634624970782
+    ]
+  },
+  {
+    "seed": 825015182,
+    "evaluations": 100,
+    "stages": {
+      "bo_acquisition": 48,
+      "bo_initial_random": 2,
+      "phase1_random": 50
+    },
+    "seed_roundtrip_max_relative_l2": 0.00022765279009803548,
+    "saved_latent_max_abs_error": 0.0,
+    "bo_count": 48,
+    "bo_unique_u": 48,
+    "bo_unique_z": 48,
+    "top_k_score_range": 4.358553030892054e-05,
+    "top_k_ca_rmsd_median_angstrom": 0.0010852766606299822,
+    "top_k_pairs_below_0_01_angstrom": 45,
+    "top_k_pair_count": 45,
+    "rescored_max_error": 0.0,
+    "top_k_max_seed_weights": [
+      0.9999999741904316,
+      0.9999999741904316,
+      0.9999999741904317,
+      0.9999999741904316,
+      0.9999999741904316,
+      0.9999999741904316,
+      0.9999999741904316,
+      0.9999999741904316,
+      1.0,
+      0.9999999741904316
+    ]
+  }
+]

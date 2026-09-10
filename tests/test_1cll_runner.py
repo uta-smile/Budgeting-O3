@@ -8,6 +8,7 @@ from unittest.mock import patch
 from tempfile import TemporaryDirectory
 
 import numpy as np
+import pytest
 
 ROOT = Path(__file__).parents[1]
 BUNDLE = ROOT / "experiments" / "1cll"
@@ -152,6 +153,7 @@ def _runner_args(**overrides):
         "seeds_from_baseline_run": None,
         "resume": False,
         "smoke": False,
+        "comparison_report": False,
     }
     values.update(overrides)
     return SimpleNamespace(**values)
@@ -162,7 +164,7 @@ def test_runner_records_default_random_seeds_before_generation(tmp_path: Path) -
     with patch("run.parse_args", return_value=_runner_args()), patch(
         "run.random_replicate_seeds", return_value=[101, 202, 303]
     ), patch("common.comparison_run_root", return_value=manifest_root), patch(
-        "run.run_public"
+        "run.run_random_pfode"
     ) as run_public:
         bundle_run.main()
 
@@ -236,8 +238,8 @@ def test_gpu_worker_dispatches_seed_shard_without_shared_reports(
     ) as o3, patch("multi_gpu_worker.random_pfode_runner.run") as random_pfode:
         multi_gpu_worker.main()
 
-    assert [call.args[1] for call in public.call_args_list] == [11, 22]
-    assert all(call.kwargs["batch_size"] == 4 for call in public.call_args_list)
+    public.assert_not_called()
+    assert random_pfode.call_args_list[0].kwargs["method"] == "best_k_of_n"
     assert o3.call_args.kwargs["worker_only"] is True
     assert random_pfode.call_args.kwargs["write_run_reports"] is False
     assert json.loads(marker.read_text())["seeds"] == [11, 22]
@@ -256,13 +258,56 @@ def test_smoke_does_not_create_seed_manifest() -> None:
     assert run_process.call_args.args[0][-1] == "--gpu"
 
 
+def test_paired_runner_dispatches_only_controlled_methods(tmp_path):
+    with patch("run.parse_args", return_value=_runner_args(method="paired")), patch(
+        "run.random_replicate_seeds", return_value=[101, 202, 303]
+    ), patch("common.comparison_run_root", return_value=tmp_path), patch(
+        "run.run_public"
+    ) as public, patch("run.run_o3") as o3, patch("run.run_random_pfode") as controlled:
+        bundle_run.main()
+    public.assert_not_called()
+    o3.assert_not_called()
+    assert len(controlled.call_args_list) == 2
+    stochastic, pfode = controlled.call_args_list
+    assert stochastic.kwargs["method"] == "best_k_of_n"
+    assert pfode.kwargs.get("method", "random_pfode") == "random_pfode"
+    assert stochastic.kwargs["seeds"] == pfode.kwargs["seeds"] == [101, 202, 303]
+    assert bundle_run.comparison_methods("paired") == ["best_k_of_n", "random_pfode"]
+    assert bundle_run.comparison_methods("matched-stochastic") == ["best_k_of_n"]
+    assert bundle_run.comparison_methods("all") == ["best_k_of_n", "o3", "random_pfode"]
+
+
+def test_standardized_baseline_rejects_legacy_public_output(tmp_path):
+    import random_pfode_runner
+
+    (tmp_path / "replicate_001").mkdir()
+    with patch("common.output_root", return_value=tmp_path), patch(
+        "random_pfode_runner.load_adapter"
+    ) as load_adapter, pytest.raises(ValueError, match="legacy public"):
+        random_pfode_runner.run(1, "old", tmp_path / "unused.yaml", "n100_k10",
+                                method="best_k_of_n")
+    load_adapter.assert_not_called()
+
+
+def test_public_baseline_remains_a_separate_cli_method(tmp_path):
+    with patch("run.parse_args", return_value=_runner_args(method="public-best-k-of-n")), patch(
+        "run.random_replicate_seeds", return_value=[101, 202, 303]
+    ), patch("common.comparison_run_root", return_value=tmp_path), patch(
+        "run.run_public"
+    ) as public, patch("run.run_random_pfode") as controlled:
+        bundle_run.main()
+    public.assert_called_once()
+    controlled.assert_not_called()
+    assert bundle_run.comparison_methods("public-best-k-of-n") == ["public_best_k_of_n"]
+
+
 def test_runner_resume_restores_manifest_seeds(tmp_path: Path) -> None:
     manifest_root = tmp_path / "comparison"
     manifest_root.mkdir()
     (manifest_root / "run_manifest.json").write_text(
         '{"target":"1cll","budget":"n100_k10","run_id":"run01",'
         '"method_selection":"both","replicates":3,"seed_mode":"fresh_os_random",'
-        '"seeds":[101,202,303]}',
+        '"seeds":[101,202,303],"step_scale":1.0}',
         encoding="utf-8",
     )
     args = _runner_args(method="o3", resume=True)
@@ -280,7 +325,7 @@ def test_public_runner_resumes_without_regenerating(tmp_path: Path) -> None:
     rows = []
 
     def fake_output_root(method: str, run_id: str) -> Path:
-        assert method == "best_k_of_n"
+        assert method == "public_best_k_of_n"
         return output / run_id
 
     def fake_predict(sample_dir: Path, seed: int) -> Path:

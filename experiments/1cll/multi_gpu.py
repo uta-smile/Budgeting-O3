@@ -127,7 +127,7 @@ def launch_workers(
     started = time.perf_counter()
     assignments = assign_seeds(gpu_ids, seeds)
     cache_prepare_seconds = 0.0
-    if method in {"best-k-of-n", "both", "all"}:
+    if method == "public-best-k-of-n":
         print("Preparing the shared public-Boltz cache once before workers start...", flush=True)
         cache_started = time.perf_counter()
         public_runner.prepare_public_assets()
@@ -265,7 +265,7 @@ def _load_summaries(method: str, run_id: str, seeds: list[int]) -> list[dict[str
     summaries = []
     for seed in seeds:
         directory = (
-            f"replicate_{seed:03d}" if method == "best_k_of_n" else f"seed_{seed:04d}"
+            f"replicate_{seed:03d}" if method == "public_best_k_of_n" else f"seed_{seed:04d}"
         )
         path = root / directory / "summary.json"
         if not path.is_file():
@@ -329,8 +329,8 @@ def finalize_reports(
 ) -> None:
     """Create shared reports only after every worker has completed."""
 
-    if method in {"best-k-of-n", "both", "all"}:
-        summaries = _load_summaries("best_k_of_n", run_id, seeds)
+    if method == "public-best-k-of-n":
+        summaries = _load_summaries("public_best_k_of_n", run_id, seeds)
         public_runner.finalize_run(
             replicates=len(seeds),
             run_id=run_id,
@@ -338,7 +338,7 @@ def finalize_reports(
             summaries=summaries,
             batch_size=batch_size,
         )
-        provenance_path = common.output_root("best_k_of_n", run_id) / "provenance.json"
+        provenance_path = common.output_root("public_best_k_of_n", run_id) / "provenance.json"
         provenance = json.loads(provenance_path.read_text(encoding="utf-8"))
         common.write_json(
             provenance_path,
@@ -353,7 +353,12 @@ def finalize_reports(
             summaries=summaries,
             parallel_execution=parallel_execution,
         )
-    if method in {"random-pfode", "all"}:
+    if method in {"best-k-of-n", "matched-stochastic", "paired", "both", "all"}:
+        random_pfode_runner.finalize_run(
+            replicates=len(seeds), run_id=run_id, budget_name=budget,
+            run_seeds=seeds, method="best_k_of_n",
+        )
+    if method in {"random-pfode", "paired", "all"}:
         summaries = _load_summaries("random_pfode", run_id, seeds)
         random_pfode_runner.finalize_run(
             replicates=len(seeds),

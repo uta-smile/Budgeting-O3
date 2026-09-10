@@ -18,7 +18,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--method",
-        choices=("best-k-of-n", "o3", "random-pfode", "both", "all"),
+        choices=("public-best-k-of-n", "best-k-of-n", "o3", "random-pfode", "matched-stochastic", "paired", "both", "all"),
         required=True,
     )
     parser.add_argument("--budget", required=True)
@@ -47,7 +47,7 @@ def main() -> None:
         function(*positional, **keywords)
         timings[name] = time.perf_counter() - started
 
-    if args.method in {"best-k-of-n", "both", "all"}:
+    if args.method == "public-best-k-of-n":
         started = time.perf_counter()
         for seed in args.seed_list:
             public_runner.run_replicate(
@@ -56,7 +56,7 @@ def main() -> None:
                 resume=args.resume,
                 batch_size=args.batch_size,
             )
-        timings["best_k_of_n"] = time.perf_counter() - started
+        timings["public_best_k_of_n"] = time.perf_counter() - started
 
     if args.method in {"o3", "both", "all"}:
         timed(
@@ -72,7 +72,13 @@ def main() -> None:
             worker_only=True,
         )
 
-    if args.method in {"random-pfode", "all"}:
+    if args.method in {"best-k-of-n", "matched-stochastic", "paired", "both", "all"}:
+        timed("best_k_of_n", random_pfode_runner.run,
+            len(args.seed_list), args.run_id, common.REPO_ROOT / "configs" / "1cll.yaml",
+            args.budget, seeds=args.seed_list, resume=args.resume,
+            write_run_reports=False, method="best_k_of_n",
+        )
+    if args.method in {"random-pfode", "paired", "all"}:
         timed(
             "random_pfode",
             random_pfode_runner.run,

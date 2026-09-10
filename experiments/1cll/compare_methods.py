@@ -16,11 +16,13 @@ METHOD_DIRECTORIES = {
     "best_k_of_n": "best_k_of_n",
     "o3": "o3",
     "random_pfode": "random_pfode",
+    "public_best_k_of_n": "public_best_k_of_n",
 }
 METHOD_LABELS = {
     "best_k_of_n": "best_k_of_n",
     "o3": "o3",
     "random_pfode": "random_pfode",
+    "public_best_k_of_n": "public_best_k_of_n",
 }
 
 
@@ -50,7 +52,7 @@ def _load_aggregate(method: str, run_id: str, seeds: list[int]) -> dict[int, dic
 
     result: dict[int, dict[str, Any]] = {}
     for row in rows:
-        seed_key = "run_seed" if method == "best_k_of_n" else "seed"
+        seed_key = "run_seed" if "run_seed" in row else "seed"
         try:
             seed = int(row[seed_key])
             row["N"] = int(row["N"])
@@ -187,7 +189,7 @@ def parse_args() -> argparse.Namespace:
         "--methods",
         nargs="+",
         choices=tuple(METHOD_DIRECTORIES),
-        default=list(METHOD_DIRECTORIES),
+        default=["best_k_of_n", "o3", "random_pfode"],
     )
     return parser.parse_args()
 

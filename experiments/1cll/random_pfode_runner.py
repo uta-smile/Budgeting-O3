@@ -23,11 +23,22 @@ def run(
     seeds: list[int] | None = None,
     resume: bool = False,
     write_run_reports: bool = True,
+    method: str = "random_pfode",
 ) -> dict:
+    if method == "matched_stochastic":
+        method = "best_k_of_n"
+    root = common.output_root(method, run_id)
+    if method == "best_k_of_n" and (
+        (root / "provenance.json").exists() or any(root.glob("replicate_*"))
+    ):
+        raise ValueError("This run ID contains legacy public Best K-of-N results; use a new run ID")
     with config_path.open("r", encoding="utf-8") as handle:
         config = yaml.safe_load(handle)
     if not isinstance(config, dict):
         raise ValueError(f"Expected a mapping in {config_path}")
+    if method not in {"random_pfode", "best_k_of_n"}:
+        raise ValueError(f"Unsupported controlled baseline: {method}")
+    config.setdefault("boltz2", {})["explicit_latent"] = True
     config["project_root"] = str(common.REPO_ROOT)
     config["target"]["sequence"] = "".join(str(config["target"]["sequence"]).split()).upper()
     adapter = load_adapter("adapters.boltz2_pfode:create", config)
@@ -45,8 +56,8 @@ def run(
     )
     metadata_seed_start = None if seeds is not None else seed_start
     metadata_seed_step = None if seeds is not None else seed_step
-    print(f"[random-pfode] shared replicate seeds: {run_seeds}", flush=True)
-    root = common.output_root("random_pfode", run_id)
+    print(f"[{method}] shared replicate seeds: {run_seeds}", flush=True)
+    root = common.output_root(method, run_id)
     summaries = []
     for run_seed in run_seeds:
         summaries.append(
@@ -57,11 +68,14 @@ def run(
                 run_seed=run_seed,
                 output_dir=root / f"seed_{run_seed:04d}",
                 resume=resume,
+                method=method,
+                shared_latent_path=common.comparison_run_root(run_id) / "shared_latents" / f"seed_{run_seed}.npy",
             )
         )
     if not write_run_reports:
-        return {"method": "random_pfode", "replicates": summaries}
+        return {"method": method, "replicates": summaries}
     return finalize_run(
+        method=method,
         replicates=replicates,
         run_id=run_id,
         budget_name=budget_name,
@@ -81,10 +95,11 @@ def finalize_run(
     summaries: list[dict] | None = None,
     seed_start: int | None = None,
     seed_step: int | None = None,
+    method: str = "random_pfode",
 ) -> dict:
     """Write random-PF-ODE run reports after all seed workers complete."""
 
-    root = common.output_root("random_pfode", run_id)
+    root = common.output_root(method, run_id)
     if summaries is None:
         summaries = []
         for seed in run_seeds:
@@ -114,7 +129,7 @@ def finalize_run(
     (root / "run_metadata.json").write_text(
         json.dumps(
             {
-                "method": "random_pfode",
+                "method": method,
                 "budget": budget_name,
                 "run_id": run_id,
                 "replicates": replicates,
@@ -123,10 +138,12 @@ def finalize_run(
                 "seed_step": seed_step,
                 "seeds": run_seeds,
                 "latent_sampler": "standard_normal_Z",
-                "generator_sampling": "deterministic_pf_ode",
+                "generator_sampling": "deterministic_pf_ode" if method == "random_pfode" else "stochastic_boltz2",
+                "latent_source": "shared_standard_normal_bank",
+                "latent_dim": summaries[0]["latent_dim"],
             },
             indent=2,
         ),
         encoding="utf-8",
     )
-    return {"method": "random_pfode", "replicates": summaries}
+    return {"method": method, "replicates": summaries}

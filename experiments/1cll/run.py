@@ -34,6 +34,9 @@ def comparison_methods(method: str) -> list[str]:
         "best-k-of-n": ["best_k_of_n"],
         "o3": ["o3"],
         "random-pfode": ["random_pfode"],
+        "matched-stochastic": ["best_k_of_n"],
+        "public-best-k-of-n": ["public_best_k_of_n"],
+        "paired": ["best_k_of_n", "random_pfode"],
         "both": ["best_k_of_n", "o3"],
         "all": ["best_k_of_n", "o3", "random_pfode"],
     }[method]
@@ -43,7 +46,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--method",
-        choices=("best-k-of-n", "o3", "random-pfode", "both", "all"),
+        choices=("public-best-k-of-n", "best-k-of-n", "o3", "random-pfode", "matched-stochastic", "paired", "both", "all"),
         default="both",
     )
     parser.add_argument(
@@ -108,7 +111,12 @@ def parse_args() -> argparse.Namespace:
 def load_baseline_seeds(run_id: str, budget: str, replicates: int) -> list[int]:
     """Load and validate the seed list recorded by a completed baseline run."""
 
-    baseline_metadata = common.output_root("best_k_of_n", run_id) / "provenance.json"
+    candidates = [
+        common.output_root("best_k_of_n", run_id) / "run_metadata.json",
+        common.output_root("public_best_k_of_n", run_id) / "provenance.json",
+        common.output_root("best_k_of_n", run_id) / "provenance.json",  # Legacy runs.
+    ]
+    baseline_metadata = next((path for path in candidates if path.is_file()), candidates[0])
     if not baseline_metadata.is_file():
         raise FileNotFoundError(
             f"Best K-of-N run metadata does not exist: {baseline_metadata}"
@@ -318,17 +326,17 @@ def main() -> None:
 
     session_timings = {}
 
-    def timed(method, function, *positional, **keywords):
+    def timed(name, function, *positional, **keywords):
         tick = time.perf_counter()
         function(*positional, **keywords)
-        session_timings[method] = time.perf_counter() - tick
+        session_timings[name] = time.perf_counter() - tick
         common.write_json(manifest_path.parent / "execution_timings_this_session.json", {
             "seconds_by_method": session_timings, "includes_model_startup": True,
             "resume": args.resume, "batch_size": batch_size,
         })
 
-    if args.method in {"best-k-of-n", "both", "all"}:
-        timed("best_k_of_n", run_public,
+    if args.method == "public-best-k-of-n":
+        timed("public_best_k_of_n", run_public,
             args.replicates,
             run_id,
             resume=args.resume,
@@ -347,7 +355,12 @@ def main() -> None:
             resume=args.resume,
             batch_size=batch_size or 1,
         )
-    if args.method in {"random-pfode", "all"}:
+    if args.method in {"best-k-of-n", "matched-stochastic", "paired", "both", "all"}:
+        timed("best_k_of_n", run_random_pfode,
+            args.replicates, run_id, REPO_ROOT / "configs" / "1cll.yaml", args.budget,
+            seeds=shared_seeds, resume=args.resume, method="best_k_of_n",
+        )
+    if args.method in {"random-pfode", "paired", "all"}:
         timed("random_pfode", run_random_pfode,
             args.replicates,
             run_id,

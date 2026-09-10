@@ -2,9 +2,33 @@
 
 This folder contains the shared 1CLL runner for all supported budgets:
 
-- `best-k-of-n`: official stochastic Boltz-2 baseline
+- `best-k-of-n`: shared explicit Gaussian latents with the custom stochastic Boltz-2 decoder
 - `o3`: deterministic PF-ODE with `U`-space Bayesian optimization
-- `random-pfode`: deterministic PF-ODE with random `Z` samples and no BO
+- `random-pfode`: deterministic PF-ODE with shared random `Z` samples and no BO
+- `paired`: run `best-k-of-n` and `random-pfode` together
+- `public-best-k-of-n`: original official public baseline, with internally sampled latents
+
+For the controlled comparison, run:
+
+```sh
+sh run_experiment.sh --method paired --only n100_k10 --replicates 1 --fixed-seed-schedule --run-id paired_latents --comparison-report
+```
+
+Both methods load `outputs/1cll/k10_n100/runs/paired_latents/shared_latents/seed_<seed>.npy`
+(shape `100 × 3552`). Inputs are unscaled standard normals, validated exactly
+against the seed, and copied into each method's per-evaluation `latents/` files.
+The adapter applies the same float32 conversion and sampler initialization to
+both. Stochastic decoding retains churn and random SE(3) augmentation; PF-ODE
+retains its deterministic trajectory. Per-sample trajectory seeds make resumed
+stochastic evaluations reproducible. Existing completed random-PF-ODE runs
+without shared-bank metadata cannot be resumed as paired runs; use a new run ID.
+`--method all` runs the three standard methods (Best K-of-N, random PF-ODE,
+and O3); `both` means standardized Best K-of-N plus O3. `matched-stochastic`
+is retained only as a CLI compatibility alias for `best-k-of-n`, writing to
+`best_k_of_n/`. The original public baseline now writes to `public_best_k_of_n/`.
+Existing public results under `best_k_of_n/` are preserved: choose a new run ID
+for standardized runs. For separate controlled-method commands, reuse the same run ID and
+explicit seed list (or fixed seed schedule).
 
 ## Run it
 
@@ -29,7 +53,7 @@ The wrapper defaults to these same values, so no export is required for the
 normal lab run.
 
 The first command checks the setup and GPU. The second one-line command runs
-all three methods with the same ten freshly generated seeds, using one Linux
+all three standard methods with the same ten freshly generated seeds, using one Linux
 process per visible GPU. The paper uses five seeds; ten is an optional
 higher-confidence repeat count.
 
@@ -123,15 +147,15 @@ outputs/1cll/k10_n100/o3/
 outputs/1cll/k10_n100/random_pfode/
 ```
 
-Both methods use single-sequence conditioning: Boltz's official `msa: empty`
+All methods use single-sequence conditioning: Boltz's official `msa: empty`
 marker is supplied, no MSA is retrieved, and no MSA server is contacted.
-Best-K-of-N uses the stock public Boltz-2 package in its
-isolated `public_boltz/` environment. Its only compatibility switch is the
-same `--no_kernels` flag used by the reference notebook. O3 and O3-random use
-the custom adapter in `adapters/boltz2_pfode.py` and the vendored Boltz source.
-All three methods now use step_scale=1.0. The public baseline remains
-stochastic, but overrides the stock step scale of 1.5. Historical runs used
-the stock baseline setting; use a fresh run ID for this controlled comparison.
+Best K-of-N, random PF-ODE, and O3 use the custom adapter in
+`adapters/boltz2_pfode.py` and the vendored Boltz source. Best K-of-N and
+random PF-ODE load identical initial latents; O3 retains its existing search.
+The optional `public-best-k-of-n` uses the stock public Boltz-2 package in
+its isolated `public_boltz/` environment, retaining its existing `--no_kernels`
+and step-scale settings. Sampling steps, recycling, padding, and all other
+decoder settings are unchanged by latent standardization.
 
 The primary comparison metric is `mean_of_K`, the mean TM-score of the K
 returned structures. `max_of_K` is the secondary best-found metric. Aggregate

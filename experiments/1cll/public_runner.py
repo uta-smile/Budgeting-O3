@@ -263,9 +263,9 @@ def _run_public_batches(replicate_dir: Path, run_seed: int, batch_size: int) -> 
         })
         command = [_uv(), "run", "--project", str(PUBLIC_PROJECT), "python",
                    str(BUNDLE / "public_batch_entry.py"), str(request_path)]
-        print(f"[best-k-of-n] persistent inference: {len(pending)} batches, limit={batch_size}", flush=True)
+        print(f"[public-best-k-of-n] persistent inference: {len(pending)} batches, limit={batch_size}", flush=True)
         log_path = replicate_dir / "boltz_batches.log"
-        print(f"[best-k-of-n] inference log: {log_path}", flush=True)
+        print(f"[public-best-k-of-n] inference log: {log_path}", flush=True)
         try:
             with log_path.open("a", encoding="utf-8") as log:
                 subprocess.run(command, cwd=REPO_ROOT, check=True, stdout=log,
@@ -308,7 +308,7 @@ def _write_replicate_summary(replicate_dir: Path, rows: list[dict[str, Any]], ru
         msa_server_url=None,
     )
     summary = {
-        "method": "best_k_of_n",
+        "method": "public_best_k_of_n",
         "N": common.N,
         "K": common.K,
         "seed": run_seed,
@@ -348,7 +348,7 @@ def run_replicate(run_id: str, run_seed: int, resume: bool = False, batch_size: 
     if not PUBLIC_INPUT.is_file():
         raise FileNotFoundError(f"Missing public Boltz single-sequence input: {PUBLIC_INPUT}")
     info = public_installation_info()
-    replicate_dir = output_root("best_k_of_n", run_id) / f"replicate_{run_seed:03d}"
+    replicate_dir = output_root("public_best_k_of_n", run_id) / f"replicate_{run_seed:03d}"
     evaluations_path = replicate_dir / "evaluations.csv"
     if replicate_dir.exists() and evaluations_path.exists() and not resume:
         raise RuntimeError(f"{replicate_dir} already exists; pass --resume or choose another --run-id")
@@ -433,7 +433,7 @@ def run(
     )
     metadata_seed_start = None if seeds is not None else seed_start
     metadata_seed_step = None if seeds is not None else seed_step
-    print(f"[best-k-of-n] shared replicate seeds: {run_seeds}", flush=True)
+    print(f"[public-best-k-of-n] shared replicate seeds: {run_seeds}", flush=True)
     summaries = [run_replicate(run_id, seed, resume=resume, batch_size=batch_size) for seed in run_seeds]
     return finalize_run(
         replicates=replicates,
@@ -461,7 +461,7 @@ def finalize_run(
     if summaries is None:
         summaries = []
         for seed in run_seeds:
-            path = output_root("best_k_of_n", run_id) / f"replicate_{seed:03d}" / "summary.json"
+            path = output_root("public_best_k_of_n", run_id) / f"replicate_{seed:03d}" / "summary.json"
             if not path.is_file():
                 raise FileNotFoundError(f"Missing completed baseline summary: {path}")
             summaries.append(json.loads(path.read_text(encoding="utf-8")))
@@ -469,7 +469,7 @@ def finalize_run(
         raise ValueError(
             f"Expected {replicates} baseline summaries, got {len(summaries)}"
         )
-    run_dir = output_root("best_k_of_n", run_id)
+    run_dir = output_root("public_best_k_of_n", run_id)
     aggregate_rows = []
     for summary in summaries:
         aggregate_rows.append({
@@ -501,4 +501,4 @@ def finalize_run(
         execution_mode="per_sample_cli" if batch_size is None else "persistent_batches",
         checkpoint=public_checkpoint_info(),
     ))
-    return {"method": "best_k_of_n", "replicates": summaries, "aggregate": aggregate_rows}
+    return {"method": "public_best_k_of_n", "replicates": summaries, "aggregate": aggregate_rows}

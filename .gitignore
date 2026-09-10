@@ -7,8 +7,13 @@ data/1CLL.pdb
 data/boltz2_1cll/
 data/boltz_cache/
 
-# Generated experiment outputs; keep locally, do not commit
-/outputs/
+# Generated experiment outputs: keep only reports and figures in Git
+/outputs/**
+!/outputs/**/
+!/outputs/**/*.csv
+!/outputs/**/*.svg
+!/outputs/**/*.json
+!/outputs/**/*.png
 
 # from out put
 *.cif

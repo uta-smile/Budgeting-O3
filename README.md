@@ -76,7 +76,7 @@ immediately before prediction. Batch seeds, counts, and within-batch
 confidence ranks are recorded; all N structures are ranked together by
 external TM-score. Public confidence sidecars and pLDDT B-factors are omitted
 in this path to avoid the existing single-chain sidecar failure. The public
-model and stochastic sampler remain unmodified.
+model remains unmodified; the stochastic sampler now uses step_scale=1.0.
 
 Use the same batch-size flag when resuming. Completed baseline batches are
 reused; an incomplete batch is regenerated with its original seed and size.
@@ -84,15 +84,19 @@ Changing execution mode or batch size within a run is rejected. O3 likewise
 replays an interrupted initialization batch at its original size. Numerical
 batching differences can alter O3 seed selection and later BO decisions.
 
-Validate saved O3 latents on the lab GPU before running the full comparison:
+Validate saved O3 latents on an available lab GPU. This example selects GPU 1:
 
 ```bash
-UV_CACHE_DIR="$PWD/.uv-cache" uv run python experiments/1cll/k10_n100/validate_batching.py \
-  --latent-dir /path/to/o3/replicate/latents \
-  --output-dir outputs/batch_validation01 --batch-size 4 --limit 8
+CUDA_VISIBLE_DEVICES=2 BOLTZ_CACHE="$PWD/.boltz" UV_CACHE_DIR="$PWD/.uv-cache" uv run python experiments/1cll/validate_batching.py \
+  --latent-dir outputs/1cll/k10_n100/o3/runs/n100_k10_20260908_122004/seed_444290507/latents \
+  --output-dir outputs/batch_validation_gpu1_01 \
+  --batch-size 4 --limit 8
 ```
 
-The output directory must be new. `comparison.json` reports per-latent
+Change `CUDA_VISIBLE_DEVICES` to the available GPU index. If the experiment
+is using all GPUs, wait for a worker to finish before running validation on
+its device to avoid memory contention. The output directory must be new.
+`comparison.json` reports per-latent
 TM-scores, C-alpha coordinate differences, rankings, and generation times
 for sizes 1 and 4. Increase `--limit` to M to check the full seed ranking.
 This is a numerical check, not proof of identical experiment trajectories.
@@ -106,6 +110,29 @@ public inference output. Resume timings exclude work from earlier sessions.
 Compare end-to-end times on the same GPU and precision; batching may improve
 throughput without eliminating O3's CPU acquisition pauses. Final CUDA
 correctness and speed still require the lab run.
+
+After a successful wrapper run, the method-independent run folder also contains
+the seed-aligned comparison reports:
+
+```text
+outputs/1cll/k10_n100/runs/<run-id>/comparison_summary.csv
+outputs/1cll/k10_n100/runs/<run-id>/comparison_stats.csv
+outputs/1cll/k10_n100/runs/<run-id>/comparison_summary.json
+```
+
+`comparison_summary.csv` puts the three methods side by side for every shared
+replicate seed. `comparison_stats.csv` reports each method's mean, sample
+standard deviation, and best value for `mean_of_K` and `max_of_K`.
+
+Create a presentation-ready three-method vector chart from that summary with:
+
+```bash
+.venv/bin/python scripts/plot_all_methods.py \
+  --summary outputs/1cll/k10_n100/runs/RUN_ID/comparison_summary.csv \
+  --output-dir outputs/analysis/RUN_ID --run-label RUN_ID
+```
+
+This writes `all_methods_comparison.svg` and its companion statistics CSV.
 
 ## Multiple GPUs on Linux
 
@@ -180,6 +207,23 @@ The seed list is written before generation to
 `outputs/1cll/kK_nN/runs/<run-id>/run_manifest.json`, so even an early failure
 does not lose the randomized seeds.
 
+## GPU seed-mapping audit
+
+From the repository root, compare original seed latents, identical repeats,
+and reconstructed `Z → U → Z` latents on an available GPU:
+
+```bash
+CUDA_VISIBLE_DEVICES=1 BOLTZ_CACHE="$PWD/.boltz" UV_CACHE_DIR="$PWD/.uv-cache" uv run python experiments/1cll/audit_numerics.py \
+  --run-dir outputs/1cll/k10_n100/o3/runs/n100_k10_20260908_122004 \
+  --output-dir outputs/analysis/n100_k10_20260908_122004/seed_mapping_gpu_check \
+  --gpu-seed 444290507
+```
+
+This performs 15 additional diagnostic generations outside the original run's
+budget and saves `audit.json`, generated structures, and `gpu_check.json` in
+the specified output directory. The output directory must be new. Use GPU 0
+when available, or change `CUDA_VISIBLE_DEVICES` to an available device.
+
 ## Protocol invariants
 
 - Both methods consume the same checked-in Boltz YAML,
@@ -187,8 +231,9 @@ does not lose the randomized seeds.
   construct, and `msa: empty` (no MSA server).
 - The reference is `data/1CLL.pdb`, chain A. Generated structures are written
   as PDB and ranked by TM-align normalized by the 144-residue reference chain.
-- Best K-of-N invokes the isolated official package without `--step_scale`, so
-  Boltz-2 retains its stochastic `step_scale=1.5` and `gamma_0=0.8` defaults.
+- Best K-of-N invokes the isolated official package with `--step_scale 1.0`,
+  retaining stochastic `gamma_0=0.8`. This is a controlled sampler comparison,
+  rather than the historical stock-step-scale baseline.
 - O3 uses explicit `z ~ N(0,I)`, disables churn and stochastic SE(3)
   augmentation, and uses `step_scale=1.0` for the PF-ODE Euler update.
 - The 1CLL generator tensor is padded to the paper's 1,184 coordinate slots,
@@ -207,5 +252,5 @@ outputs/1cll/k10_n100/random_pfode/runs/<run-id>/
 ```
 
 See [the protocol audit](docs/protocol_audit.md) for paper-to-code evidence and
-explicit ambiguities, and [the experiment bundle](experiments/1cll/k10_n100/README.md)
+explicit ambiguities, and [the experiment bundle](experiments/1cll/README.md)
 for artifact details and verification commands.

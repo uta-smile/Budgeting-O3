@@ -10,7 +10,7 @@ from tempfile import TemporaryDirectory
 import numpy as np
 
 ROOT = Path(__file__).parents[1]
-BUNDLE = ROOT / "experiments" / "1cll" / "k10_n100"
+BUNDLE = ROOT / "experiments" / "1cll"
 sys.path.insert(0, str(BUNDLE))
 
 import common  # noqa: E402

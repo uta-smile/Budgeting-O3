@@ -60,7 +60,7 @@ def _parse_args() -> argparse.Namespace:
         choices=("o3",),
         default="o3",
         help="The root runner is reserved for the custom O3 Boltz backend. "
-        "Use experiments/1cll/k10_n100/run.py for Best K-of-N.",
+        "Use experiments/1cll/run.py for Best K-of-N.",
     )
     return parser.parse_args()
 
@@ -156,7 +156,7 @@ def main() -> None:
     ):
         raise RuntimeError(
             "The root O3 runner requires adapters.boltz2_pfode:Boltz2PFODEAdapter; "
-            "Best K-of-N must use experiments/1cll/k10_n100/run.py."
+            "Best K-of-N must use experiments/1cll/run.py."
         )
     provenance = collect_run_metadata(config=config, adapter=adapter)
     adapter_latent_dim = getattr(adapter, "latent_dim", None)

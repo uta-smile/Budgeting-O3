@@ -157,6 +157,7 @@ def _run_public_predict(sample_dir: Path, sample_seed: int) -> Path:
         "--out_dir", str(boltz_out),
         "--cache", str(PUBLIC_CACHE),
         "--seed", str(sample_seed),
+        "--step_scale", "1.0",
         "--no_kernels",
         "--output_format", "mmcif",
     ]
@@ -202,6 +203,7 @@ def _run_public_predict(sample_dir: Path, sample_seed: int) -> Path:
                     "--out_dir", str(fallback_out),
                     "--cache", str(PUBLIC_CACHE),
                     "--seed", str(sample_seed),
+                    "--step_scale", "1.0",
                     "--no_kernels",
                     "--output_format", "mmcif",
                 ]
@@ -321,7 +323,7 @@ def _write_replicate_summary(replicate_dir: Path, rows: list[dict[str, Any]], ru
             "version": info["version"],
             "module": info["module"],
             "sampling": "official_stochastic_boltz2",
-            "step_scale": 1.5,
+            "step_scale": 1.0,
             "gamma_0": 0.8,
             "no_kernels": True,
             "inference_precisions": precisions,
@@ -352,13 +354,13 @@ def run_replicate(run_id: str, run_seed: int, resume: bool = False, batch_size: 
         raise RuntimeError(f"{replicate_dir} already exists; pass --resume or choose another --run-id")
     replicate_dir.mkdir(parents=True, exist_ok=True)
     rows_by_index = {int(row["sample_index"]): row for row in read_csv(evaluations_path)}
-    settings = {"batch_size": batch_size,
+    settings = {"batch_size": batch_size, "step_scale": 1.0,
                 "seed_policy": "per_sample" if batch_size is None else "per_batch_first_sample_seed"}
     settings_path = replicate_dir / "inference_settings.json"
     if settings_path.exists():
         if json.loads(settings_path.read_text()) != settings:
-            raise ValueError("Cannot change baseline execution mode or batch size within a run")
-    elif batch_size is not None and (rows_by_index or any(replicate_dir.rglob("*.cif"))):
+            raise ValueError("Baseline settings changed (including step scale); use a fresh run ID")
+    elif rows_by_index or any(replicate_dir.rglob("*.cif")):
         raise ValueError("Use a fresh run ID for persistent baseline inference")
     write_json(settings_path, settings)
     generated = _run_public_batches(replicate_dir, run_seed, batch_size) if batch_size is not None else None
@@ -495,6 +497,7 @@ def finalize_run(
         sample_seed_function=("common.sample_seed(run_seed, sample_index)" if batch_size is None
                               else "common.sample_seed(run_seed, batch_start_index)"),
         inference_batch_size=batch_size,
+        step_scale=1.0,
         execution_mode="per_sample_cli" if batch_size is None else "persistent_batches",
         checkpoint=public_checkpoint_info(),
     ))

@@ -47,7 +47,6 @@ def check_static() -> None:
     if '"USE_MSA_SERVER = True\\n"' in notebook:
         raise AssertionError("Benchmark notebook must not enable the MSA server")
     for forbidden_override in (
-        '"--step_scale"',
         '"--recycling_steps"',
         '"--sampling_steps"',
         '"--diffusion_samples"',
@@ -57,6 +56,9 @@ def check_static() -> None:
             raise AssertionError(
                 f"Public baseline overrides a Boltz-2 prediction default: {forbidden_override}"
             )
+    for script in ("public_runner.py", "public_batch_entry.py"):
+        if '"--step_scale", "1.0"' not in (BUNDLE / script).read_text(encoding="utf-8"):
+            raise AssertionError(f"{script} must explicitly use step_scale=1.0")
     adapter_text = (REPO_ROOT / "adapters" / "boltz2_pfode.py").read_text(encoding="utf-8")
     for required in ("initial_atom_coords", "deterministic", "gamma_0", "Boltz2.load_from_checkpoint"):
         if required not in adapter_text:

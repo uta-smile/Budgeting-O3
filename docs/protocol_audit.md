@@ -25,8 +25,9 @@ Budget: Practical Guidance for Protein Structure Prediction Models*, arXiv
 The baseline and O3 share the same checked-in Boltz input YAML and reference,
 but they intentionally do not share generated structures:
 
-- Best K-of-N uses the stock stochastic sampler. Its command omits
-  `--step_scale`, retaining Boltz-2's `step_scale=1.5` and `gamma_0=0.8`.
+- As of 2026-09-09, Best K-of-N explicitly uses `--step_scale 1.0`, retaining
+  stochastic `gamma_0=0.8`. This user-requested controlled comparison differs
+  from historical runs, which used the stock step scale of 1.5.
 - O3 passes an explicit `z`, sets deterministic mode, suppresses churn and
   SE(3) randomness, and uses `step_scale=1.0` for the Euler PF-ODE update.
 - A baseline run's recorded replicate seeds may be imported with

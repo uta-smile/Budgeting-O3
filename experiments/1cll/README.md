@@ -1,6 +1,6 @@
 # Canonical 1CLL experiment bundle
 
-This folder contains the only runner needed for the comparison:
+This folder contains the shared 1CLL runner for all supported budgets:
 
 - `best-k-of-n`: official stochastic Boltz-2 baseline
 - `o3`: deterministic PF-ODE with `U`-space Bayesian optimization
@@ -115,6 +115,12 @@ The fixed arithmetic schedule is available with `--fixed-seed-schedule`,
 outputs/1cll/k2_n20/best_k_of_n/
 outputs/1cll/k2_n20/o3/
 outputs/1cll/k2_n20/random_pfode/
+outputs/1cll/k5_n50/best_k_of_n/
+outputs/1cll/k5_n50/o3/
+outputs/1cll/k5_n50/random_pfode/
+outputs/1cll/k10_n100/best_k_of_n/
+outputs/1cll/k10_n100/o3/
+outputs/1cll/k10_n100/random_pfode/
 ```
 
 Both methods use single-sequence conditioning: Boltz's official `msa: empty`
@@ -123,9 +129,34 @@ Best-K-of-N uses the stock public Boltz-2 package in its
 isolated `public_boltz/` environment. Its only compatibility switch is the
 same `--no_kernels` flag used by the reference notebook. O3 and O3-random use
 the custom adapter in `adapters/boltz2_pfode.py` and the vendored Boltz source.
-The public command omits `--step_scale`, retaining stochastic Boltz-2's 1.5
-default; deterministic O3 uses the configured unit PF-ODE step.
+All three methods now use step_scale=1.0. The public baseline remains
+stochastic, but overrides the stock step scale of 1.5. Historical runs used
+the stock baseline setting; use a fresh run ID for this controlled comparison.
 
 The primary comparison metric is `mean_of_K`, the mean TM-score of the K
 returned structures. `max_of_K` is the secondary best-found metric. Aggregate
 reports do not score methods by the mean of all N generated structures.
+
+The supported shell wrapper automatically creates a combined report after each
+successful run. For an existing completed run, regenerate it with:
+
+```bash
+UV_CACHE_DIR="$PWD/.uv-cache" uv run python experiments/1cll/compare_methods.py \
+  --budget n100_k10 --run-id RUN_ID
+```
+
+The report is written under `outputs/1cll/k10_n100/runs/RUN_ID/` as
+`comparison_summary.csv` (one row per seed, all methods side by side),
+`comparison_stats.csv` (mean, sample standard deviation, and best value), and
+`comparison_summary.json`.
+
+For a presentation-ready chart covering Best K-of-N, O3, and Random PF-ODE:
+
+```bash
+.venv/bin/python scripts/plot_all_methods.py \
+  --summary outputs/1cll/k10_n100/runs/RUN_ID/comparison_summary.csv \
+  --output-dir outputs/analysis/RUN_ID --run-label RUN_ID
+```
+
+The SVG uses grouped mean-of-K and max-of-K bars, consistent method colors,
+95% t-confidence whiskers, direct value labels, and a numeric summary table.

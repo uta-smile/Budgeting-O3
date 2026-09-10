@@ -107,6 +107,7 @@ def main() -> None:
         "predict", request["input"], "--out_dir", request["work_dir"],
         "--cache", request["cache"], "--seed", str(jobs[0]["seed"]),
         "--no_kernels", "--output_format", "mmcif", "--override",
+        "--step_scale", "1.0",
     ], standalone_mode=False)
 
 

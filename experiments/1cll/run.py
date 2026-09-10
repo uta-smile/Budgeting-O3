@@ -24,8 +24,19 @@ from common import (
     resolve_replicate_seeds,
     shared_replicate_seeds,
 )
+from compare_methods import write_report as write_comparison_report
 from public_runner import run as run_public
 from random_pfode_runner import run as run_random_pfode
+
+
+def comparison_methods(method: str) -> list[str]:
+    return {
+        "best-k-of-n": ["best_k_of_n"],
+        "o3": ["o3"],
+        "random-pfode": ["random_pfode"],
+        "both": ["best_k_of_n", "o3"],
+        "all": ["best_k_of_n", "o3", "random_pfode"],
+    }[method]
 
 
 def parse_args() -> argparse.Namespace:
@@ -85,6 +96,11 @@ def parse_args() -> argparse.Namespace:
         help="Linux replicate workers: comma-separated GPU indices or 'auto'.",
     )
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument(
+        "--comparison-report",
+        action="store_true",
+        help="Write the seed-aligned comparison report after the selected methods finish.",
+    )
     parser.add_argument("--smoke", action="store_true", help="Run backend and sampler verification only")
     return parser.parse_args()
 
@@ -224,6 +240,7 @@ def main() -> None:
         "budget": args.budget,
         "run_id": run_id,
         "method_selection": args.method,
+        "step_scale": 1.0,
         "batch_size": batch_size,
         "requested_gpus": gpu_ids,
         "replicates": args.replicates,
@@ -232,7 +249,7 @@ def main() -> None:
     }
     if manifest_path.is_file():
         existing_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        immutable_fields = ("target", "budget", "run_id", "replicates", "seeds", "batch_size")
+        immutable_fields = ("target", "budget", "run_id", "replicates", "seeds", "batch_size", "step_scale")
         mismatches = {
             key: (existing_manifest.get(key), manifest.get(key))
             for key in immutable_fields
@@ -267,6 +284,16 @@ def main() -> None:
             batch_size=batch_size,
             parallel_execution=parallel_execution,
         )
+        if args.comparison_report:
+            report = write_comparison_report(
+                budget=args.budget,
+                run_id=run_id,
+                methods=comparison_methods(args.method),
+            )
+            print(
+                f"Combined comparison report: {report['comparison_summary_csv']}",
+                flush=True,
+            )
         common.write_json(
             manifest_path.parent / "execution_timings_this_session.json",
             {
@@ -328,6 +355,16 @@ def main() -> None:
             args.budget,
             seeds=shared_seeds,
             resume=args.resume,
+        )
+    if args.comparison_report:
+        report = write_comparison_report(
+            budget=args.budget,
+            run_id=run_id,
+            methods=comparison_methods(args.method),
+        )
+        print(
+            f"Combined comparison report: {report['comparison_summary_csv']}",
+            flush=True,
         )
 
 

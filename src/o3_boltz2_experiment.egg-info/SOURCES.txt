@@ -15,5 +15,5 @@ src/o3_boltz2_experiment.egg-info/requires.txt
 src/o3_boltz2_experiment.egg-info/top_level.txt
 tests/test_budget_accounting.py
 tests/test_custom_sampler.py
-tests/test_k10_n100_bundle.py
+tests/test_1cll_runner.py
 tests/test_o3_chart.py

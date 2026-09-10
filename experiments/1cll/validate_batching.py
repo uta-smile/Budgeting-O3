@@ -31,6 +31,7 @@ def main() -> None:
     args.output_dir.mkdir(parents=True, exist_ok=False)
     config = yaml.safe_load((REPO_ROOT / "configs" / "1cll.yaml").read_text())
     config["project_root"] = str(REPO_ROOT)
+    config["boltz2"].setdefault("cache_dir", str(REPO_ROOT / ".boltz"))
     adapter = load_adapter("adapters.boltz2_pfode:create", config)
     config["latent_dim"] = adapter.latent_dim
     latents = np.stack([np.load(path) for path in paths])

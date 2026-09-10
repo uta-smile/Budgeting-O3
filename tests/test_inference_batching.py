@@ -8,7 +8,7 @@ from types import ModuleType, SimpleNamespace
 import pytest
 import torch
 
-BUNDLE = Path(__file__).parents[1] / "experiments" / "1cll" / "k10_n100"
+BUNDLE = Path(__file__).parents[1] / "experiments" / "1cll"
 sys.path.insert(0, str(BUNDLE))
 import common
 import public_runner

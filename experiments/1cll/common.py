@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 BUNDLE = Path(__file__).resolve().parent
-REPO_ROOT = BUNDLE.parents[2]
+REPO_ROOT = BUNDLE.parents[1]
 SRC_ROOT = REPO_ROOT / "src"
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))

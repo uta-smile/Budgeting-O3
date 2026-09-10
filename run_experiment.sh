@@ -47,12 +47,14 @@ if [ ! -s "$REFERENCE_PDB" ]; then
 fi
 
 # The comparison bundle routes Best K-of-N to an isolated, unmodified public
-# Boltz 2.2.1 environment and O3 to the vendored deterministic adapter.  It is
+# Boltz 2.2.1 environment (step_scale=1.0) and O3 to the vendored deterministic adapter. It is
 # the single supported experiment entry point.
 if [ "$#" -eq 0 ]; then
   for BUDGET in n20_k2 n50_k5 n100_k10; do
-    uv run python experiments/1cll/k10_n100/run.py --only "$BUDGET"
+    uv run python experiments/1cll/run.py \
+      --only "$BUDGET" --comparison-report
   done
 else
-  uv run python experiments/1cll/k10_n100/run.py "$@"
+  uv run python experiments/1cll/run.py \
+    "$@" --comparison-report
 fi

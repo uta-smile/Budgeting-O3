@@ -1,0 +1,64 @@
+{
+  "method": "random_pfode",
+  "budget": "n100_k10",
+  "N": 100,
+  "K": 10,
+  "seed": 20250117,
+  "oracle_evaluations": 100,
+  "generator_sampling": "deterministic_pf_ode",
+  "latent_source": "shared_standard_normal_bank",
+  "latent_dim": 4416,
+  "latent_seed": 20250117,
+  "shared_latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/30jr/n100_k10/runs/30jr_paired_r2/shared_latents/seed_20250117.npy",
+  "latent_sampler": "standard_normal_Z",
+  "selection_metric": "oracle_tm_score",
+  "total_mean": 0.3436299048257531,
+  "max_of_K": 0.43199826399026225,
+  "top_k_mean": 0.4014476531399011,
+  "mean_of_K": 0.4014476531399011,
+  "best_structure": "/mnt/SSD3/Chase/budgetting O3/outputs/30jr/n100_k10/runs/30jr_paired_r2/pf_ode/seed_20250117/random/sample_0056.pdb",
+  "output_dir": "/mnt/SSD3/Chase/budgetting O3/outputs/30jr/n100_k10/runs/30jr_paired_r2/pf_ode/seed_20250117",
+  "generator": {
+    "adapter": "Boltz2PFODEAdapter",
+    "latent_dim": 4416,
+    "atom_count": 1444,
+    "atom_slots": 1472,
+    "recycling_steps": 3,
+    "sampling_steps": 200,
+    "step_scale": 1.0,
+    "stochastic_gamma_0": 0.8,
+    "explicit_latent": true,
+    "subsample_msa": false,
+    "num_subsampled_msa": 1024,
+    "inference_precision": "32",
+    "no_kernels": true,
+    "checkpoint": {
+      "path": "/home/thanh/budgetting-O3/.boltz/boltz2_conf.ckpt",
+      "exists": true,
+      "size_bytes": 2286561469,
+      "sha256": "090e82ac8c92f5e943fa1b39e7410a44027bea7243c0bbb3caa67a77fc1428e1"
+    }
+  },
+  "msa_cache": {
+    "input_msa_path": null,
+    "input_msa_sha256": null,
+    "processed_dir": "/mnt/SSD3/Chase/budgetting O3/.cache/targets/30jr/processed/o3cache_684b1ce7a1099e23",
+    "processing_fingerprint": "684b1ce7a1099e233a0fa3012407338ced6fc68d3c3bc3f7f1c287af7c4bfc6a",
+    "msa_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "manifest_sha256": "00407cf711981aeb65ea2caccc1cd90d4a309b4976198e8806b3e5f8d40cd708",
+    "msa_ids": [
+      -1
+    ],
+    "has_msa": false,
+    "use_msa_server": false,
+    "server_url": null
+  },
+  "runtime": {
+    "python": "3.12.14",
+    "platform": "Linux-4.15.0-142-generic-x86_64-with-glibc2.23",
+    "torch": "2.5.1+cu118",
+    "cuda": "11.8",
+    "cuda_available": true,
+    "gpu": "NVIDIA GeForce GTX TITAN X"
+  }
+}

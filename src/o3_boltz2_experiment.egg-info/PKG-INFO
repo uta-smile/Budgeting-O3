@@ -16,3 +16,5 @@ Requires-Dist: rdkit>=2025.03.1; sys_platform == "win32"
 Requires-Dist: rdkit==2024.3.2; sys_platform == "linux"
 Requires-Dist: tmtools>=0.1.0
 Requires-Dist: boltz>=2.2.1
+Requires-Dist: plotly>=7.0.0
+Requires-Dist: kaleido>=1.4.0

@@ -32,6 +32,8 @@ dependencies = [
     # The optional cuEquivariance wheels require newer glibc than the lab node.
     # Boltz still uses the GPU through CUDA-enabled PyTorch without these kernels.
     "boltz>=2.2.1",
+    "plotly>=7.0.0",
+    "kaleido>=1.4.0",
 ]
 
 [tool.setuptools.packages.find]

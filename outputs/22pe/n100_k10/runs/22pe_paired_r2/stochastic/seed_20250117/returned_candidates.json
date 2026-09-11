@@ -1,0 +1,92 @@
+[
+  {
+    "index": 26,
+    "stage": "best_k_of_n",
+    "score": 0.38394064348966456,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/22pe/n100_k10/runs/22pe_paired_r2/stochastic/seed_20250117/random/sample_0026.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/22pe/n100_k10/runs/22pe_paired_r2/stochastic/seed_20250117/latents/latent_0026.npy",
+    "budget": "n100_k10",
+    "seed": 20250117
+  },
+  {
+    "index": 60,
+    "stage": "best_k_of_n",
+    "score": 0.3817294451252023,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/22pe/n100_k10/runs/22pe_paired_r2/stochastic/seed_20250117/random/sample_0060.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/22pe/n100_k10/runs/22pe_paired_r2/stochastic/seed_20250117/latents/latent_0060.npy",
+    "budget": "n100_k10",
+    "seed": 20250117
+  },
+  {
+    "index": 94,
+    "stage": "best_k_of_n",
+    "score": 0.37654570439078905,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/22pe/n100_k10/runs/22pe_paired_r2/stochastic/seed_20250117/random/sample_0094.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/22pe/n100_k10/runs/22pe_paired_r2/stochastic/seed_20250117/latents/latent_0094.npy",
+    "budget": "n100_k10",
+    "seed": 20250117
+  },
+  {
+    "index": 25,
+    "stage": "best_k_of_n",
+    "score": 0.37248154277591805,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/22pe/n100_k10/runs/22pe_paired_r2/stochastic/seed_20250117/random/sample_0025.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/22pe/n100_k10/runs/22pe_paired_r2/stochastic/seed_20250117/latents/latent_0025.npy",
+    "budget": "n100_k10",
+    "seed": 20250117
+  },
+  {
+    "index": 48,
+    "stage": "best_k_of_n",
+    "score": 0.3647178943655161,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/22pe/n100_k10/runs/22pe_paired_r2/stochastic/seed_20250117/random/sample_0048.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/22pe/n100_k10/runs/22pe_paired_r2/stochastic/seed_20250117/latents/latent_0048.npy",
+    "budget": "n100_k10",
+    "seed": 20250117
+  },
+  {
+    "index": 6,
+    "stage": "best_k_of_n",
+    "score": 0.36294446104759465,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/22pe/n100_k10/runs/22pe_paired_r2/stochastic/seed_20250117/random/sample_0006.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/22pe/n100_k10/runs/22pe_paired_r2/stochastic/seed_20250117/latents/latent_0006.npy",
+    "budget": "n100_k10",
+    "seed": 20250117
+  },
+  {
+    "index": 49,
+    "stage": "best_k_of_n",
+    "score": 0.3549259761163686,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/22pe/n100_k10/runs/22pe_paired_r2/stochastic/seed_20250117/random/sample_0049.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/22pe/n100_k10/runs/22pe_paired_r2/stochastic/seed_20250117/latents/latent_0049.npy",
+    "budget": "n100_k10",
+    "seed": 20250117
+  },
+  {
+    "index": 24,
+    "stage": "best_k_of_n",
+    "score": 0.35267477267419856,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/22pe/n100_k10/runs/22pe_paired_r2/stochastic/seed_20250117/random/sample_0024.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/22pe/n100_k10/runs/22pe_paired_r2/stochastic/seed_20250117/latents/latent_0024.npy",
+    "budget": "n100_k10",
+    "seed": 20250117
+  },
+  {
+    "index": 40,
+    "stage": "best_k_of_n",
+    "score": 0.3479838854183832,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/22pe/n100_k10/runs/22pe_paired_r2/stochastic/seed_20250117/random/sample_0040.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/22pe/n100_k10/runs/22pe_paired_r2/stochastic/seed_20250117/latents/latent_0040.npy",
+    "budget": "n100_k10",
+    "seed": 20250117
+  },
+  {
+    "index": 16,
+    "stage": "best_k_of_n",
+    "score": 0.3468918134234084,
+    "structure": "/mnt/SSD3/Chase/budgetting O3/outputs/22pe/n100_k10/runs/22pe_paired_r2/stochastic/seed_20250117/random/sample_0016.pdb",
+    "latent_file": "/mnt/SSD3/Chase/budgetting O3/outputs/22pe/n100_k10/runs/22pe_paired_r2/stochastic/seed_20250117/latents/latent_0016.npy",
+    "budget": "n100_k10",
+    "seed": 20250117
+  }
+]

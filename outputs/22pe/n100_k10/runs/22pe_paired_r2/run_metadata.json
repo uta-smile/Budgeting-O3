@@ -1,0 +1,20 @@
+{
+  "target": "22PE",
+  "fasta": "/mnt/SSD3/Chase/budgetting O3/data/targets/22PE/22PE.fasta",
+  "reference": "/mnt/SSD3/Chase/budgetting O3/data/targets/22PE/22PE.cif",
+  "reference_chain": "A",
+  "sequence_length": 349,
+  "latent_dim": 8352,
+  "N": 100,
+  "K": 10,
+  "sampling_steps": 200,
+  "recycling_steps": 3,
+  "step_scale": 1.0,
+  "stochastic_gamma_0": 0.8,
+  "msa": "empty",
+  "explicit_latent": true,
+  "replicate_seeds": [
+    20250117,
+    20251126
+  ]
+}

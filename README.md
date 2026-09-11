@@ -49,6 +49,132 @@ For the setup/GPU checks without an experiment:
 sh run_experiment.sh --smoke
 ```
 
+## Running another protein target
+
+The generic target runner is separate from the preserved 1CLL workflow. For a
+new single-chain, protein-only target, add exactly these two files:
+
+```text
+data/targets/30JR/30JR.fasta   # Boltz sequence input
+data/targets/30JR/30JR.cif     # experimental reference used for TM-score only
+```
+
+Use the PDB ID in uppercase for the directory and filenames. The FASTA must
+contain exactly one record; its whitespace is removed and its sequence is
+uppercased. The CIF is never passed to Boltz as a template or structural
+input. At runtime the loader creates
+`.cache/targets/30jr/boltz_input.yaml` with chain A and `msa: empty`.
+
+For the initial controlled decoder comparison (stochastic Boltz-2 versus
+random PF-ODE using identical shared Gaussian latents), run:
+
+```bash
+uv run python experiments/run_target.py \
+  --target 30JR --method paired --N 2 --K 1 --replicates 1 \
+  --reference-chain A --run-id smoke_30jr
+
+uv run python experiments/run_target.py \
+  --target 30JR --method paired --N 100 --K 10 --replicates 5 \
+  --reference-chain A --run-id 30jr_r5
+```
+
+For a two-replicate GPU run on the current 22PE and 30JR targets, use separate
+terminals. The commands below reserve GPU pair `0,1` for 22PE and pair `2,3`
+for 30JR:
+
+```bash
+# Required if the downloaded file still has its RCSB filename.
+mv data/targets/22PE/rcsb_pdb_22PE.fasta data/targets/22PE/22PE.fasta
+
+# Terminal 1: 22PE
+CUDA_VISIBLE_DEVICES=0,1 \
+BOLTZ_CACHE="$PWD/.boltz" \
+UV_CACHE_DIR="$PWD/.uv-cache" \
+uv run python experiments/run_target.py \
+  --target 22PE --method paired \
+  --N 100 --K 10 --replicates 2 \
+  --reference-chain A --run-id 22pe_paired_r2
+
+# Terminal 2: 30JR
+CUDA_VISIBLE_DEVICES=2,3 \
+BOLTZ_CACHE="$PWD/.boltz" \
+UV_CACHE_DIR="$PWD/.uv-cache" \
+uv run python experiments/run_target.py \
+  --target 30JR --method paired \
+  --N 100 --K 10 --replicates 2 \
+  --reference-chain A --run-id 30jr_paired_r2
+```
+
+Each `paired` run measures both stochastic Best-K-of-N and deterministic
+PF-ODE. TM-score results are written to `paired_scores.csv` and
+`paired_summary.csv` below the corresponding target output directory. Use a
+new `--run-id` for a new run; add `--resume` to continue an interrupted run.
+The current generic runner uses the first visible GPU, so
+`CUDA_VISIBLE_DEVICES=0,1` binds the process to physical GPU 0 and
+`CUDA_VISIBLE_DEVICES=2,3` binds it to physical GPU 2; it does not distribute
+one run across both GPUs in a pair.
+
+To test another simple single-chain protein, create this exact layout before
+running the same command with its PDB ID:
+
+```text
+data/targets/
+└── 22PE/
+    ├── 22PE.fasta   # exactly one protein FASTA record
+    └── 22PE.cif     # experimental structure; TM-score reference only
+```
+
+For example, a new target `7XYZ` requires only:
+
+```text
+data/targets/7XYZ/7XYZ.fasta
+data/targets/7XYZ/7XYZ.cif
+```
+
+The FASTA is read automatically, and the runner generates the sequence-only
+Boltz YAML in `.cache/targets/7xyz/`. The CIF is never supplied to Boltz as a
+template. No `configs/7xyz.yaml` or copied experiment directory is needed.
+The reference chain defaults to `A`; override it with `--reference-chain` when
+the experimental CIF uses another chain. This simple convention is for one
+protein chain only; use an explicit Boltz YAML for multichain, modified, or
+ligand-containing targets.
+
+Results are written under:
+
+```text
+outputs/30jr/n100_k10/runs/30jr_r5/
+├── run_metadata.json
+├── paired_scores.csv
+├── paired_summary.csv
+├── shared_latents/
+├── stochastic/
+└── pf_ode/
+```
+
+`paired_scores.csv` contains per-sample stochastic and PF-ODE TM-scores plus
+`delta_tm = tm_pfode - tm_stochastic`. The paired summary also reports total
+means, mean-of-K, and max-of-K for both methods. A latent mismatch aborts the
+run instead of producing a comparison.
+
+The same target files and loader support the future O3 path. O3 parameters
+must be supplied explicitly; they are never inferred:
+
+```bash
+uv run python experiments/run_target.py \
+  --target 30JR --method o3 --N 100 --K 10 --M 50 --d 5 \
+  --replicates 5 --reference-chain A --run-id 30jr_o3_r5
+```
+
+Use `--method stochastic`, `--method pfode`, or `--method all` for individual
+paths or all three paths. Multichain, modified, or ligand-containing targets
+such as 29II are not supported by this simple FASTA convention; use an
+explicit Boltz YAML and a dedicated advanced input path for those targets.
+
+Do not put new target FASTA files under `experiments/30jr/inputs/`. That folder
+is not read by the generic runner. Future simple targets only require their
+own `data/targets/<PDB_ID>/<PDB_ID>.fasta` and `.cif` pair; no new config YAML
+or copied experiment code is needed.
+
 ## Faster inference with batching
 
 The command above runs all three methods for `n100_k10` with ten replicates and
